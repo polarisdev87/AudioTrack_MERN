@@ -6,6 +6,10 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import { syncHistoryWithStore, routerReducer, routerMiddleware } from 'react-router-redux';
 import { requireAuth } from './utils/secure';
 import * as reducers from './reducers'
+
+import 'bootstrap/dist/css/bootstrap.css';
+import 'font-awesome/css/font-awesome.css';
+
 import App from './components/App'
 import Home from './components/Home'
 import Login from './components/auth/Login'

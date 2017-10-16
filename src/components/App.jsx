@@ -4,6 +4,8 @@ import * as firebase from 'firebase';
 import { login, logout, resetNext } from '../actions/auth';
 import { push } from 'react-router-redux';
 
+import '../styles/App.css';
+
 class App extends React.Component {
 	state = {
 		loaded: false
@@ -46,7 +48,7 @@ class App extends React.Component {
 
 	render() {
 		return (
-			<div style={ this.styles.app }>
+			<div className="container-fluid">
 				{ this.state.loaded ? this.props.children : null}
 			</div>
 		)

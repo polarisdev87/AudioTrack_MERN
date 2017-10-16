@@ -10,20 +10,29 @@
   "author": "Lancelot Gordon",
   "license": "MIT",
   "dependencies": {
+    "bootstrap": "^4.0.0-beta",
     "firebase": "^3.5.3",
+    "font-awesome": "^4.7.0",
+    "jquery": "^3.2.1",
+    "node-sass-chokidar": "0.0.3",
+    "npm-run-all": "^4.1.1",
     "react": "^15.3.2",
     "react-dom": "^15.3.2",
     "react-redux": "^4.4.5",
     "react-router": "^3.0.0",
     "react-router-redux": "^4.0.7",
+    "reactstrap": "^5.0.0-alpha.3",
     "redux": "^3.6.0"
   },
   "devDependencies": {
     "react-scripts": "^0.7.0"
   },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build-css": "node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/",
+    "watch-css": "npm run build-css && node-sass-chokidar --include-path ./src --include-path ./node_modules src/ -o src/ --watch --recursive",
+    "start-js": "react-scripts start",
+    "start": "npm-run-all -p watch-css start-js",
+    "build": "npm run build-css && react-scripts build",
     "test": "react-scripts test --env=jsdom",
     "eject": "react-scripts eject"
   }
