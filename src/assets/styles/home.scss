@@ -1,0 +1,237 @@
+@import 'variables.scss';
+
+.home-wrapper {
+	font-size: 1.25rem;
+
+	.section {
+		padding: 8rem 0 0;
+		min-height: 420px;
+		.section-title {
+			font-size: 30px;
+			font-weight: bold;
+			letter-spacing: 0.7px;
+			color: #000;
+			margin-bottom: 1.5rem;
+		}
+		.section-sub-title {
+			font-size: 25px;
+			font-weight: 600;
+			letter-spacing: 0.6px;
+			color: #000000;
+			margin-bottom: 2.5rem;
+		}
+		.section-description {
+			font-size: 20px;
+			font-weight: 600;
+			letter-spacing: 0.4px;
+			color: #4a4a4a;
+			margin-bottom: 2.5rem;
+		}
+		.section-sub-description {
+			font-size: 15px;
+			font-weight: 300;
+			line-height: 22.0px;
+			letter-spacing: 0.4px;
+			color: #4a4a4a;
+		}
+		.icon-sets {
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+			i {
+				display: block;
+				width: 52px;
+				height: 52px;
+				color: #fff;
+				font-size: 28px;
+				line-height: 52px;
+				text-align: center;
+				border-radius: 50%;
+				margin-bottom: 3rem;
+				&:last-of-type {
+					margin-bottom: 0;
+				}
+			}
+		}
+		.notification-list {
+			margin-bottom: 8rem;
+			.notification {
+				background: #fff;
+				border-radius: 2px;
+				font-size: 12px;
+				display: flex;
+				padding: 1.25rem;
+				align-items: center;
+				max-width: 360px;
+				margin: 3rem 0;
+				.profile {
+					.profile-img {
+						width: 42px;
+						height: 42px;
+						border-radius: 50%;
+						font-size: 22px;
+						text-align: center;
+						line-height: 42px;
+					}
+				}
+				.description {
+					margin: 0 1.5rem;
+					line-height: 1.2;
+					.description-content {
+						font-size: 12px;
+						font-weight: 300;
+						letter-spacing: 0.5px;
+						color: #000000;
+					}
+					.description-time {
+						font-size: 12px;
+						font-weight: 300;
+						letter-spacing: 0.5px;
+						color: #9b9b9b;
+					}
+				}
+				.action {
+					i {
+						font-size: 22px;
+					}
+				}
+			}
+		}
+		img {
+			max-width: 100%;
+		}
+		.btn-signup {
+			padding: 14px 64px;
+			font-size: 20px;
+			font-weight: 400;
+			letter-spacing: 0.2px;
+			color: #ffffff;
+		}
+		.plan-wrapper {
+			width: 330px;
+			margin: 6rem auto;
+			.plan-box {
+				border: solid 3px $turquoise;
+				border-radius: 2px;
+				background: #fff;
+				padding: 19px;
+				.price-label {
+					font-size: 20px;
+					font-weight: 500;
+					letter-spacing: 0.2px;
+					color: #000000;
+					margin-bottom: 1rem;
+				}
+				.price-control {
+					margin: 2rem 4rem;
+					border-bottom: solid 2px $turquoise;
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					.quantity {	
+						font-size: 90px;
+						font-weight: 600;
+						letter-spacing: 0.7px;
+						color: #4a4a4a;
+					}
+				}
+				.plan-services {
+					.plan-service {
+						font-size: 15px;
+						font-weight: 300;
+						line-height: 30px;
+						letter-spacing: 0.1px;
+						color: #000000;
+						margin: 1rem 0;
+					}
+				}
+			}
+			.get-started {
+				color: #fff;
+				font-size: 15px;
+				font-weight: 600;
+				letter-spacing: 0.1px;
+				padding: 23px;
+				display: block;
+				background: $turquoise;
+				margin-top: 0.5rem;
+				&:hover {
+					color: #fff;
+					text-decoration: none;
+					background: darken($turquoise, 5%);
+				}
+			}
+		}
+	}
+
+	.section.angled-edge {
+		padding-top: 10rem;
+		padding-bottom: 10rem;
+  	clip-path: polygon(0 0, 100% 8rem, 100% 100%, 0 calc(100% - 8rem));
+	}
+
+	.section.footer-section {
+		border-top: solid 1px #b1bfcd;
+		margin-top: 0;
+		padding: 1rem 0 0;
+		min-height: auto;
+
+		font-size: 15px;
+		font-weight: 300;
+		letter-spacing: 0.1px;
+		color: #000000;
+
+		.footer-brand {
+			font-family: Lato;
+			font-size: 50px;
+			font-weight: 900;
+			letter-spacing: 0.2px;
+			color: #000000;
+		}
+		a {
+			color: #000;
+			margin: 0 2rem;
+			&:hover {
+				color: #4a4a4a;
+				text-decoration: none;
+			}
+		}
+
+		i {
+			margin: 0 4rem;
+			font-size: 28px;
+		}
+	}
+
+	.btn {
+		font-size: 15px;
+		font-weight: 300;
+		letter-spacing: 0.3px;
+		padding: 16px 39px;
+		border-radius: 2px;
+	}
+
+	.btn-dark-grey-blue {
+		color: #fff;
+		background: $dark-grey-blue;
+		&:hover {
+			background: darken($dark-grey-blue, 5%);
+		}
+	}
+}
+
+.public-wrapper {
+	.dd-title {
+		font-size: 20px;
+		font-weight: bold;
+		letter-spacing: 0.4px;
+		color: #000000;
+		margin-bottom: 24px;
+	}
+	.dd-description {
+		font-size: 18px;
+		letter-spacing: 0.4px;
+		color: #000000;
+		margin-bottom: 32px;
+	}
+}

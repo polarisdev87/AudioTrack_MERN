@@ -1,0 +1,17 @@
+@import 'variables.scss';
+
+.bg-dark-grey-blue {
+	background-color: $dark-grey-blue !important;
+}
+
+.white-text {
+	color: #fff !important;
+}
+
+.bg-duck-egg-blue {
+	background-color: $duck-egg-blue !important;
+}
+
+a {
+	transition: color,background 0.15s ease;
+}

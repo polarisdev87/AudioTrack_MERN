@@ -15,4 +15,6 @@ export function requireAuth(store) {
 	}
 }
 
-
+export function isAuthenticated() {
+	return firebase.auth().currentUser !== null;
+}

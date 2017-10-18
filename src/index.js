@@ -10,10 +10,14 @@ import * as reducers from './reducers'
 import 'bootstrap/dist/css/bootstrap.css';
 import 'font-awesome/css/font-awesome.css';
 
+import './assets/styles/App.css';
+
 import App from './components/App'
-import Home from './components/Home'
+import Home from './components/public/Home'
+import Terms from './components/public/Terms'
+import Privacy from './components/public/Privacy'
 import Login from './components/auth/Login'
-import Register from './components/auth/Register'
+import Signup from './components/auth/Signup'
 import Logout from './components/auth/Logout'
 import Dashboard from './components/secure/Dashboard'
 import Profile from './components/secure/Profile'
@@ -40,8 +44,10 @@ ReactDOM.render(
 		<Router history={history}>
 			<Route path='/' component={App}>
 				<IndexRoute component={Home}/>
+				<Route path='terms' component={Terms}/>
+				<Route path='privacy-policy' component={Privacy}/>
 				<Route path='login' component={Login}/>
-				<Route path='register' component={Register}/>
+				<Route path='signup' component={Signup}/>
 				<Route path='logout' component={Logout}/>
 				<Route path='dashboard' component={Dashboard} onEnter={secure}/>
 				<Route path='profile' component={Profile} onEnter={secure}/>

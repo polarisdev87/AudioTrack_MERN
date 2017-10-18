@@ -27,7 +27,7 @@ class Login extends React.Component {
 	render() {
 		var errors = this.state.error ? <p> {this.state.error} </p> : '';
 		return (
-			<div>
+			<div className="container">
 				<h1>Login</h1>
 				<form onSubmit={this.handleSubmit.bind(this)}>
 					<label>Email <input type='email'

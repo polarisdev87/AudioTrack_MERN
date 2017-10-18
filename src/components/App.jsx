@@ -4,7 +4,7 @@ import * as firebase from 'firebase';
 import { login, logout, resetNext } from '../actions/auth';
 import { push } from 'react-router-redux';
 
-import '../styles/App.css';
+import HeaderNav from './HeaderNav';
 
 class App extends React.Component {
 	state = {
@@ -48,8 +48,11 @@ class App extends React.Component {
 
 	render() {
 		return (
-			<div className="container-fluid">
-				{ this.state.loaded ? this.props.children : null}
+			<div className="wrapper">
+				<HeaderNav {...this.props} />
+				<div className="content">
+					{ this.state.loaded ? this.props.children : null}
+				</div>
 			</div>
 		)
 	}

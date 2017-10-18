@@ -3,7 +3,7 @@ import * as firebase from 'firebase';
 import { connect } from 'react-redux';
 
 
-class Register extends React.Component {
+class Signup extends React.Component {
 	state = {
 		email: '',
 		password: '',
@@ -51,4 +51,4 @@ class Register extends React.Component {
 	}
 }
 
-export default connect()(Register);
+export default connect()(Signup);

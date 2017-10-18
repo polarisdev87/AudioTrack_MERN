@@ -1,0 +1,63 @@
+@import 'variables.scss';
+
+.header-nav {
+	position: fixed;
+	top: 0;
+	width: 100%;
+	z-index: 99;
+	height: 72px;
+	box-shadow: 0 2px 2px 0 #efefef;
+	padding: 0;
+	.navbar-brand {
+		font-size: 20px;
+		font-weight: 900;
+		letter-spacing: 0.3px;
+	}
+	.navbar-nav {
+		.nav-item {
+			margin-left: 2rem;
+			margin-right: 2rem;
+			.nav-link {
+				font-size: 15px;
+				letter-spacing: 0.3px;
+				color: #4a4a4a;
+				&:hover, &:active {
+					color: #6a6a6a;
+				}
+			}
+		}
+	}
+}
+.inline-buttons {
+	display: flex;
+	.btn {
+		color: #fff;
+		border-radius: 2px;
+		margin: 0 2rem;
+		width: 99px;
+		line-height: 36px;
+		padding: 0;
+		letter-spacing: 0.4px;
+		font-weight: 300;
+		font-size: 15px;
+		&:hover {
+			color: #fff;
+		}
+		&:focus, &:active {
+			outline: 0 none;
+			box-shadow: none;
+		}
+	}
+}
+.btn-login {
+	background: $turquoise;
+	&:hover {
+		background: darken($turquoise, 5%);
+	}
+}
+.btn-signup {
+	background: $dark-grey-blue;
+	&:hover {
+		background: darken($dark-grey-blue, 5%);
+	}
+}
