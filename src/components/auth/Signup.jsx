@@ -129,7 +129,8 @@ class Signup extends React.Component {
 
 	render() {
 		// var errors = this.state.error ? <p> {this.state.error} </p> : '';
-		const { advanced, quantity } = this.state;
+		const { advanced, quantity, fullname } = this.state;
+		const firstname = fullname.split(' ')[0];
 		return (
 			<div className="container" style={{minHeight: 'calc(100vh - 72px)'}}>
 				<div className="row pb-5">
@@ -154,7 +155,7 @@ class Signup extends React.Component {
 								</form>
 							</div>
 							<div className={classnames('form-wizard-step', 'form-wizard-step-payment', {'form-wizard-passed': !advanced})}>
-								<div className="text-center form-title col-md-9 m-auto mb-5">How many resumes would you like to start off with John?
+								<div className="text-center form-title col-md-9 m-auto mb-5">How many resumes would you like to start off with {firstname}?
 									<div style={{color: '#9b9b9b', fontSize: '12px'}} className="text-center letter-spacing-3 mt-2 mb-5">You can always add more later!</div>
 								</div>
 								<div className="price-box mb-5 mt-5">
