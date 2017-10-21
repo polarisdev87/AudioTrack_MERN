@@ -15,7 +15,7 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
     	if(payload.error) {
     		return false;
     	}
-    	axios.post(serverUrl + '/checkout-test', {
+    	axios.post(serverUrl + '/checkout', {
     			params: {
 					  amount: 300 * this.props.quantity,
 					  currency: 'usd',
