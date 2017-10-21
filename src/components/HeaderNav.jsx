@@ -6,16 +6,18 @@ import Scrollchor from 'react-scrollchor';
 class HeaderNav extends React.Component {
 	render() {
     const isHome = this.props.location.pathname === '/';
+    const isLogin = this.props.location.pathname === '/login';
+    const isSignup = this.props.location.pathname === '/signup';
 		return (
 			<nav className="navbar navbar-expand-lg navbar-light bg-white rounded header-nav">
         <div className="container">
-          <Link to="/" className="navbar-brand ml-5 mr-5">CEZAN</Link>
+          <a className="navbar-brand ml-5 mr-5">CEZAN</a>
           <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
             <span className="navbar-toggler-icon"></span>
           </button>
 
           <div className="collapse navbar-collapse" id="navbarSupportedContent">
-            <ul className="navbar-nav mr-auto ml-5">
+            <ul className="navbar-nav mr-auto ml-5 nav-links">
               { isHome ? [
                 <li className="nav-item" key='features'>
                   <Scrollchor to="#features" className="nav-link">Features</Scrollchor>
@@ -24,12 +26,30 @@ class HeaderNav extends React.Component {
                   <Scrollchor to="#pricing" className="nav-link">Pricing</Scrollchor>
                 </li>
               ] : '' }
+              { isLogin ? (
+                <li className="nav-item" key='login'>
+                  <Link to="/login" className="nav-link active">Login</Link>
+                </li>
+              ) : ''}
+              { isSignup ? (
+                <li className="nav-item" key='signup'>
+                  <Link to="/signup" className="nav-link active">Sign Up</Link>
+                </li>
+              ) : ''}
             </ul>
-            <div className="navbar-right">
-            	<div className="inline-buttons">
-  	          	<Link to="/login" className="nav-link btn btn-login">Login</Link>
-  	          	<Link to="/signup" className="nav-link btn btn-signup">Sign Up</Link>
-  	          </div>
+            <div className="navbar-right nav-links">
+              { isLogin ? (
+                <Link to='/signup' className="nav-link single-action">Don’t have an account? Sign up!</Link>
+              ) : ''}
+              { isSignup ? (
+                <Link to='/login' className="nav-link single-action">Have an account? Sign in!</Link>
+              ) : ''}
+              { isHome ? (
+                <div className="inline-buttons">
+                  <Link to="/login" className="btn btn-login">Login</Link>
+                  <Link to="/signup" className="btn btn-signup">Sign Up</Link>
+                </div>
+              ) : ''}
             </div>
           </div>
         </div>

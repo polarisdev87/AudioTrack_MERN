@@ -153,8 +153,8 @@ class Home extends React.Component {
 								<div className="made-in">made in the Bay Area, CA</div>
 							</div>
 							<div className="col d-flex align-items-center justify-content-center">
-								<Link to="/terms">Terms</Link>
-								<Link to="/privacy-policy">Privacy Policy</Link>
+								<Link to="/terms" target="_blank">Terms</Link>
+								<Link to="/privacy-policy" target="_blank">Privacy Policy</Link>
 							</div>
 							<div className="col d-flex align-items-center justify-content-end">
 								<i className="fa fa-twitter"></i>

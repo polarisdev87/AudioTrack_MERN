@@ -1,8 +1,8 @@
 import * as firebase from 'firebase';
-import * as config from '../../firebase.config.js';
+import { FIREBASE_CONFIG } from '../../config';
 import { setNext } from '../actions/auth';
 
-firebase.initializeApp(config);
+firebase.initializeApp(FIREBASE_CONFIG);
 
 export function requireAuth(store) {
 	return function (nextState, replace) {
@@ -13,8 +13,4 @@ export function requireAuth(store) {
 			})
 		}
 	}
-}
-
-export function isAuthenticated() {
-	return firebase.auth().currentUser !== null;
 }

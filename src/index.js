@@ -2,6 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
+import { StripeProvider } from 'react-stripe-elements';
 import { Router, Route, IndexRoute, browserHistory } from 'react-router';
 import { syncHistoryWithStore, routerReducer, routerMiddleware } from 'react-router-redux';
 import { requireAuth } from './utils/secure';
@@ -41,18 +42,20 @@ const secure = requireAuth(store);
 
 ReactDOM.render(
 	<Provider store={store}>
-		<Router history={history}>
-			<Route path='/' component={App}>
-				<IndexRoute component={Home}/>
-				<Route path='terms' component={Terms}/>
-				<Route path='privacy-policy' component={Privacy}/>
-				<Route path='login' component={Login}/>
-				<Route path='signup' component={Signup}/>
-				<Route path='logout' component={Logout}/>
-				<Route path='dashboard' component={Dashboard} onEnter={secure}/>
-				<Route path='profile' component={Profile} onEnter={secure}/>
-			</Route>
-		</Router>
+    <StripeProvider apiKey="pk_test_GFZkKo51tFb2tpOiSxsIcAxQ">
+			<Router history={history}>
+				<Route path='/' component={App}>
+					<IndexRoute component={Home}/>
+					<Route path='terms' component={Terms}/>
+					<Route path='privacy-policy' component={Privacy}/>
+					<Route path='login' component={Login}/>
+					<Route path='signup' component={Signup}/>
+					<Route path='logout' component={Logout}/>
+					<Route path='dashboard' component={Dashboard} onEnter={secure}/>
+					<Route path='profile' component={Profile} onEnter={secure}/>
+				</Route>
+			</Router>
+    </StripeProvider>
 	</Provider>,
 	document.getElementById('root')
 );

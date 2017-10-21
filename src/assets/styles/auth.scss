@@ -1,0 +1,142 @@
+@import 'variables.scss';
+
+
+.col-separator {
+	background: #e0e0e0;
+	width: 2px;
+	position: fixed;
+	left: 50%;
+	margin-left: -1px;
+	top: 0;
+	height: 100%;
+}
+
+@media (max-width: 767px) {
+  .col-separator {
+    display: none;
+  }
+}
+
+.login-form {
+	width: 100%;
+	.form-title {
+		font-size: 18px;
+		letter-spacing: 0.5px;
+		color: #4a4a4a;
+		margin-bottom: 3rem;
+	}
+
+	.login-control {
+		border-radius: 2px;
+		background-color: #ffffff;
+		border: solid 0.5px #4a4a4a;
+		padding: 19px 27px;
+		font-size: 15px;
+		letter-spacing: 0.4px;
+		color: #000000;
+	}
+
+	.btn-login {
+		color: #fff !important;
+		font-size: 15px;
+		letter-spacing: 0.4px;
+		border-radius: 2px;
+		padding: 14px 38px;
+		background: $turquoise;
+		&:hover {
+			background: darken($turquoise, 5%);
+		}
+	}
+
+	.link-forgot {
+		font-size: 15px;
+		letter-spacing: 0.4px;
+		text-decoration: underline;
+		color: $azure;
+		text-align: right;
+	}
+
+	.btn-signin-google {
+		border-radius: 2px;
+		background: $dark-grey-blue;
+		display: block;
+		padding: 18px;
+		font-size: 15px;
+		letter-spacing: 0;
+		color: #ffffff;
+		width: 100%;
+		i {
+				float: left;
+		}
+		&:hover {
+			background: darken($dark-grey-blue, 5%);
+		}
+	}
+}
+
+
+.form-wizard-step {
+	display: block;
+	margin: 0 auto;
+	&.form-wizard-passed {
+		display: none;
+	}
+	&.form-wizard-step-auth {
+		width: 330px;
+	}
+	&.form-wizard-step-payment {
+		width: 510px;
+		max-width: 100%;
+	}
+}
+
+
+.price-box {
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
+
+	border-radius: 2px;
+	background-color: #aaffec;
+	border: solid 2px $turquoise;
+	padding: 0.1rem 2rem;
+	.price-label {
+		display: flex;
+		align-items: center;
+		.price-unit {
+			font-size: 30px;
+			letter-spacing: 0.2px;
+			color: #000000;
+		}
+		.price-separator {
+			font-size: 45px;
+			color: #000000;
+			font-weight: 100;
+		}
+		.price-unit-label {
+			font-size: 25px;
+			letter-spacing: 0.2px;
+			color: #000000;
+		}
+	}
+	.price-control {
+		display: flex;
+		align-items: center;
+		.quantity {
+			font-size: 50px;
+			letter-spacing: 0.3px;
+			color: #000000;
+		}
+		.control {
+			font-size: 1.5rem;
+			margin: 0 2.5rem;
+			cursor: pointer;
+		}
+	}
+}
+
+.stripe-form {
+	padding: 1rem;
+	border: solid 1px #617a90;
+	border-radius: 2px;
+}

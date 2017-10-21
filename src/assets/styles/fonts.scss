@@ -1,3 +1,4 @@
+@import 'variables.scss';
 
 
 /* Text styles */
@@ -48,4 +49,8 @@
 	letter-spacing: 0.2px;
 	text-align: right;
 	color: #ffffff;
+}
+
+.grey-text {
+	color: $text-grey;
 }

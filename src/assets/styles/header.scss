@@ -13,17 +13,25 @@
 		font-weight: 900;
 		letter-spacing: 0.3px;
 	}
-	.navbar-nav {
+	.nav-links {
 		.nav-item {
 			margin-left: 2rem;
 			margin-right: 2rem;
-			.nav-link {
-				font-size: 15px;
-				letter-spacing: 0.3px;
-				color: #4a4a4a;
-				&:hover, &:active {
-					color: #6a6a6a;
-				}
+		}
+		.nav-link {
+			font-size: 15px;
+			letter-spacing: 0.3px;
+			color: #4a4a4a;
+			&:hover, &:active {
+				color: #6a6a6a;
+			}
+			&.active {
+				font-weight: 600;
+				color: $turquoise;
+			}
+			&.single-action {
+				font-weight: 600;
+				color: $azure;
 			}
 		}
 	}
