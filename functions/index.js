@@ -1,4 +1,5 @@
 const functions = require('firebase-functions');
+const cors = require('cors')({origin: true});
 const stripe = require("stripe")(
   "sk_test_2wl6eN9DurfaKXN8yuAtoAtl"
 );
@@ -11,18 +12,20 @@ const stripe = require("stripe")(
 // });
 
 exports.checkout = functions.https.onRequest((req, res) => {
-	stripe.charges.create( req.body.params , function(err, charge) {
-	  // asynchronously called
-	  if(err) {
-	  	console.log(err);
-	  	res.json({
-	  		type: 'fail',
-	  		message: 'checkout failed'
-	  	})
-	  }
-		res.json({
-			type: 'success',
-			message: 'checkout succeeded'
+  cors(req, res, () => {
+		stripe.charges.create( req.body.params , function(err, charge) {
+		  // asynchronously called
+		  if(err) {
+		  	console.log(err);
+		  	res.json({
+		  		type: 'fail',
+		  		message: 'checkout failed'
+		  	})
+		  }
+			res.json({
+				type: 'success',
+				message: 'checkout succeeded'
+			})
 		})
-	});
+  })
 })

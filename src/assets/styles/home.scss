@@ -39,9 +39,11 @@
 			flex-direction: column;
 			align-items: center;
 			i {
-				display: block;
+				display: flex;
 				width: 52px;
 				height: 52px;
+				align-items: center;
+				justify-content: center;
 				color: #fff;
 				font-size: 28px;
 				line-height: 52px;
@@ -64,6 +66,7 @@
 				align-items: center;
 				max-width: 360px;
 				margin: 3rem 0;
+				box-shadow: none;
 				.profile {
 					.profile-img {
 						width: 42px;
@@ -91,8 +94,9 @@
 					}
 				}
 				.action {
+					flex: 1 0 26px;
 					i {
-						font-size: 22px;
+						display: block;
 					}
 				}
 			}
@@ -158,6 +162,33 @@
 					background: darken($turquoise, 5%);
 				}
 			}
+		}
+	}
+
+	.section#pricing {
+		position: relative;
+		margin: 8rem 0;
+		&:before {
+			background: url(../img/price-left.png) no-repeat top left;
+			content: '';
+			display: block;
+			position: absolute;
+			left: 0;
+			top: 0;
+			width: 50%;
+			height: 100%;
+			z-index: -1;
+		}
+		&:after {
+			background: url(../img/price-right.png) no-repeat bottom right;
+			content: '';
+			display: block;
+			position: absolute;
+			right: 0;
+			bottom: 0;
+			width: 50%;
+			height: 100%;
+			z-index: -1;
 		}
 	}
 
