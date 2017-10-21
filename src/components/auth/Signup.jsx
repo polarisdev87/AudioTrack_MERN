@@ -104,9 +104,9 @@ class Signup extends React.Component {
 				user.updateProfile({
 					displayName: this.state.fullname
 				}).then(() => {
-					firebase.database().ref('/users/' + user.email).set({
+					firebase.database().ref('/users/' + user.uid).set({
 						name: user.displayName,
-						uid: user.uid,
+						email: user.email,
 						photoUrl: user.photoURL,
 						emailVerified: user.emailVerified
 					})
