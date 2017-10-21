@@ -20,6 +20,8 @@ import Privacy from './components/public/Privacy'
 import Login from './components/auth/Login'
 import Signup from './components/auth/Signup'
 import Logout from './components/auth/Logout'
+import Forgot from './components/auth/Forgot'
+import Confirm from './components/auth/Confirm'
 import Dashboard from './components/secure/Dashboard'
 import Profile from './components/secure/Profile'
 
@@ -51,6 +53,8 @@ ReactDOM.render(
 					<Route path='login' component={Login}/>
 					<Route path='signup' component={Signup}/>
 					<Route path='logout' component={Logout}/>
+					<Route path='forgot' component={Forgot}/>
+					<Route path='confirm' component={Confirm}/>
 					<Route path='dashboard' component={Dashboard} onEnter={secure}/>
 					<Route path='profile' component={Profile} onEnter={secure}/>
 				</Route>

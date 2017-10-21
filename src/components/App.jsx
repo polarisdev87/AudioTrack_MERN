@@ -30,7 +30,11 @@ class App extends React.Component {
 		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
 				this.props.onLogin(user);
-				this.props.onRedirect(this.props.next || '/dashboard');
+				if(user.emailVerified) {
+					this.props.onRedirect(this.props.next || '/dashboard');
+				} else {
+					this.props.onRedirect(this.props.next || '/confirm');
+				}
 				this.props.onResetNext();
 			} else {
 				if (this.props.user) {

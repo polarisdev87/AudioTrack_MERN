@@ -7,5 +7,5 @@ module.exports =  {
 		storageBucket: "cezan-1903a.appspot.com",
 		messagingSenderId: "507918410853"
 	},
-	serverUrl: process.env.NODE_ENV=='production' ? 'http://localhost:3001' : 'http://localhost:3001'
+	serverUrl: process.env.NODE_ENV=='production' ? 'https://cezan-1903a.firebaseapp.com:3001' : 'http://localhost:3001'
 };

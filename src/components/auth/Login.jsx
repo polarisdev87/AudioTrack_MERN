@@ -42,7 +42,7 @@ class Login extends React.Component {
 			<div className="container" style={{minHeight: 'calc(100vh - 72px)'}}>
 				<div className="row pb-5">
 					<div className="col-md-6 p-5 d-flex justify-content-center">
-						<form onSubmit={this.handleSubmit.bind(this)} className="login-form pt-5">
+						<form onSubmit={this.handleSubmit.bind(this)} className="auth-form pt-5">
 							<p className="text-center form-title">Welcome back!</p>
 							<div className="form-group mb-4">
 								<input type="email" className="form-control login-control" placeholder="Enter Email" value={this.state.email} onChange={this.onInputChange.bind(this, 'email')} required />

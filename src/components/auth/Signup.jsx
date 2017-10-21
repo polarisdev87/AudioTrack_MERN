@@ -78,11 +78,11 @@ class Signup extends React.Component {
 
 	loginWithGoogle() {
 		return false;
-    const provider = new firebase.auth.GoogleAuthProvider();
-    firebase.auth().signInWithPopup(provider).then((user) => {
-		}).catch((error) => {
-			this.setState({ error: error});
-		});
+  //   const provider = new firebase.auth.GoogleAuthProvider();
+  //   firebase.auth().signInWithPopup(provider).then((user) => {
+		// }).catch((error) => {
+		// 	this.setState({ error: error});
+		// });
 	}
 
 	stepBack = () => {
@@ -104,6 +104,12 @@ class Signup extends React.Component {
 				user.updateProfile({
 					displayName: this.state.fullname
 				}).then(() => {
+					firebase.database().ref('/users/' + user.email).set({
+						name: user.displayName,
+						uid: user.uid,
+						photoUrl: user.photoURL,
+						emailVerified: user.emailVerified
+					})
 					user.sendEmailVerification().then(function() {
 					  // Email sent.
 					  console.log('email sent');
@@ -127,7 +133,7 @@ class Signup extends React.Component {
 			<div className="container" style={{minHeight: 'calc(100vh - 72px)'}}>
 				<div className="row pb-5">
 					<div className="col-md-6 p-5 d-flex justify-content-center">
-						<div className="login-form">
+						<div className="auth-form">
 							<div className={classnames('form-wizard-step', 'form-wizard-step-auth', {'form-wizard-passed': advanced})}>
 								<form onSubmit={this.handleSubmit.bind(this)} className="pt-5">
 								<p className="text-center form-title">Let's get started!</p>

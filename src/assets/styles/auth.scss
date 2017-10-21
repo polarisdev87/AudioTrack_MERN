@@ -17,7 +17,7 @@
   }
 }
 
-.login-form {
+.auth-form {
 	width: 100%;
 	.form-title {
 		font-size: 18px;
@@ -71,6 +71,15 @@
 		&:hover {
 			background: darken($dark-grey-blue, 5%);
 		}
+	}
+	.btn-send-confirm {
+		padding: 10px 29px;
+		border-radius: 2px;
+		background-color: $dark-grey-blue;
+		font-size: 15px;
+		font-weight: 300;
+		letter-spacing: 0.4px;
+		color: #ffffff;
 	}
 }
 
@@ -139,4 +148,17 @@
 	padding: 1rem;
 	border: solid 1px #617a90;
 	border-radius: 2px;
+}
+
+.logo-email {
+	width: 117px;
+	height: 117px;
+	background: $turquoise;
+	border-radius: 50%;
+	text-align: center;
+	i {
+		font-size: 50px;
+		line-height: 117px;
+		color: #fff;
+	}
 }

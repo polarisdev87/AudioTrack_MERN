@@ -8,6 +8,8 @@ class HeaderNav extends React.Component {
     const isHome = this.props.location.pathname === '/';
     const isLogin = this.props.location.pathname === '/login';
     const isSignup = this.props.location.pathname === '/signup';
+    const isForgot = this.props.location.pathname === '/forgot';
+    const isConfirm = this.props.location.pathname === '/confirm';
 		return (
 			<nav className="navbar navbar-expand-lg navbar-light bg-white rounded header-nav">
         <div className="container">
@@ -36,6 +38,16 @@ class HeaderNav extends React.Component {
                   <Link to="/signup" className="nav-link active">Sign Up</Link>
                 </li>
               ) : ''}
+              { isForgot ? (
+                <li className="nav-item" key='forgot'>
+                  <Link to="/forgot" className="nav-link active">Forgot Password</Link>
+                </li>
+              ) : ''}
+              { isConfirm ? (
+                <li className="nav-item" key='forgot'>
+                  <Link to="/signup" className="nav-link active">Sign Up</Link>
+                </li>
+              ) : ''}
             </ul>
             <div className="navbar-right nav-links">
               { isLogin ? (
@@ -43,6 +55,9 @@ class HeaderNav extends React.Component {
               ) : ''}
               { isSignup ? (
                 <Link to='/login' className="nav-link single-action">Have an account? Sign in!</Link>
+              ) : ''}
+              { isForgot || isConfirm ? (
+                <Link to='/login' className="nav-link single-action">Login</Link>
               ) : ''}
               { isHome ? (
                 <div className="inline-buttons">
