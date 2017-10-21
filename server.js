@@ -48,6 +48,11 @@ app.post("/checkout", (req, res) => {
 	});
 })
 
+// Catch all other routes and return the index file
+app.get('*', (req, res) => {
+  res.sendFile(path.join(__dirname, 'build/index.html'));
+});
+
 app.listen(app.get("port"), () => {
   console.log(`Find the server at: http://localhost:${app.get("port")}/`); // eslint-disable-line no-console
 });
