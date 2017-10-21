@@ -263,3 +263,9 @@
 		margin-bottom: 32px;
 	}
 }
+
+@media (min-width: 992px) {
+	.section#features {
+		 margin-top: -200px;
+	}
+}

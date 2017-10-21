@@ -5,6 +5,7 @@ import classnames from 'classnames';
 import { CardElement, Elements, injectStripe } from 'react-stripe-elements';
 import axios from 'axios';
 import { serverUrl } from '../../../config';
+import { Link } from 'react-router';
 import $ from 'jquery';
 // var stripe = require('stripe');//("pk_test_c6y3yAJNkhXrA84sbNINBHqZ");
 
@@ -170,7 +171,7 @@ class Signup extends React.Component {
 					        </Elements>
 					      </div>
 							</div>
-							<p className="text-center mt-5 font-normal grey-text letter-spacing-4">By signing up you agree with Cezan’s<br/><b>Privacy Policy and Terms of Service</b></p>
+							<p className="text-center mt-5 font-normal grey-text letter-spacing-4 privacy-terms-links">By signing up you agree with Cezan’s<br/><b><Link to="/privacy-policy" target="_blank">Privacy Policy</Link> and <Link to="/terms" target="_blank">Terms</Link></b></p>
 						</div>
 					</div>
 					<div className="col-separator"></div>

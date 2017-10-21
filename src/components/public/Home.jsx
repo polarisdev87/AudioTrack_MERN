@@ -1,6 +1,7 @@
 import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router';
+import * as Icon from 'react-feather';
 
 class Home extends React.Component {
 	render() {
@@ -12,7 +13,7 @@ class Home extends React.Component {
 							<div className="col-md-8">
 								<img src={process.env.PUBLIC_URL + '/assets/img/landing1.png'} alt="landing1" />
 							</div>
-							<div className="col">
+							<div className="col ml-5">
 								<div className="section-title">CEZAN</div>
 								<div className="section-description">Reinventing your Resume.</div>
 								<div className="section-description">
@@ -22,7 +23,7 @@ class Home extends React.Component {
 						</div>
 					</div>
 				</div>
-				<div className="section" style={{marginTop: '-200px'}} id="features">
+				<div className="section" id="features">
 					<div className="container">
 						<div className="row align-items-center">
 							<div className="col-md-4">
@@ -31,14 +32,10 @@ class Home extends React.Component {
 							</div>
 							<div className="col">
 								<div className="icon-sets">
-									{/*<i className="fa fa-trash-o" style={{backgroundColor: '#f54056' }}></i>
-									<i className="fa fa-eye" style={{backgroundColor: '#0097ff' }}></i>
-									<i className="fa fa-upload" style={{backgroundColor: '#9b9b9b' }}></i>
-									<i className="fa fa-rocket" style={{backgroundColor: '#00c695' }}></i>*/}
-									<i className="icon-img icon-trash" style={{backgroundColor: '#f54056' }}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-trash.png'} alt="trash" /></i>
-									<i className="icon-img icon-preview" style={{backgroundColor: '#0097ff' }}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-preview.png'} alt="preview" /></i>
-									<i className="icon-img icon-upload" style={{backgroundColor: '#9b9b9b' }}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-upload.png'} alt="upload" /></i>
-									<i className="icon-img icon-rocket" style={{backgroundColor: '#00c695' }}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-rocket.png'} alt="rocket" /></i>
+									<i className="icon-img icon-trash" style={{backgroundColor: '#f54056' }}><Icon.Trash color="white" /></i>
+									<i className="icon-img icon-preview" style={{backgroundColor: '#0097ff' }}><Icon.Eye color="white" /></i>
+									<i className="icon-img icon-upload" style={{backgroundColor: '#9b9b9b' }}><Icon.Upload color="white" /></i>
+									<i className="icon-img icon-rocket" style={{backgroundColor: '#00c695' }}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-rocket.svg'} alt="rocket" /></i>
 								</div>
 							</div>
 							<div className="col-md-5">
@@ -61,8 +58,7 @@ class Home extends React.Component {
 											<div className="description-time">2m</div>
 										</div>
 										<div className="action">
-											{/*<i className="fa fa-eye"></i>*/}
-											<i className="icon-img icon-eye"><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-eye.png'} alt="eye" /></i>
+											<i className="icon-img icon-eye"><Icon.Eye color="black" /></i>
 										</div>
 									</div>
 									<div className="notification" style={{marginLeft: '8rem'}}>
@@ -74,8 +70,7 @@ class Home extends React.Component {
 											<div className="description-time">Just Now</div>
 										</div>
 										<div className="action">
-											{/*<i className="fa fa-eye"></i>*/}
-											<i className="icon-img icon-eye"><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-eye.png'} alt="eye" /></i>
+											<i className="icon-img icon-eye"><Icon.Eye color="black" /></i>
 										</div>
 									</div>
 									<div className="notification">
@@ -87,8 +82,7 @@ class Home extends React.Component {
 											<div className="description-time">45m</div>
 										</div>
 										<div className="action">
-											{/*<i className="fa fa-download"></i>*/}
-											<i className="icon-img icon-download"><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-download.png'} alt="download" /></i>
+											<i className="icon-img icon-download"><Icon.Download color="black" /></i>
 										</div>
 									</div>
 								</div>
@@ -125,9 +119,9 @@ class Home extends React.Component {
 									<div className="plan-box">
 										<div className="price-label">$3 per resume</div>
 										<div className="price-control">
-											<span className="fa fa-chevron-down control-down"></span>
+											<span className="control-down"><Icon.ChevronDown /></span>
 											<span className="quantity">1</span>
-											<span className="fa fa-chevron-up control-up"></span>
+											<span className="control-up"><Icon.ChevronUp /></span>
 										</div>
 										<div className="plan-services">
 											<div className="plan-service">Audio recording</div>
@@ -164,10 +158,8 @@ class Home extends React.Component {
 								<Link to="/privacy-policy" target="_blank">Privacy Policy</Link>
 							</div>
 							<div className="col d-flex align-items-center justify-content-end">
-								<i className="icon-img icon-twitter"><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-twitter.png'} alt="twittter" /></i>
-								<i className="icon-img icon-mail"><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-mail.png'} alt="mail" /></i>
-								{/*<i className="fa fa-twitter"></i>
-								<i className="fa fa-envelope-o"></i>*/}
+								<a href="https://twitter.com/hicezan" target="_blank"><i className="icon-img"><Icon.Twitter /></i></a>
+								<a href="mailto:hicezan@gmail.com"><i className="icon-img"><Icon.Mail /></i></a>
 							</div>
 						</div>
 					</div>
