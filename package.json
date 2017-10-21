@@ -3,7 +3,6 @@
   "version": "0.0.1",
   "description": "React+Firebase for CEZAN",
   "private": true,
-  "proxy": "http://0.0.0.0:3001/",
   "repository": {
     "type": "git",
     "url": "git://github.com/MasoudArdestani/cezan.git"
