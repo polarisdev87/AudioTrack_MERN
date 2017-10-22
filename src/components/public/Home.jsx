@@ -10,10 +10,10 @@ class Home extends React.Component {
 				<div className="section">
 					<div className="container">
 						<div className="row">
-							<div className="col-md-8">
+							<div className="col-md-8 order-2">
 								<img src={process.env.PUBLIC_URL + '/assets/img/landing1.png'} alt="landing1" />
 							</div>
-							<div className="col ml-lg-5 text-center text-lg-left">
+							<div className="col ml-lg-5 text-center text-lg-left order-1 order-lg-3">
 								<div className="section-title">CEZAN</div>
 								<div className="section-description">Reinventing your Resume.</div>
 								<div className="section-description">
