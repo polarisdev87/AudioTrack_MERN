@@ -2,73 +2,52 @@ import React from 'react';
 import * as firebase from 'firebase';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
-import { CardElement, Elements, injectStripe } from 'react-stripe-elements';
-import axios from 'axios';
-import { serverUrl } from '../../../config';
 import { Link } from 'react-router';
-import $ from 'jquery';
-// var stripe = require('stripe');//("pk_test_c6y3yAJNkhXrA84sbNINBHqZ");
-
-class _CardForm extends React.Component<{stripe: StripeProps}> {
-  handleSubmit = ev => {
-    ev.preventDefault();
-    this.props.stripe.createToken().then(payload => {
-    	if(payload.error) {
-    		return false;
-    	}
-    	axios.post(serverUrl + '/checkout', {
-    			params: {
-					  amount: 300 * this.props.quantity,
-					  currency: 'usd',
-					  description: 'Test payment.',
-					  source: payload.token.id,
-					}
-				}).then((res) => {
-					console.log(res.data);
-					this.props.completeSignUp();
-				})
-    });
-  };
-
-  stepBack = () => {
-  	this.props.stepBack()
-  }
-
-  render() {
-    return (
-      <form onSubmit={this.handleSubmit}>
-        <CardElement className="stripe-form" />
-				<div className="d-flex justify-content-between align-items-center mt-5">
-					<a className="btn btn-login white-text" onClick={this.stepBack}>Back</a>
-        	<button className="btn btn-login white-text">Pay ${3*this.props.quantity}</button>
-				</div>
-      </form>
-    );
-  }
-}
-const CardForm = injectStripe(_CardForm);
 
 class Signup extends React.Component {
 	state = {
 		fullname: '',
 		email: '',
 		password: '',
-		error: null,
-		advanced: false,
-		quantity: 1
+		error: null
 	};
 
 	handleSubmit(event) {
 		event.preventDefault();
 
-		if(this.state.advanced) {
-		} else {
-			$('.stripe-form-container').width('98%');
-			setTimeout(() => {
-				$('.stripe-form-container').width('100%');
-			}, 10);
-			this.setState({ advanced: true})
-		}
+		firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
+			.then((user) => {
+
+				// update Full Name
+				user.updateProfile({
+					displayName: this.state.fullname
+				}).then(() => {
+				}).catch((error) => {
+					console.log('profile update failed', error)
+				})
+
+				// add User Data to database
+				firebase.database().ref('/users/' + user.uid).set({
+					name: this.state.fullname,
+					email: user.email,
+					photoUrl: user.photoURL,
+					singInMethod: 'email',
+					paymentVerified: false
+				})
+
+				// send Verification Email
+				user.sendEmailVerification().then(function() {
+				  // Email sent.
+				  console.log('email sent');
+				}).catch(function(error) {
+				  // An error happened.
+				  console.log('email sending failure');
+				});
+
+			})
+			.catch((error) => {
+				this.setState({ error: error });
+			});
 	}
 
 	onInputChange(name, event) {
@@ -78,65 +57,30 @@ class Signup extends React.Component {
 	}
 
 	loginWithGoogle() {
-		return false;
-  //   const provider = new firebase.auth.GoogleAuthProvider();
-  //   firebase.auth().signInWithPopup(provider).then((user) => {
-		// }).catch((error) => {
-		// 	this.setState({ error: error});
-		// });
-	}
-
-	stepBack = () => {
-		this.setState({ advanced: false });
-	}
-
-	quantityUp() {
-		this.setState({ quantity: this.state.quantity+1 })
-	}
-
-	quantityDown() {
-		this.setState({ quantity: Math.max(this.state.quantity-1, 1) })
-	}
-
-	completeSignUp = () => {
-		console.log(this.state);
-		firebase.auth().createUserWithEmailAndPassword(this.state.email, this.state.password)
-			.then((user) => {
-				user.updateProfile({
-					displayName: this.state.fullname
-				}).then(() => {
-					firebase.database().ref('/users/' + user.uid).set({
-						name: user.displayName,
-						email: user.email,
-						photoUrl: user.photoURL,
-						emailVerified: user.emailVerified
-					})
-					user.sendEmailVerification().then(function() {
-					  // Email sent.
-					  console.log('email sent');
-					}).catch(function(error) {
-					  // An error happened.
-					  console.log('email sending failure');
-					});
-				}).catch((error) => {
-					console.log('profile update failed', error)
-				})
+		const provider = new firebase.auth.GoogleAuthProvider();
+		firebase.auth().signInWithPopup(provider).then((user) => {
+			// add User Data to database
+			firebase.database().ref('/users/' + user.uid).set({
+				name: user.displayName,
+				email: user.email,
+				photoUrl: user.photoURL,
+				singInMethod: 'google',
+				paymentVerified: false
 			})
-			.catch((error) => {
-				this.setState({ error: error });
-			});
+		}).catch((error) => {
+			this.setState({ error: error});
+		});
 	}
+
 
 	render() {
 		// var errors = this.state.error ? <p> {this.state.error} </p> : '';
-		const { advanced, quantity, fullname } = this.state;
-		const firstname = fullname.split(' ')[0];
 		return (
 			<div className="container" style={{minHeight: 'calc(100vh - 72px)'}}>
 				<div className="row pb-5">
 					<div className="col-md-6 p-5 d-flex justify-content-center">
 						<div className="auth-form">
-							<div className={classnames('form-wizard-step', 'form-wizard-step-auth', {'form-wizard-passed': advanced})}>
+							<div className={classnames('form-wizard-step', 'form-wizard-step-auth')}>
 								<form onSubmit={this.handleSubmit.bind(this)} className="pt-5">
 								<p className="text-center form-title">Let's get started!</p>
 								<div className="form-group mb-4">
@@ -153,24 +97,6 @@ class Signup extends React.Component {
 								</div>
 								<a className="btn btn-signin-google mt-5 white-text" onClick={this.loginWithGoogle.bind(this)}><i className="fa fa-google"></i>Sign Up with Google</a>
 								</form>
-							</div>
-							<div className={classnames('form-wizard-step', 'form-wizard-step-payment', {'form-wizard-passed': !advanced})}>
-								<div className="text-center form-title col-md-9 m-auto mb-5">How many resumes would you like to start off with {firstname}?
-									<div style={{color: '#9b9b9b', fontSize: '12px'}} className="text-center letter-spacing-3 mt-2 mb-5">You can always add more later!</div>
-								</div>
-								<div className="price-box mb-5 mt-5">
-									<div className="price-label"><span className="price-unit">$3</span><span className="price-separator">/</span><span className="price-unit-label">per resume</span></div>
-									<div className="price-control">
-										<span className="fa fa-chevron-down control control-down p-1" onClick={this.quantityDown.bind(this)}></span>
-										<span className="quantity">{quantity}</span>
-										<span className="fa fa-chevron-up control control-up" onClick={this.quantityUp.bind(this)}></span>
-									</div>
-								</div>
-								<div className="stripe-form-container">
-					        <Elements stripe={this.props.stripeInstance}>
-					          <CardForm stepBack={this.stepBack} quantity={quantity} completeSignUp={this.completeSignUp} />
-					        </Elements>
-					      </div>
 							</div>
 							<p className="text-center mt-5 font-normal grey-text letter-spacing-4 privacy-terms-links">By signing up you agree with Cezan’s<br/><b><Link to="/privacy-policy" target="_blank">Privacy Policy</Link> and <Link to="/terms" target="_blank">Terms</Link></b></p>
 						</div>

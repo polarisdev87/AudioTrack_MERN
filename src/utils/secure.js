@@ -11,6 +11,23 @@ export function requireAuth(store) {
 			replace({
 				pathname: '/login',
 			})
+		} else {
+			if(!firebase.auth().currentUser.emailVerified) {
+				store.dispatch(setNext(nextState.location.pathname));
+				replace({
+					pathname: '/confirm',
+				})
+			} else {
+				firebase.database().ref('/users/' + firebase.auth().currentUser.uid).once('value').then((snapshot) => {
+				  let paymentVerified = (snapshot.val() && snapshot.val().paymentVerified) || false;
+				  if(!paymentVerified) {
+						store.dispatch(setNext(nextState.location.pathname));
+						replace({
+							pathname: '/payment',
+						})
+				  }
+				});
+			}
 		}
 	}
 }

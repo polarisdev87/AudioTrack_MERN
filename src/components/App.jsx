@@ -8,7 +8,8 @@ import HeaderNav from './HeaderNav';
 
 class App extends React.Component {
 	state = {
-		loaded: false
+		loaded: false,
+		user: null
 	};
 
 	styles = {
@@ -29,13 +30,29 @@ class App extends React.Component {
 	componentWillMount() {
 		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
-				this.props.onLogin(user);
-				if(user.emailVerified) {
-					this.props.onRedirect(this.props.next || '/dashboard');
-				} else {
+				if(!user.emailVerified) {
+					this.props.onLogin(user);
 					this.props.onRedirect(this.props.next || '/confirm');
+					this.props.onResetNext();
+					if (!this.state.loaded) {
+						this.setState({ loaded: true });
+					}
+				} else {
+					firebase.database().ref('/users/' + user.uid).once('value').then((snapshot) => {
+					  let paymentVerified = (snapshot.val() && snapshot.val().paymentVerified) || false;
+						this.props.onLogin(user);
+					  if(paymentVerified) {
+							this.props.onRedirect(this.props.next || '/dashboard');
+							this.setState({ user: firebase.auth().currentUser })
+					  } else {
+					  	this.props.onRedirect(this.props.next || '/payment');
+					  }
+						this.props.onResetNext();
+						if (!this.state.loaded) {
+							this.setState({ loaded: true });
+						}
+					});
 				}
-				this.props.onResetNext();
 			} else {
 				if (this.props.user) {
 					this.props.onRedirect('/');
@@ -43,9 +60,9 @@ class App extends React.Component {
 				} else {
 					this.props.onLogout();
 				}
-			}
-			if (!this.state.loaded) {
-				this.setState({ loaded: true });
+				if (!this.state.loaded) {
+					this.setState({ loaded: true });
+				}
 			}
 		});
 	}
@@ -53,7 +70,7 @@ class App extends React.Component {
 	render() {
 		return (
 			<div className="wrapper">
-				<HeaderNav {...this.props} />
+				<HeaderNav {...this.props} loaded={this.state.loaded} user={this.state.user} />
 				<div className="content">
 					{ this.state.loaded ? this.props.children : null}
 				</div>

@@ -19,6 +19,7 @@ import Terms from './components/public/Terms'
 import Privacy from './components/public/Privacy'
 import Login from './components/auth/Login'
 import Signup from './components/auth/Signup'
+import Payment from './components/auth/Payment'
 import Logout from './components/auth/Logout'
 import Forgot from './components/auth/Forgot'
 import Confirm from './components/auth/Confirm'
@@ -46,12 +47,14 @@ ReactDOM.render(
 	<Provider store={store}>
     <StripeProvider apiKey="pk_test_GFZkKo51tFb2tpOiSxsIcAxQ">
 			<Router history={history}>
-				<Route path='/' component={App}>
+				<Route path='/' onChange={(previousRoute, nextRoute) => {
+				}} component={App}>
 					<IndexRoute component={Home}/>
 					<Route path='terms' component={Terms}/>
 					<Route path='privacy-policy' component={Privacy}/>
 					<Route path='login' component={Login}/>
 					<Route path='signup' component={Signup}/>
+					<Route path='payment' component={Payment}/>
 					<Route path='logout' component={Logout}/>
 					<Route path='forgot' component={Forgot}/>
 					<Route path='confirm' component={Confirm}/>
