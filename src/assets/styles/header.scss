@@ -1,17 +1,17 @@
 @import 'variables.scss';
 
 .header-nav {
-	position: fixed;
-	top: 0;
 	width: 100%;
+	padding: 17.25px 0;
 	z-index: 99;
-	height: 72px;
 	box-shadow: 0 2px 2px 0 #efefef;
-	padding: 0;
 	.navbar-brand {
 		font-size: 20px;
 		font-weight: 900;
 		letter-spacing: 0.3px;
+	}
+	.navbar-toggler {
+		margin: 0 2rem;
 	}
 	.nav-links {
 		.nav-item {
@@ -33,6 +33,19 @@
 				font-weight: 600;
 				color: $azure;
 			}
+		}
+	}
+}
+.header-collapse.show {
+	.navbar-nav {
+		.nav-item {
+			margin-left: 0;
+		}
+	}
+	.inline-buttons {
+		justify-content: center;
+		a {
+			margin: 0.5rem 3rem;
 		}
 	}
 }

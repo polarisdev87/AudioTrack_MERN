@@ -2,8 +2,17 @@ import React from 'react'
 import { connect } from 'react-redux'
 import { Link } from 'react-router';
 import Scrollchor from 'react-scrollchor';
+import { Collapse, NavbarToggler } from 'reactstrap';
 
 class HeaderNav extends React.Component {
+  state = {
+    isOpen: false
+  };
+  toggle() {
+    this.setState({
+      isOpen: !this.state.isOpen
+    });
+  }
 	render() {
     const { loaded } = this.props;
     const isHome = this.props.location.pathname === '/';
@@ -14,17 +23,15 @@ class HeaderNav extends React.Component {
     const isPayment = this.props.location.pathname === '/payment';
     const isAuthenticated = this.props.user !== null;
 		return (
-			<nav className="navbar navbar-expand-lg navbar-light bg-white rounded header-nav">
+			<nav className="navbar navbar-expand-md navbar-light bg-white header-nav fixed-top">
         <div className="container">
           <Link to={ isAuthenticated ? '/dashboard' : '/' } className="navbar-brand ml-5 mr-5">CEZAN</Link>
-          <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-            <span className="navbar-toggler-icon"></span>
-          </button>
+          <NavbarToggler onClick={this.toggle.bind(this)} />
 
           { !loaded ?
             null
           : (
-            <div className="collapse navbar-collapse" id="navbarSupportedContent">
+            <Collapse isOpen={this.state.isOpen} navbar className="header-collapse">
               <ul className="navbar-nav mr-auto ml-5 nav-links">
                 { isHome ? [
                   <li className="nav-item" key='features'>
@@ -72,7 +79,7 @@ class HeaderNav extends React.Component {
                   </div>
                 ) : ''}
               </div>
-              </div>
+            </Collapse>
           )}
         </div>
       </nav>
