@@ -13,7 +13,7 @@ class Home extends React.Component {
 							<div className="col-md-8">
 								<img src={process.env.PUBLIC_URL + '/assets/img/landing1.png'} alt="landing1" />
 							</div>
-							<div className="col ml-5">
+							<div className="col ml-lg-5 text-center text-lg-left">
 								<div className="section-title">CEZAN</div>
 								<div className="section-description">Reinventing your Resume.</div>
 								<div className="section-description">
@@ -26,8 +26,8 @@ class Home extends React.Component {
 				<div className="section" id="features">
 					<div className="container">
 						<div className="row align-items-center">
-							<div className="col-md-4">
-								<div className="section-sub-title">Highlight and record</div>
+							<div className="col-lg-4">
+								<div className="section-sub-title text-center text-lg-left">Highlight and record</div>
 								<div className="section-sub-description">Drag and drop your resume and begin to highlight key areas on your resume where you will be able to provide up to 1 minute of audio recording where you can summarize achievements, work experience, tools used, gaps and much more!</div>
 							</div>
 							<div className="col">
@@ -38,7 +38,7 @@ class Home extends React.Component {
 									<i className="icon-img icon-rocket" style={{backgroundColor: '#00c695' }}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-rocket.svg'} alt="rocket" /></i>
 								</div>
 							</div>
-							<div className="col-md-5">
+							<div className="col-lg-5">
 								<img src={process.env.PUBLIC_URL + '/assets/img/landing2.png'} alt="landing2" />
 							</div>
 						</div>
@@ -47,9 +47,9 @@ class Home extends React.Component {
 				<div className="section angled-edge bg-dark-grey-blue">
 					<div className="container">
 						<div className="row align-items-center">
-							<div className="col-md-5">
+							<div className="col-lg-5">
 								<div className="notification-list">
-									<div className="notification" style={{marginLeft: '2rem'}}>
+									<div className="notification" style={{left: '2rem'}}>
 										<div className="profile">
 											<div className="profile-img" style={{backgroundColor: '#b89cff'}}>🦁</div>
 										</div>
@@ -61,7 +61,7 @@ class Home extends React.Component {
 											<i className="icon-img icon-eye"><Icon.Eye color="black" /></i>
 										</div>
 									</div>
-									<div className="notification" style={{marginLeft: '8rem'}}>
+									<div className="notification" style={{left: '8rem'}}>
 										<div className="profile">
 											<div className="profile-img" style={{backgroundColor: '#fa8492'}}>🦉</div>
 										</div>
@@ -88,7 +88,7 @@ class Home extends React.Component {
 								</div>
 							</div>
 							<div className="col"></div>
-							<div className="col-md-5 text-right">
+							<div className="col-lg-5 text-center text-lg-right">
 								<div className="section-sub-title white-text">Much needed notifications</div>
 								<div className="section-sub-description white-text">Get notified when employers view and download your resume! You can also see from where they viewed and downloaded it from. </div>
 							</div>
@@ -98,8 +98,8 @@ class Home extends React.Component {
 				<div className="section">
 					<div className="container">
 						<div className="row">
-							<div className="col-md-4">
-								<div className="section-sub-title">Share your own custom link</div>
+							<div className="col-md-4 mb-5 mb-md-0">
+								<div className="section-sub-title text-center text-lg-left">Share your own custom link</div>
 								<div className="section-sub-description">With every resume you create, along comes a custom link where you are able to title and share with your potential employers when applying!</div>
 							</div>
 							<div className="col"></div>
@@ -136,7 +136,7 @@ class Home extends React.Component {
 						</div>
 					</div>
 				</div>
-				<div className="section bg-duck-egg-blue">
+				<div className="section bg-duck-egg-blue bottom-offer-section">
 					<div className="container">
 						<div className="row">
 							<div className="col text-center">
@@ -145,9 +145,25 @@ class Home extends React.Component {
 							</div>
 						</div>
 					</div>
+          <img className="bp1-group2" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezangroup 2.svg'} />
+          <img className="bp1-image2" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezangroup 2.svg'} />
+          <img className="bp1-image3" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezangroup 2.svg'} />
+          <img className="bp1-rectangle8" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanrectangle 8.svg'} />
+          <img className="bp1-image4" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanrectangle 8.svg'} />
+          <img className="bp1-image5" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanrectangle 8.svg'} />
+          <img className="bp1-image6" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanrectangle 8.svg'} />
+          <img className="bp1-image7" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanrectangle 8.svg'} />
+          <img className="bp1-image8" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanrectangle 8.svg'} />
+          <img className="bp1-oval2" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanoval 2.svg'} />
+          <img className="bp1-image9" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanoval 2.svg'} />
+          <img className="bp1-path5" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanpath 5.svg'} />
+          <img className="bp1-image10" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanpath 5.svg'} />
+          <img className="bp1-image11" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanpath 5.svg'} />
+          <img className="bp1-image12" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanpath 5.svg'} />
+          <img className="bp1-image13" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanpath 5.svg'} />
 				</div>
 				<div className="section footer-section">
-					<div className="container pt-2 pb-2">
+					<div className="container pt-4 pb-4">
 						<div className="row">
 							<div className="col d-flex align-items-center">
 								<div className="footer-brand"><Link to="/">C</Link></div>
