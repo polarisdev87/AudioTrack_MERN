@@ -25,7 +25,6 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
 					  source: payload.token.id,
 					}
 				}).then((res) => {
-					console.log(res.data);
 					this.props.completeSignUp();
 				})
     });

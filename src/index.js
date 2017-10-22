@@ -47,8 +47,7 @@ ReactDOM.render(
 	<Provider store={store}>
     <StripeProvider apiKey="pk_test_GFZkKo51tFb2tpOiSxsIcAxQ">
 			<Router history={history}>
-				<Route path='/' onChange={(previousRoute, nextRoute) => {
-				}} component={App}>
+				<Route path='/' component={App}>
 					<IndexRoute component={Home}/>
 					<Route path='terms' component={Terms}/>
 					<Route path='privacy-policy' component={Privacy}/>

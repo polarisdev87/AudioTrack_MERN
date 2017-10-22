@@ -23,7 +23,6 @@ class Signup extends React.Component {
 					displayName: this.state.fullname
 				}).then(() => {
 				}).catch((error) => {
-					console.log('profile update failed', error)
 				})
 
 				// add User Data to database
@@ -38,10 +37,8 @@ class Signup extends React.Component {
 				// send Verification Email
 				user.sendEmailVerification().then(function() {
 				  // Email sent.
-				  console.log('email sent');
 				}).catch(function(error) {
 				  // An error happened.
-				  console.log('email sending failure');
 				});
 
 			})
@@ -58,15 +55,28 @@ class Signup extends React.Component {
 
 	loginWithGoogle() {
 		const provider = new firebase.auth.GoogleAuthProvider();
-		firebase.auth().signInWithPopup(provider).then((user) => {
-			// add User Data to database
-			firebase.database().ref('/users/' + user.uid).set({
-				name: user.displayName,
-				email: user.email,
-				photoUrl: user.photoURL,
-				singInMethod: 'google',
-				paymentVerified: false
-			})
+		firebase.auth().signInWithPopup(provider).then((result) => {
+			const user = result.user;
+    	firebase.database().ref('/users/' + user.uid).once('value').then((snapshot) => {
+				let email = (snapshot.val() && snapshot.val().email) || '';
+				if(!email) {
+					// add User Data to database
+					firebase.database().ref('/users/' + user.uid).set({
+						name: user.displayName,
+						email: user.email,
+						photoUrl: user.photoURL,
+						singInMethod: 'google',
+						paymentVerified: false
+					})
+				} else {
+					firebase.database().ref('/users/' + user.uid).update({
+						name: user.displayName,
+						email: user.email,
+						photoUrl: user.photoURL,
+						singInMethod: 'google'
+					})
+				}
+			});
 		}).catch((error) => {
 			this.setState({ error: error});
 		});

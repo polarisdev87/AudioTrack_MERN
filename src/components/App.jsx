@@ -28,7 +28,7 @@ class App extends React.Component {
 	};
 
 	componentWillMount() {
-		if(this.props.location.pathname === '/privacy-policy' || this.props.location.pathname === '/terms' || this.props.location.pathname === '/') {
+		if(this.props.location.pathname === '/privacy-policy' || this.props.location.pathname === '/terms') {
 			if (!this.state.loaded) {
 				this.setState({ loaded: true });
 			}
