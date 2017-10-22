@@ -28,6 +28,12 @@ class App extends React.Component {
 	};
 
 	componentWillMount() {
+		if(this.props.location.pathname === '/privacy-policy' || this.props.location.pathname === '/terms') {
+			if (!this.state.loaded) {
+				this.setState({ loaded: true });
+			}
+			return;
+		}
 		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
 				if(!user.emailVerified) {
