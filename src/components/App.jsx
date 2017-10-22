@@ -36,10 +36,9 @@ class App extends React.Component {
 		}
 		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
-				firebase.database().ref('/users/' + user.uid).once('value').then((snapshot) => {
+				firebase.database().ref('/users/' + user.uid).on('value', (snapshot) => {
 				  let paymentVerified = (snapshot.val() && snapshot.val().paymentVerified) || false;
 				  if(paymentVerified) {
-
 						if(!user.emailVerified) {
 							this.props.onLogin(user);
 							this.props.onRedirect(this.props.next || '/confirm');
@@ -50,8 +49,8 @@ class App extends React.Component {
 						} else {
 							this.props.onLogin(user);
 							this.props.onRedirect(this.props.next || '/dashboard');
-							this.props.onResetNext();
 							this.setState({ user: firebase.auth().currentUser })
+							this.props.onResetNext();
 						}
 				  } else {
 						this.props.onLogin(user);
@@ -74,6 +73,9 @@ class App extends React.Component {
 				}
 			}
 		});
+	}
+	componentWillUnmount() {
+		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).off();
 	}
 
 	render() {
