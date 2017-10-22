@@ -28,7 +28,7 @@ class App extends React.Component {
 	};
 
 	componentWillMount() {
-		if(this.props.location.pathname === '/privacy-policy' || this.props.location.pathname === '/terms') {
+		if(this.props.location.pathname === '/privacy-policy' || this.props.location.pathname === '/terms' || this.props.location.pathname === '/') {
 			if (!this.state.loaded) {
 				this.setState({ loaded: true });
 			}
@@ -36,29 +36,32 @@ class App extends React.Component {
 		}
 		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
-				if(!user.emailVerified) {
-					this.props.onLogin(user);
-					this.props.onRedirect(this.props.next || '/confirm');
-					this.props.onResetNext();
+				firebase.database().ref('/users/' + user.uid).once('value').then((snapshot) => {
+				  let paymentVerified = (snapshot.val() && snapshot.val().paymentVerified) || false;
+				  if(paymentVerified) {
+
+						if(!user.emailVerified) {
+							this.props.onLogin(user);
+							this.props.onRedirect(this.props.next || '/confirm');
+							this.props.onResetNext();
+							if (!this.state.loaded) {
+								this.setState({ loaded: true });
+							}
+						} else {
+							this.props.onLogin(user);
+							this.props.onRedirect(this.props.next || '/dashboard');
+							this.props.onResetNext();
+							this.setState({ user: firebase.auth().currentUser })
+						}
+				  } else {
+						this.props.onLogin(user);
+				  	this.props.onRedirect(this.props.next || '/payment');
+						this.props.onResetNext();
+				  }
 					if (!this.state.loaded) {
 						this.setState({ loaded: true });
 					}
-				} else {
-					firebase.database().ref('/users/' + user.uid).once('value').then((snapshot) => {
-					  let paymentVerified = (snapshot.val() && snapshot.val().paymentVerified) || false;
-						this.props.onLogin(user);
-					  if(paymentVerified) {
-							this.props.onRedirect(this.props.next || '/dashboard');
-							this.setState({ user: firebase.auth().currentUser })
-					  } else {
-					  	this.props.onRedirect(this.props.next || '/payment');
-					  }
-						this.props.onResetNext();
-						if (!this.state.loaded) {
-							this.setState({ loaded: true });
-						}
-					});
-				}
+				});
 			} else {
 				if (this.props.user) {
 					this.props.onRedirect('/');

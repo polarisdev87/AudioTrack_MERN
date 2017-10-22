@@ -58,6 +58,13 @@ class Payment extends React.Component {
 
 	componentWillMount() {
 		this.setState({ fullname: firebase.auth().currentUser.displayName });
+		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).on('value', (snapshot) => {
+			this.setState({ fullname: (snapshot.val() && snapshot.val().name) || '' });
+		})
+	}
+
+	componentWillUnmount() {
+		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).off();
 	}
 
 	handleSubmit(event) {
