@@ -18,12 +18,7 @@ class Forgot extends React.Component {
 		  // Email sent.
 		  this.setState({ sent: true });
 		}).catch((error) => {
-			console.log(error);
-			if(error.code === "auth/user-not-found") {
-  			NotificationManager.error('woah, that’s weird. There isn’t an account with that email.', 'Sign up!', 3000);
-			} else {
-    		NotificationManager.error('Error', `Couldn't send password reset email`, 3000);
-    	}
+    	NotificationManager.error(error.message, '', 3000);
 		});
 	}
 

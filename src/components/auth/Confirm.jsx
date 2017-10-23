@@ -19,7 +19,7 @@ class Forgot extends React.Component {
   		NotificationManager.success('Verification Email sent', `Success`, 3000);
 		}).catch((error) => {
 			// An error happened.
-  		NotificationManager.error(`Couldn't send verification email`, `Error`, 3000);
+  		NotificationManager.error(error.message, '', 3000);
 		})
 	}
 

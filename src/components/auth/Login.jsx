@@ -2,20 +2,29 @@ import React from 'react';
 import * as firebase from 'firebase';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
+import 'react-notifications/lib/notifications.css';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 
 class Login extends React.Component {
 	state = {
 		email: '',
 		password: '',
-		error: null
+		error: null,
+		step: 0
 	};
 
 	handleSubmit(event) {
 		event.preventDefault();
+		this.setState({ step: 1 });
 		firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
+			.then(() => {
+				this.setState({ step: 2 });
+  			NotificationManager.error('Loading...', '', 3000);
+			})
 			.catch((error) => {
-				this.setState({ error: error });
+  			NotificationManager.error(error.message, '', 3000);
+				this.setState({ error: error, step: 0 });
 			});
 	}
 
@@ -56,6 +65,7 @@ class Login extends React.Component {
 
 	render() {
 		// var errors = this.state.error ? <p> {this.state.error} </p> : '';
+		const { loading } = this.state;
 		return (
 			<div className="container" style={{minHeight: 'calc(100vh - 72px)'}}>
 				<div className="row pb-5">
@@ -69,7 +79,13 @@ class Login extends React.Component {
 								<input type="password" className="form-control login-control" placeholder="Enter Password" value={this.state.password} onChange={this.onInputChange.bind(this, 'password')} required />
 							</div>
 							<div className="d-flex justify-content-between align-items-center">
-								<button type="submit" className="btn btn-login">Login</button>
+								<button type="submit" className="btn btn-login" disabled={loading}>
+									{ loading ? (
+											'Checking...'
+									) : (
+											'Login'
+									) }
+								</button>
 								<Link to="/forgot" className="link-forgot">UGH..Forgot my password</Link>
 							</div>
 							<a className="btn btn-signin-google mt-5 white-text" onClick={this.loginWithGoogle.bind(this)}><i className="fa fa-google"></i>Sign In with Google</a>
@@ -81,6 +97,7 @@ class Login extends React.Component {
 						<img src={process.env.PUBLIC_URL + '/assets/img/resume-unique.png'} alt="resume unique" />
 					</div>
 				</div>
+        <NotificationContainer/>
 			</div>
 		);
 	}

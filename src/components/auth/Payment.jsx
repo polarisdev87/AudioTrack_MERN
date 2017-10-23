@@ -9,14 +9,24 @@ import { Link } from 'react-router';
 import $ from 'jquery';
 import { login, resetNext } from '../../actions/auth';
 import { push } from 'react-router-redux';
+import 'react-notifications/lib/notifications.css';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 class _CardForm extends React.Component<{stripe: StripeProps}> {
+	state = {
+		step: 0
+	};
+
   handleSubmit = ev => {
     ev.preventDefault();
+    this.setState({ step: 1 });
     this.props.stripe.createToken().then(payload => {
     	if(payload.error) {
+    		this.setState({ step: 0 });
+  			NotificationManager.error(payload.error.message, '', 3000);
     		return false;
     	}
+    	this.setState({ step: 2 });
     	axios.post(serverUrl + '/checkout', {
     			params: {
 					  amount: 300 * this.props.quantity,
@@ -25,9 +35,20 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
 					  source: payload.token.id,
 					}
 				}).then((res) => {
-					this.props.completeSignUp();
+					if(res.data.type === 'fail') {
+	  				NotificationManager.error(res.data.message, '', 3000);
+						this.setState({ step: 0 });
+					} else {
+						this.setState({ step: 3 });
+	  				NotificationManager.success('Redirecting...', '', 3000);
+						setTimeout(() => {
+							this.props.completeSignUp();
+						}, 100)
+					}
 				})
-    });
+    }).catch((err) => {
+    	this.setState({ step: 0 });
+    })
   };
 
   stepBack = () => {
@@ -35,12 +56,25 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
   }
 
   render() {
+  	const { step } = this.state;
     return (
       <form onSubmit={this.handleSubmit}>
         <CardElement className="stripe-form" />
 				<div className="d-flex justify-content-between align-items-center mt-5">
 					<a className="btn btn-login white-text" onClick={this.stepBack}>Back</a>
-        	<button className="btn btn-login white-text">Pay ${3*this.props.quantity}</button>
+        	<button className="btn btn-login white-text" disabled={step>0}>
+        		{
+        			(() => {
+        				switch(step) {
+        					case 0: return `Pay $` + 3*this.props.quantity
+        					case 1: return `Checking...`
+        					case 2: return `Paying...`
+        					case 3: return `Redirecting...`
+        					default: return null;
+        				}
+        			})()
+        		}
+        	</button>
 				</div>
       </form>
     );
@@ -147,6 +181,7 @@ class Payment extends React.Component {
 						<img src={process.env.PUBLIC_URL + '/assets/img/resume-unique.png'} alt="resume unique" />
 					</div>
 				</div>
+        <NotificationContainer/>
 			</div>
 		);
 	}
