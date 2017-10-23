@@ -16,16 +16,16 @@ exports.checkout = functions.https.onRequest((req, res) => {
 		stripe.charges.create( req.body.params , function(err, charge) {
 		  // asynchronously called
 		  if(err) {
-		  	console.log(err);
 		  	res.json({
 		  		type: 'fail',
-		  		message: 'checkout failed'
+		  		message: err.message
 		  	})
+		  } else {
+				res.json({
+					type: 'success',
+					message: 'checkout succeeded'
+				})	
 		  }
-			res.json({
-				type: 'success',
-				message: 'checkout succeeded'
-			})
-		})
+		});
   })
 })
