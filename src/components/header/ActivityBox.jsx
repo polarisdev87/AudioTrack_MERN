@@ -36,7 +36,15 @@ class ActivityBox extends React.Component {
 		const { type, loaded, activities } = this.state;
 		return (
 			<div className="activity-container">
-				<div className="activity-trigger" id={'popover-'+type} onClick={this.toggle}><Icon.Zap /></div>
+				<div className="activity-trigger" id={'popover-'+type} onClick={this.toggle}>
+					{ type==='all' && <Icon.Zap /> }
+					{ type==='view' && (
+						<div className="activity-trigger-view"><Icon.Eye size={28} /><span>{activities.length}</span></div>
+					) }
+					{ type==='download' && (
+						<div className="activity-trigger-download"><Icon.Download size={22} /><span>{activities.length}</span></div>
+					) }
+				</div>
         <Popover placement="bottom" isOpen={this.state.popoverOpen} target={'popover-'+type} toggle={this.toggle} className="activity-popover">
           <PopoverBody>
           	<div className="activity-logs-container">

@@ -1,28 +1,33 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import { connect } from 'react-redux';
-import { Link } from 'react-router';
 import Dropzone from 'react-dropzone';
 import classnames from 'classnames';
-import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
-import * as Icon from 'react-feather';
-const moment = require('moment');
+import { Progress } from 'reactstrap';
+import { resetNext } from '../../actions/auth';
+import { push } from 'react-router-redux';
+import 'react-notifications/lib/notifications.css';
+import {NotificationContainer, NotificationManager} from 'react-notifications';
+import ResumeThumbnail from './ResumeThumbnail';
 
-let dropzoneRef;
+let dropzoneRef, uploadTask;
 
 class Dashboard extends React.Component {
 	state = {
-		user: this.props.user,
-		accept: 'application/msword, application/pdf, application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+		user: {...this.props.user, uid: firebase.auth().currentUser.uid},
+		accept: 'application/pdf', //, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     files: [],
     resumes: [],
     dropzoneActive: false,
-    loaded: false
+    loaded: false,
+    upload: {
+    	status: 0,
+    	progress: 0
+    }
 	};
 
 	componentWillMount() {
-		firebase.database().ref('/users/'+firebase.auth().currentUser.uid+'/resumes').on('value', (snapshot) => {
-
+		firebase.database().ref('/users/'+this.state.user.uid+'/resumes').on('value', (snapshot) => {
 			let resumes = [];
 		  snapshot.forEach((childSnapshot) => {
 		    const childKey = childSnapshot.key;
@@ -31,17 +36,10 @@ class Dashboard extends React.Component {
 		  });
 			this.setState({ loaded: true, resumes});
 		});
-		// firebase.database().ref('/users/'+firebase.auth().currentUser.uid+'/resumes').once('value', (snapshot) => {
-		//   snapshot.forEach((childSnapshot) => {
-		//     var childKey = childSnapshot.key;
-		//     var childData = childSnapshot.val();
-		//     console.log(childKey, childData);
-		//   });
-		// })
 	}
 
 	componentWillUnmount() {
-		firebase.database().ref('/users/'+firebase.auth().currentUser.uid+'/resumes').off();
+		firebase.database().ref('/users/'+this.state.user.uid+'/resumes').off();
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -62,21 +60,50 @@ class Dashboard extends React.Component {
   }
 
   onDrop = (files) => {
-  	console.log(files);
-  	const uid = firebase.auth().currentUser.uid;
+  	const { uid } = this.state.user;
+		const newResumeKey = firebase.database().ref().child('resumes').push().key;
 
     files.forEach(file => {
 			const storageRef = firebase.storage().ref();
-			const uploadTask = storageRef.child('resumes/' + this.state.user.displayName + '_' + (new Date().getTime()) + '_' + file.name).put(file);
+			uploadTask = storageRef.child('resumes/' + uid + '/' + newResumeKey + '/source.pdf').put(file);
+
+
+			this.setState({ upload: {...this.state.upload, status: 1}});
+
+	  	NotificationManager.success('Upload started...', '', 3000);
+			uploadTask.on('state_changed', (snapshot) => {
+			  // Observe state change events such as progress, pause, and resume
+			  // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+			  let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+			  this.setState({ upload: {...this.state.upload, progress}});
+			  // console.log('Upload is ' + progress + '% done');
+			  // switch (snapshot.state) {
+			  //   case firebase.storage.TaskState.PAUSED: // or 'paused'
+			  //     console.log('Upload is paused');
+			  //     break;
+			  //   case firebase.storage.TaskState.RUNNING: // or 'running'
+			  //     console.log('Upload is running');
+			  //     break;
+			  // }
+			}, (error) => {
+			  // Handle unsuccessful uploads
+			  this.setState({
+		      files: [],
+		      dropzoneActive: false,
+		      upload: { status: 0, progress: 0}
+		    });
+			}, () => {
+			  // Handle successful uploads on complete
+			  this.setState({ upload: {...this.state.upload, progress: 100, status: 2}});
+			});
 
 			uploadTask.then((snapshot) => {
 			  // Upload completed successfully, now we can get the download URL
 			  const downloadURL = uploadTask.snapshot.downloadURL;
 
-        firebase.database().ref('/users/' + uid).update({ credits: this.state.user.credits - 1 }).then(() => {
-        });
+        // firebase.database().ref('/users/' + uid).update({ credits: this.state.user.credits - 1 }).then(() => {
+        // });
 
-				const newResumeKey = firebase.database().ref().child('resumes').push().key;
 				let updates = {};
 				const resumeData = {
 					uid: uid,
@@ -85,19 +112,28 @@ class Dashboard extends React.Component {
 					downloads: 0,
 					uploaded: new Date(),
 					modified: new Date(),
-					title: 'New Resume',
+					title: 'Resume ' + this.state.user.lifetime,
 					published: false,
 					link: ''
 				};
 				updates['/resumes/' + newResumeKey] = resumeData;
 				updates['/users/' + uid + '/resumes/' + newResumeKey] = resumeData;
 
+
+				firebase.database().ref('/users/' + uid).update({ lifetime: this.state.user.lifetime+1 }).then(() => {
+				});
+
+	  		NotificationManager.success('Resume registered successfully', '', 3000);
 				firebase.database().ref().update(updates).then(() => {
 
 			    this.setState({
 			      files,
-			      dropzoneActive: false
-			    });  					
+			      dropzoneActive: false,
+			      upload: {...this.state.upload, progress: 0, status: 0}
+			    });
+
+					this.props.dispatch(push(this.props.next || '/resume/'+newResumeKey));
+					this.props.dispatch(resetNext());
 				});
 
 			});
@@ -120,34 +156,35 @@ class Dashboard extends React.Component {
     });
   }
 
-  resumeDelete = () => {
+  resumeDelete = (resume) => {
   	if(confirm("Do you really wanna delete this resume?")) {
-
+  		let updates = {};
+			updates['/resumes/' + resume.resume_id] = null;
+			updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
+			firebase.database().ref().update(updates).then(() => {
+	  		NotificationManager.success('Resume successfully deleted', '', 3000);
+			});
   	}
   }
 
-  onResumeDetail = () => {
-  	console.log('here');
+  onResumeDetail = (resume) => {
+		this.props.dispatch(push(this.props.next || '/resume/'+resume.resume_id));
+  }
+
+  resumeCancelUpload = () => {
+  	uploadTask.cancel();
+	  NotificationManager.error('Upload cancelled by user...', '', 3000);
   }
 
 
 
 	render() {
-		const { user, loaded, resumes, accept, files, dropzoneActive } = this.state;
-    const overlayStyle = {
-      position: 'absolute',
-      top: 0,
-      right: 0,
-      bottom: 0,
-      left: 0,
-      padding: '2.5em 0',
-      background: 'rgba(0,0,0,0.15)'
-    };
+		const { user, loaded, resumes, accept, dropzoneActive, upload } = this.state;
 
 		return (
       <Dropzone
       	ref={(node) => { dropzoneRef = node; }}
-      	className="dashboard-zone-area"
+      	className={classnames('dashboard-zone-area', {'empty': resumes.length === 0})}
         disableClick
         multiple={false}
         style={{position: "relative"}}
@@ -158,7 +195,6 @@ class Dashboard extends React.Component {
         onFileDialogCancel={this.onFileDialogCancel}
         disabled={user.credits === 0}
       >
-        { dropzoneActive && <div style={overlayStyle}></div> }
 				<div className="container dashboard-container">
 					<div className="dashboard-toolbar">
 						<a className="btn-upload-resume" onClick={this.onOpenFileDialog}><span>Upload Resume</span></a>
@@ -173,38 +209,27 @@ class Dashboard extends React.Component {
 							</div> }
 							{ resumes && <div className="resumes-list">
 								{
-									resumes.map((resume, idx) => <div className="resume-wrapper" key={idx}>
-										<div className="resume">
-									    <UncontrolledDropdown className="float-right action-delete">
-									      <DropdownToggle tag="span"><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-more.svg'} alt="more-delete" /></DropdownToggle>
-									      <DropdownMenu>
-									        <DropdownItem onClick={this.resumeDelete}>Delete</DropdownItem>
-									      </DropdownMenu>
-									    </UncontrolledDropdown>
-											<div className="resume-info">
-												<div className="resume-title-wrapper">
-													<div className="resume-title">{resume.title}</div>
-													<div className="resume-modified">Modified {moment(resume.modified).format('DD/MM/YYYY')}</div>
-												</div>
-												<div className="resume-actions">
-													<div className="resume-state">
-														<div className="resume-views">
-															<Icon.Eye size={20} /><span>{resume.views}</span>
-														</div>
-														<div className="resume-downloads">
-															<Icon.Download size={20} /><span>{resume.downloads}</span>
-														</div>
-													</div>
-													{ resume.link && <Link className="resume-link" to={resume.link}><Icon.Link2 size={20} /></Link> }
-												</div>
-											</div>
-										</div>
-									</div>)
+									resumes.map((resume, idx) => <ResumeThumbnail resume={resume} />)
 								}
 							</div> }
 						</div>
 					}
 				</div>
+        { dropzoneActive && (
+        	<div className="resume-uploading-overlay d-flex align-items-center justify-content-center">
+        		<div className="container">
+      			{ upload.status>0 && (
+      				<div className="resume-uploading-container">
+      					<Progress animated color="danger" value={upload.progress} />
+      					<div className="resume-uploading-actions">
+      						<button className="btn-cancel-upload" onClick={this.resumeCancelUpload}>Cancel</button>
+      					</div>
+      				</div>
+      			) }
+      			</div>
+					</div>
+				) }
+        <NotificationContainer/>
       </Dropzone>
 		)
 	}

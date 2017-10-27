@@ -218,10 +218,21 @@
 
 .activity-container {
 	margin: 0 3rem;
+	line-height: normal;
 	.activity-trigger {
 		display: flex;
 		align-items: center;
 		cursor: pointer;
+		&>div {
+			display: flex;
+			align-items: center;
+			span {
+				margin-left: 0.5rem;
+				font-size: 15px;
+				letter-spacing: 0.3px;
+				color: #000000;
+			}
+		}
 	}
 }
 .activity-popover {
@@ -318,6 +329,26 @@
 				display: block;
 				text-decoration: none;
 			}
+		}
+	}
+}
+
+.resume-link-container {
+	display: flex;
+	align-items: center;
+	a {
+		text-decoration: none;
+		color: inherit;
+		margin-left: 1rem;
+		.resume-url-muted {
+			font-size: 12px;
+			letter-spacing: 0;
+			color: #9b9b9b;
+		}
+		.resume-url-active {
+			font-size: 12px;
+			letter-spacing: 0;
+			color: #000000;
 		}
 	}
 }

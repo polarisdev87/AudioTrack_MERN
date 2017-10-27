@@ -25,6 +25,7 @@ import Forgot from './components/auth/Forgot'
 import Confirm from './components/auth/Confirm'
 import Dashboard from './components/secure/Dashboard'
 import Profile from './components/secure/Profile'
+import Resume from './components/secure/Resume'
 
 const reducer = combineReducers({
 	...reducers,
@@ -59,6 +60,7 @@ ReactDOM.render(
 					<Route path='confirm' component={Confirm}/>
 					<Route path='dashboard' component={Dashboard} onEnter={secure}/>
 					<Route path='profile' component={Profile} onEnter={secure}/>
+					<Route path='resume/:resume_id' component={Resume} onEnter={secure}/>
 				</Route>
 			</Router>
     </StripeProvider>

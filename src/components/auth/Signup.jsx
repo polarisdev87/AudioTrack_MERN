@@ -39,7 +39,8 @@ class Signup extends React.Component {
 					paymentVerified: false,
 					credits: 0,
 					activities: [],
-					resumes: []
+					resumes: [],
+					lifetime: 1
 				})
 
 				// send Verification Email
@@ -79,7 +80,8 @@ class Signup extends React.Component {
 						paymentVerified: false,
 						credits: 0,
 						activities: [],
-						resumes: []
+						resumes: [],
+						lifetime: 1
 					})
 				} else {
 					firebase.database().ref('/users/' + user.uid).update({

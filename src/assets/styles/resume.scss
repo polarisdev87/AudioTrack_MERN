@@ -1,0 +1,22 @@
+@import 'variables.scss';
+
+.resume-container {
+	padding-top: 3rem;
+	.resume-wrapper {
+		.ReactPDF__Loader, .ReactPDF__Error {
+			text-align: center;
+		}
+	}
+}
+
+.resume-pages-wrapper {
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	margin: 4rem 0;
+	position: relative;
+	.resume-page {
+		margin-bottom: 4rem;
+		box-shadow: 0 2px 4px 0 #efefef;
+	}
+}

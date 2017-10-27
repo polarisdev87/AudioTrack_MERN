@@ -6,6 +6,7 @@ import { Collapse, NavbarToggler } from 'reactstrap';
 import ButtonBuyCredit from './header/ButtonBuyCredit';
 import ActivityBox from './header/ActivityBox';
 import ProfileBox from './header/ProfileBox';
+import ResumeLink from './header/ResumeLink';
 
 class HeaderNav extends React.Component {
   state = {
@@ -27,6 +28,7 @@ class HeaderNav extends React.Component {
     const isPayment = pathname === '/payment';
     const isDashboard = pathname === '/dashboard';
     const isProfile = pathname === '/profile';
+    const isResume = pathname.indexOf('/resume') === 0;
     const isAuthenticated = user !== null;
 		return (
 			<nav className="navbar navbar-expand-md navbar-light bg-white header-nav fixed-top">
@@ -67,6 +69,7 @@ class HeaderNav extends React.Component {
                     <Link to="/dashboard" className="nav-link active with-top-border">My Resumes</Link> 
                   </li>
                 ) : null }
+                { isResume ? <ResumeLink {...this.props} /> : null }
               </ul>
               <div className="navbar-right nav-links">
                 { isLogin ? (
@@ -87,6 +90,11 @@ class HeaderNav extends React.Component {
                 { isDashboard || isProfile ? [
                   <ButtonBuyCredit { ...this.props } key="button-buy-credit" />,
                   <ActivityBox type="all" key="activity-box-all" />,
+                  <ProfileBox key="profile-box" />
+                ] : null }
+                { isResume ? [
+                  <ActivityBox type="view" key="activity-box-view" />,
+                  <ActivityBox type="download" key="activity-box-download" />,
                   <ProfileBox key="profile-box" />
                 ] : null }
               </div>

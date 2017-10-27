@@ -50,7 +50,8 @@ class Login extends React.Component {
 						paymentVerified: false,
 						credits: 0,
 						activities: [],
-						resumes: []
+						resumes: [],
+						lifetime: 1
 					})
 				} else {
 					firebase.database().ref('/users/' + user.uid).update({
