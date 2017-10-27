@@ -1,11 +1,36 @@
 import React  from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
+import * as firebase from 'firebase';
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import * as Icon from 'react-feather';
+import { push } from 'react-router-redux';
+import {NotificationManager} from 'react-notifications';
 const moment = require('moment');
 
 class ResumeThumbnail extends React.Component {
+	state = {
+		user: {...this.props.user, uid: firebase.auth().currentUser.uid}
+	};
+
+  resumeDelete = (resume) => {
+  	if(confirm("Do you really wanna delete this resume?")) {
+  		let updates = {};
+			updates['/resumes/' + resume.resume_id] = null;
+			updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
+			firebase.database().ref().update(updates).then(() => {
+	  		NotificationManager.success('Resume successfully deleted', '', 3000);
+			});
+  	}
+  }
+
+  onResumeDetail = (resume) => {
+		this.props.dispatch(push(this.props.next || '/resume/'+resume.resume_id));
+  }
+
+	onClickEdit = () => {
+
+	}
 
 	render() {
 		const { resume } = this.props;
@@ -21,7 +46,7 @@ class ResumeThumbnail extends React.Component {
 			    </UncontrolledDropdown>
 					<div className="resume-info">
 						<div className="resume-title-wrapper">
-							<div className="resume-title">{resume.title}</div>
+							<div className="resume-title" onClick={this.onClickEdit}>{resume.title}</div>
 							<div className="resume-modified">Modified {moment(resume.modified).format('MM/DD/YYYY')}</div>
 						</div>
 						<div className="resume-actions">

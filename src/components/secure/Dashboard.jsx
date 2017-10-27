@@ -156,21 +156,6 @@ class Dashboard extends React.Component {
     });
   }
 
-  resumeDelete = (resume) => {
-  	if(confirm("Do you really wanna delete this resume?")) {
-  		let updates = {};
-			updates['/resumes/' + resume.resume_id] = null;
-			updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
-			firebase.database().ref().update(updates).then(() => {
-	  		NotificationManager.success('Resume successfully deleted', '', 3000);
-			});
-  	}
-  }
-
-  onResumeDetail = (resume) => {
-		this.props.dispatch(push(this.props.next || '/resume/'+resume.resume_id));
-  }
-
   resumeCancelUpload = () => {
   	uploadTask.cancel();
 	  NotificationManager.error('Upload cancelled by user...', '', 3000);
@@ -209,7 +194,7 @@ class Dashboard extends React.Component {
 							</div> }
 							{ resumes && <div className="resumes-list">
 								{
-									resumes.map((resume, idx) => <ResumeThumbnail resume={resume} key={idx} />)
+									resumes.map((resume, idx) => <ResumeThumbnail resume={resume} key={idx} {...this.props} />)
 								}
 							</div> }
 						</div>
