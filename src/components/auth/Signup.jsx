@@ -3,8 +3,7 @@ import * as firebase from 'firebase';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Link } from 'react-router';
-import 'react-notifications/lib/notifications.css';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 
 class Signup extends React.Component {
 	state = {
@@ -46,7 +45,7 @@ class Signup extends React.Component {
 				// send Verification Email
 				user.sendEmailVerification().then(function() {
 				  // Email sent.
-    			NotificationManager.success('Verification Email Sent!', '', 3000);
+    			NotificationManager.success('Verification Email Sent!', '');
 				}).catch(function(error) {
 				  // An error happened.
 				});
@@ -54,7 +53,7 @@ class Signup extends React.Component {
 			})
 			.catch((error) => {
 				this.setState({ error: error, step: 0 });
-    		NotificationManager.error(error.message, '', 3000);
+    		NotificationManager.error(error.message, '');
 			});
 	}
 
@@ -94,7 +93,7 @@ class Signup extends React.Component {
 			});
 		}).catch((error) => {
 			this.setState({ error: error});
-    	NotificationManager.error(error.message, '', 3000);
+    	NotificationManager.error(error.message, '');
 		});
 	}
 
@@ -145,7 +144,6 @@ class Signup extends React.Component {
 						<img src={process.env.PUBLIC_URL + '/assets/img/resume-unique.png'} alt="resume unique" />
 					</div>
 				</div>
-        <NotificationContainer/>
 			</div>
 		);
 	}

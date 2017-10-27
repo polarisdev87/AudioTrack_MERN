@@ -2,9 +2,41 @@
 
 .resume-container {
 	padding-top: 3rem;
+	display: flex;
+	justify-content: space-evenly;
 	.resume-wrapper {
 		.ReactPDF__Loader, .ReactPDF__Error {
 			text-align: center;
+		}
+	}
+	.resume-builder {
+		.resume-builder-icons {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			flex-direction: column;
+			margin-top: 3rem;
+			&>div {
+				margin: 1.5rem 2rem;
+				cursor: pointer;
+				border-radius: 50%;
+				overflow: hidden;
+				i {
+					display: flex;
+					width: 42px;
+					height: 42px;
+					align-items: center;
+					justify-content: center;
+					color: #fff;
+					font-size: 28px;
+					line-height: 52px;
+					text-align: center;
+					img {
+						width: 22px;
+						height: 22px;
+					}
+				}
+			}
 		}
 	}
 }

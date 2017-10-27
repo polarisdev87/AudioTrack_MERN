@@ -6,8 +6,7 @@ import classnames from 'classnames';
 import { Progress } from 'reactstrap';
 import { resetNext } from '../../actions/auth';
 import { push } from 'react-router-redux';
-import 'react-notifications/lib/notifications.css';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 import ResumeThumbnail from './ResumeThumbnail';
 
 let dropzoneRef, uploadTask;
@@ -70,7 +69,7 @@ class Dashboard extends React.Component {
 
 			this.setState({ upload: {...this.state.upload, status: 1}});
 
-	  	NotificationManager.success('Upload started...', '', 3000);
+	  	NotificationManager.success('Upload started...', '');
 			uploadTask.on('state_changed', (snapshot) => {
 			  // Observe state change events such as progress, pause, and resume
 			  // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
@@ -114,7 +113,7 @@ class Dashboard extends React.Component {
 					modified: new Date(),
 					title: 'Resume ' + this.state.user.lifetime,
 					published: false,
-					link: ''
+					link: 'Title Your Resume'
 				};
 				updates['/resumes/' + newResumeKey] = resumeData;
 				updates['/users/' + uid + '/resumes/' + newResumeKey] = resumeData;
@@ -123,7 +122,7 @@ class Dashboard extends React.Component {
 				firebase.database().ref('/users/' + uid).update({ lifetime: this.state.user.lifetime+1 }).then(() => {
 				});
 
-	  		NotificationManager.success('Resume registered successfully', '', 3000);
+	  		NotificationManager.success('Resume registered successfully', '');
 				firebase.database().ref().update(updates).then(() => {
 
 			    this.setState({
@@ -132,7 +131,7 @@ class Dashboard extends React.Component {
 			      upload: {...this.state.upload, progress: 0, status: 0}
 			    });
 
-					this.props.dispatch(push(this.props.next || '/resume/'+newResumeKey));
+					this.props.dispatch(push(this.props.next || '/edit/'+newResumeKey));
 					this.props.dispatch(resetNext());
 				});
 
@@ -158,7 +157,7 @@ class Dashboard extends React.Component {
 
   resumeCancelUpload = () => {
   	uploadTask.cancel();
-	  NotificationManager.error('Upload cancelled by user...', '', 3000);
+	  NotificationManager.error('Upload cancelled by user...', '');
   }
 
 
@@ -214,7 +213,6 @@ class Dashboard extends React.Component {
       			</div>
 					</div>
 				) }
-        <NotificationContainer/>
       </Dropzone>
 		)
 	}

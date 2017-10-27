@@ -128,6 +128,10 @@
 							letter-spacing: 0.3px;
 							color: #000000;
 							margin: 10px 0 3px;
+							&:active, &:focus {
+								outline: 0 none;
+								border-bottom: dotted 1px #f00;
+							}
 						}
 						.resume-modified {
 							font-size: 8px;
@@ -178,9 +182,9 @@
   padding: 0;
   width: 100%;
   height: 100%;
+  z-index: 101;
   background: rgba(0,0,0,0.8);
   .resume-uploading-container {
-  	margin-top: 72px;
   	width: 100%;
   	.progress {
   		border-radius: 8px;

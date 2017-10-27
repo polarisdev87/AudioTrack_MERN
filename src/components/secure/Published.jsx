@@ -8,7 +8,7 @@ import { NotificationManager } from 'react-notifications';
 import { resetNext } from '../../actions/auth';
 import { push } from 'react-router-redux';
 
-class Resume extends React.Component {
+class Published extends React.Component {
   state = {
     user: {...this.props.user, uid: firebase.auth().currentUser.uid},
     numPages: null,
@@ -33,7 +33,6 @@ class Resume extends React.Component {
       let updates = {};
       updates['/resumes/' + resume.resume_id] = null;
       updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
-      console.log(updates);
       NotificationManager.success('Resume successfully deleted', '');
       firebase.database().ref().update(updates).then(() => {
         this.props.dispatch(push(this.props.next || '/dashboard'));
@@ -43,13 +42,11 @@ class Resume extends React.Component {
   }
 
   onPreviewResume = () => {
-    this.props.dispatch(push(this.props.next || '/preview/'+this.state.resume.resume_id));
-    this.props.dispatch(resetNext());
+
   }
 
   onEditResume = () => {
-    this.props.dispatch(push(this.props.next || '/edit/'+this.state.resume.resume_id));
-    this.props.dispatch(resetNext());
+    
   }
 
 	render() {
@@ -92,4 +89,4 @@ class Resume extends React.Component {
 
 export default connect(state=>({
 	user: state.auth.user
-}))(Resume);
+}))(Published);

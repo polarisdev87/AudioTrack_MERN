@@ -1,8 +1,7 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import { connect } from 'react-redux';
-import 'react-notifications/lib/notifications.css';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 
 
 class Forgot extends React.Component {
@@ -18,7 +17,7 @@ class Forgot extends React.Component {
 		  // Email sent.
 		  this.setState({ sent: true });
 		}).catch((error) => {
-    	NotificationManager.error(error.message, '', 3000);
+    	NotificationManager.error(error.message, '');
 		});
 	}
 
@@ -56,7 +55,6 @@ class Forgot extends React.Component {
 						</form>
 					</div>
 				</div>
-        <NotificationContainer/>
 			</div>
 		);
 	}

@@ -72,9 +72,25 @@ class ActivityBox extends React.Component {
 		          		activities.length>0 ? (
 		          			activities.map((activity) => <span>1</span>)
 		          		) : (
-		          			<div className="no-logs">
-		          				<Icon.Zap size={32} />
-		          				<div>You have no activity</div>
+	          				<div className="no-logs">
+		          				{
+		          					type==='all' && [
+				          				<Icon.Zap size={32} key="icon" />,
+				          				<div key="label">You have no activity</div>
+				          			]
+		          				}
+		          				{
+			          				type==='view' && [
+				          				<Icon.Eye size={32} key="icon" />,
+				          				<div key="label">No Views</div>
+					          		]
+		          				}
+		          				{
+			          				type==='download' && [
+				          				<Icon.Download size={32} key="icon" />,
+				          				<div key="label">No Downloads</div>
+					          		]
+		          				}
 		          			</div>
 		          		)
 		          	) :  null}

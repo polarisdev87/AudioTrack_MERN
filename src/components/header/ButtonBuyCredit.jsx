@@ -3,8 +3,7 @@ import * as firebase from 'firebase';
 import { connect } from 'react-redux';
 import { Button, Modal } from 'reactstrap';
 import classnames from 'classnames';
-import 'react-notifications/lib/notifications.css';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 import { CardElement, Elements, injectStripe } from 'react-stripe-elements';
 import axios from 'axios';
 import { serverUrl } from '../../../config';
@@ -38,7 +37,7 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
     this.props.stripe.createToken().then(payload => {
       if(payload.error) {
         this.setState({ step: 0 });
-        NotificationManager.error(payload.error.message, '', 3000);
+        NotificationManager.error(payload.error.message, '');
         return false;
       }
       this.setState({ step: 2 });
@@ -51,13 +50,13 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
           }
         }).then((res) => {
           if(res.data.type === 'fail') {
-            NotificationManager.error(res.data.message, '', 3000);
+            NotificationManager.error(res.data.message, '');
             this.setState({ step: 0 });
           } else {
             this.setState({ step: 3 });
-            NotificationManager.success('Adding Credits...', '', 3000);
+            NotificationManager.success('Adding Credits...', '');
             firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update({ credits: user.credits + quantity }).then(() => {
-              NotificationManager.success(quantity + ' Credits added successfully.', '', 3000);
+              NotificationManager.success(quantity + ' Credits added successfully.', '');
               this.props.onComplete();
             });
           }
@@ -133,7 +132,6 @@ class ButtonBuyCredit extends React.Component {
             </div>
           </div>
         </Modal>
-        <NotificationContainer/>
       </div>
     );
   }

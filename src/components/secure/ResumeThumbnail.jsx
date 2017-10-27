@@ -5,12 +5,15 @@ import * as firebase from 'firebase';
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import * as Icon from 'react-feather';
 import { push } from 'react-router-redux';
-import {NotificationManager} from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 const moment = require('moment');
+const ContentEditable = require("react-contenteditable");
 
 class ResumeThumbnail extends React.Component {
 	state = {
-		user: {...this.props.user, uid: firebase.auth().currentUser.uid}
+		user: {...this.props.user, uid: firebase.auth().currentUser.uid},
+		// editable: false,
+		resume_title: this.props.resume.title
 	};
 
   resumeDelete = (resume) => {
@@ -19,9 +22,13 @@ class ResumeThumbnail extends React.Component {
 			updates['/resumes/' + resume.resume_id] = null;
 			updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
 			firebase.database().ref().update(updates).then(() => {
-	  		NotificationManager.success('Resume successfully deleted', '', 3000);
+	  		NotificationManager.success('Resume successfully deleted', '');
 			});
   	}
+  }
+
+  handleChange = (e) => {
+    this.setState({resume_title: e.target.value});
   }
 
   onResumeDetail = (resume) => {
@@ -29,11 +36,34 @@ class ResumeThumbnail extends React.Component {
   }
 
 	onClickEdit = () => {
+		// this.setState({ editable: true });
+	}
 
+	updateTitle = () => {
+		// this.setState({ editable: false });
+		if(!this.state.resume_title.trim()) {
+			this.setState({ resume_title: this.props.resume.title});
+		} else {
+			if(this.state.resume_title !== this.props.resume.title) {
+				let updates = {};
+				updates['/resumes/' + this.props.resume.resume_id + '/title'] = this.state.resume_title || this.props.resume.title;
+				updates['/users/' + this.state.user.uid + '/resumes/' + this.props.resume.resume_id + '/title'] = this.state.resume_title || this.props.resume.title;
+				firebase.database().ref().update(updates).then(() => {
+			  	NotificationManager.success('Resume Title successfully updated', '');
+				});
+			}
+		}
 	}
 
 	render() {
 		const { resume } = this.props;
+		const { editable, resume_title } = this.state;
+		// const titleProps = editable ? {
+		// 	contentEditable: true,
+		// 	onBlur: this.updateTitle
+		// } : {
+		// 	onClick: this.onClickEdit
+		// };
 		return (
 			<div className="resume-wrapper">
 				<div className="resume">
@@ -46,7 +76,8 @@ class ResumeThumbnail extends React.Component {
 			    </UncontrolledDropdown>
 					<div className="resume-info">
 						<div className="resume-title-wrapper">
-							<div className="resume-title" onClick={this.onClickEdit}>{resume.title}</div>
+							<ContentEditable className="resume-title" html={resume_title} disabled={editable} onClick={this.onClickEdit} onChange={(e) => {this.handleChange(e)}} onBlur={this.updateTitle} />
+							{/*<div className="resume-title" {...titleProps}>{resume.title}</div>*/}
 							<div className="resume-modified">Modified {moment(resume.modified).format('MM/DD/YYYY')}</div>
 						</div>
 						<div className="resume-actions">
@@ -58,7 +89,7 @@ class ResumeThumbnail extends React.Component {
 									<Icon.Download size={20} /><span>{resume.downloads}</span>
 								</div>
 							</div>
-							{ resume.link && <Link className="resume-link" to={resume.link}><Icon.Link2 size={20} /></Link> }
+							{ resume.published && <Link className="resume-link" to={resume.link}><Icon.Link2 size={20} /></Link> }
 						</div>
 					</div>
 				</div>

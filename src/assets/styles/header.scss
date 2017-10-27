@@ -226,11 +226,14 @@
 		&>div {
 			display: flex;
 			align-items: center;
+			position: relative;
 			span {
 				margin-left: 0.5rem;
 				font-size: 15px;
 				letter-spacing: 0.3px;
 				color: #000000;
+				position: absolute;
+				left: 100%;
 			}
 		}
 	}

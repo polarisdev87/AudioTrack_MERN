@@ -9,8 +9,7 @@ import { Link } from 'react-router';
 import $ from 'jquery';
 import { login, resetNext } from '../../actions/auth';
 import { push } from 'react-router-redux';
-import 'react-notifications/lib/notifications.css';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 
 class _CardForm extends React.Component<{stripe: StripeProps}> {
 	state = {
@@ -23,7 +22,7 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
     this.props.stripe.createToken().then(payload => {
     	if(payload.error) {
     		this.setState({ step: 0 });
-  			NotificationManager.error(payload.error.message, '', 3000);
+  			NotificationManager.error(payload.error.message, '');
     		return false;
     	}
     	this.setState({ step: 2 });
@@ -36,11 +35,11 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
 					}
 				}).then((res) => {
 					if(res.data.type === 'fail') {
-	  				NotificationManager.error(res.data.message, '', 3000);
+	  				NotificationManager.error(res.data.message, '');
 						this.setState({ step: 0 });
 					} else {
 						this.setState({ step: 3 });
-	  				NotificationManager.success('Redirecting...', '', 3000);
+	  				NotificationManager.success('Redirecting...', '');
 						setTimeout(() => {
 							this.props.completeSignUp();
 						}, 100)
@@ -185,7 +184,6 @@ class Payment extends React.Component {
 						<img src={process.env.PUBLIC_URL + '/assets/img/resume-unique.png'} alt="resume unique" />
 					</div>
 				</div>
-        <NotificationContainer/>
 			</div>
 		);
 	}

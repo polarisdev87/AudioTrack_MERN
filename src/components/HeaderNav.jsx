@@ -28,7 +28,10 @@ class HeaderNav extends React.Component {
     const isPayment = pathname === '/payment';
     const isDashboard = pathname === '/dashboard';
     const isProfile = pathname === '/profile';
-    const isResume = pathname.indexOf('/resume') === 0;
+    const isResume = pathname.indexOf('/resume/') === 0;
+    const isResumeEdit = pathname.indexOf('/edit/') === 0;
+    const isResumePreview = pathname.indexOf('/preview/') === 0;
+    const isResumePublished = pathname.indexOf('/r/') === 0;
     const isAuthenticated = user !== null;
 		return (
 			<nav className="navbar navbar-expand-md navbar-light bg-white header-nav fixed-top">
@@ -89,14 +92,15 @@ class HeaderNav extends React.Component {
                 ) : null }
                 { isDashboard || isProfile ? [
                   <ButtonBuyCredit { ...this.props } key="button-buy-credit" />,
-                  <ActivityBox type="all" key="activity-box-all" />,
-                  <ProfileBox key="profile-box" />
+                  <ActivityBox type="all" key="activity-box-all" />
                 ] : null }
                 { isResume ? [
                   <ActivityBox type="view" key="activity-box-view" />,
-                  <ActivityBox type="download" key="activity-box-download" />,
-                  <ProfileBox key="profile-box" />
+                  <ActivityBox type="download" key="activity-box-download" />
                 ] : null }
+                { isDashboard || isProfile || isResume || isResumeEdit || isResumePreview || isResumePublished ? (
+                  <ProfileBox key="profile-box" />
+                ) : null }
               </div>
             </Collapse>
           )}

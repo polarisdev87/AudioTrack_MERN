@@ -2,8 +2,7 @@ import React from 'react';
 import * as firebase from 'firebase';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
-import 'react-notifications/lib/notifications.css';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 
 
 class Login extends React.Component {
@@ -20,10 +19,10 @@ class Login extends React.Component {
 		firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
 			.then(() => {
 				this.setState({ step: 2 });
-  			NotificationManager.success('Loading...', '', 3000);
+  			NotificationManager.success('Loading...', '');
 			})
 			.catch((error) => {
-  			NotificationManager.error(error.message, '', 3000);
+  			NotificationManager.error(error.message, '');
 				this.setState({ error: error, step: 0 });
 			});
 	}
@@ -105,7 +104,6 @@ class Login extends React.Component {
 						<img src={process.env.PUBLIC_URL + '/assets/img/resume-unique.png'} alt="resume unique" />
 					</div>
 				</div>
-        <NotificationContainer/>
 			</div>
 		);
 	}

@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import * as firebase from 'firebase';
 import { login, logout, resetNext } from '../actions/auth';
 import { push } from 'react-router-redux';
+import 'react-notifications/lib/notifications.css';
+import { NotificationContainer } from 'react-notifications';
 
 import HeaderNav from './HeaderNav';
 
@@ -86,6 +88,7 @@ class App extends React.Component {
 				<div className="content">
 					{ this.state.loaded ? this.props.children : null}
 				</div>
+        <NotificationContainer />
 			</div>
 		)
 	}

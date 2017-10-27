@@ -1,8 +1,7 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import { connect } from 'react-redux';
-import 'react-notifications/lib/notifications.css';
-import {NotificationContainer, NotificationManager} from 'react-notifications';
+import { NotificationManager } from 'react-notifications';
 
 
 class Confirm extends React.Component {
@@ -16,10 +15,10 @@ class Confirm extends React.Component {
 		firebase.auth().currentUser.sendEmailVerification().then(() => {
 			// Email sent.
 			this.setState({ sent: true });
-  		NotificationManager.success('Verification Email sent', `Success`, 3000);
+  		NotificationManager.success('Verification Email sent', '');
 		}).catch((error) => {
 			// An error happened.
-  		NotificationManager.error(error.message, '', 3000);
+  		NotificationManager.error(error.message, '');
 		})
 	}
 
@@ -45,7 +44,6 @@ class Confirm extends React.Component {
 						</form>
 					</div>
 				</div>
-        <NotificationContainer/>
 			</div>
 		);
 	}
