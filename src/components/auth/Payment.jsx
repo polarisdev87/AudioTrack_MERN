@@ -84,20 +84,23 @@ const CardForm = injectStripe(_CardForm);
 
 class Payment extends React.Component {
 	state = {
-		fullname: '',
 		error: null,
-		quantity: 1
+		quantity: 1,
+		user: this.props.user
 	};
 
 	componentWillMount() {
-		this.setState({ fullname: firebase.auth().currentUser.displayName });
-		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).on('value', (snapshot) => {
-			this.setState({ fullname: (snapshot.val() && snapshot.val().name) || '' });
-		})
+		// firebase.database().ref('/users/' + firebase.auth().currentUser.uid).on('value', (snapshot) => {
+		// 	this.setState({ fullname: (snapshot.val() && snapshot.val().name) || '' });
+		// })
 	}
 
 	componentWillUnmount() {
-		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).off();
+		// firebase.database().ref('/users/' + firebase.auth().currentUser.uid).off();
+	}
+
+	componentWillReceiveProps(nextProps) {
+		this.setState({ user: { ...this.state.user, ...nextProps.user}});
 	}
 
 	handleSubmit(event) {
@@ -124,7 +127,7 @@ class Payment extends React.Component {
 	}
 
 	stepBack = () => {
-		this.props.dispatch(login(firebase.auth().currentUser));
+		this.props.dispatch(login(this.state.user));
 		this.props.dispatch(push(this.props.next || '/signup'));
 		this.props.dispatch(resetNext());
 	}
@@ -138,8 +141,9 @@ class Payment extends React.Component {
 	}
 
 	completeSignUp = () => {
-		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update({ paymentVerified: true }).then(() => {
-			this.props.dispatch(login(firebase.auth().currentUser));
+		this.setState({ user: { ...this.state.user, paymentVerified: true, credits: this.state.quantity }});
+		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update({ paymentVerified: true, credits: this.state.quantity }).then(() => {
+			this.props.dispatch(login(this.state.user));
 			this.props.dispatch(push(this.props.next || '/dashboard'));
 			this.props.dispatch(resetNext());
 		});
@@ -147,8 +151,8 @@ class Payment extends React.Component {
 
 	render() {
 		// var errors = this.state.error ? <p> {this.state.error} </p> : '';
-		const { quantity, fullname } = this.state;
-		const firstname = fullname.split(' ')[0];
+		const { quantity, user } = this.state;
+		const firstname = ((user && user.displayName) || '').split(' ')[0];
 		return (
 			<div className="container" style={{minHeight: 'calc(100vh - 72px)'}}>
 				<div className="row pb-5">
@@ -187,4 +191,6 @@ class Payment extends React.Component {
 	}
 }
 
-export default connect()(Payment);
+export default connect(state=>({
+	user: state.auth.user
+}))(Payment);

@@ -32,11 +32,14 @@ class Signup extends React.Component {
 
 				// add User Data to database
 				firebase.database().ref('/users/' + user.uid).set({
-					name: this.state.fullname,
+					displayName: this.state.fullname,
 					email: user.email,
-					photoUrl: user.photoURL,
+					photoUrl: user.photoURL || 'http://via.placeholder.com/100x100',
 					singInMethod: 'email',
-					paymentVerified: false
+					paymentVerified: false,
+					credits: 0,
+					activities: [],
+					resumes: []
 				})
 
 				// send Verification Email
@@ -69,15 +72,18 @@ class Signup extends React.Component {
 				if(!email) {
 					// add User Data to database
 					firebase.database().ref('/users/' + user.uid).set({
-						name: user.displayName,
+						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,
 						singInMethod: 'google',
-						paymentVerified: false
+						paymentVerified: false,
+						credits: 0,
+						activities: [],
+						resumes: []
 					})
 				} else {
 					firebase.database().ref('/users/' + user.uid).update({
-						name: user.displayName,
+						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,
 						singInMethod: 'google'
@@ -143,4 +149,6 @@ class Signup extends React.Component {
 	}
 }
 
-export default connect()(Signup);
+export default connect(state=>({
+	user: state.auth.user
+}))(Signup);

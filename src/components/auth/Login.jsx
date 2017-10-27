@@ -20,7 +20,7 @@ class Login extends React.Component {
 		firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
 			.then(() => {
 				this.setState({ step: 2 });
-  			NotificationManager.error('Loading...', '', 3000);
+  			NotificationManager.success('Loading...', '', 3000);
 			})
 			.catch((error) => {
   			NotificationManager.error(error.message, '', 3000);
@@ -43,15 +43,18 @@ class Login extends React.Component {
 				if(!email) {
 					// add User Data to database
 					firebase.database().ref('/users/' + user.uid).set({
-						name: user.displayName,
+						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,
 						singInMethod: 'google',
-						paymentVerified: false
+						paymentVerified: false,
+						credits: 0,
+						activities: [],
+						resumes: []
 					})
 				} else {
 					firebase.database().ref('/users/' + user.uid).update({
-						name: user.displayName,
+						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,
 						singInMethod: 'google'
@@ -65,7 +68,7 @@ class Login extends React.Component {
 
 	render() {
 		// var errors = this.state.error ? <p> {this.state.error} </p> : '';
-		const { loading } = this.state;
+		const { step } = this.state;
 		return (
 			<div className="container" style={{minHeight: 'calc(100vh - 72px)'}}>
 				<div className="row pb-5">
@@ -79,12 +82,16 @@ class Login extends React.Component {
 								<input type="password" className="form-control login-control" placeholder="Enter Password" value={this.state.password} onChange={this.onInputChange.bind(this, 'password')} required />
 							</div>
 							<div className="d-flex justify-content-between align-items-center">
-								<button type="submit" className="btn btn-login" disabled={loading}>
-									{ loading ? (
-											'Checking...'
-									) : (
-											'Login'
-									) }
+								<button type="submit" className="btn btn-login" disabled={step>0}>
+									{
+										(() => {
+											switch(step) {
+												case 1: return 'Checking...';
+												case 2: return 'Redirecting...';
+												default: return 'Login';
+											}
+										})()
+									}
 								</button>
 								<Link to="/forgot" className="link-forgot">UGH..Forgot my password</Link>
 							</div>
@@ -103,4 +110,6 @@ class Login extends React.Component {
 	}
 }
 
-export default connect()(Login);
+export default connect(state=>({
+	user: state.auth.user
+}))(Login);

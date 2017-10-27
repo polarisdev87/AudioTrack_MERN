@@ -1,0 +1,108 @@
+@import 'variables.scss';
+
+.profile-container {
+	padding: 3rem;
+
+	h2 {
+		font-size: 25px;
+		font-weight: 600;
+		letter-spacing: 0;
+		color: #000000;
+	}
+
+	.profile-img-upload {
+		display: flex;
+		align-items: center;
+		.profile-img {
+			flex: 0 0 92px;
+			margin-right: 2rem;
+			img {
+				width: 92px;
+				height: 92px;
+				border-radius: 50%;
+				display: block;
+			}
+		}
+		.profile-img-upload-link {
+			a {
+				display: block;
+				position: relative;
+				input {
+					opacity: 0;
+					position: absolute;
+					left: 0;
+					top: 0;
+					width: 100%;
+					height: 100%;
+					display: flex;
+					z-index: 99;
+					&:before {
+						content: '';
+						display: block;
+						position: absolute;
+						width: 100%;
+						height: 100%;
+						left: 0;
+						top: 0;
+						cursor: pointer;
+					}
+				}
+				span {
+					text-decoration: underline;
+					font-size: 15px;
+					letter-spacing: 0.4px;
+					color: $azure;
+				}
+			}
+		}
+	}
+
+	label {
+		font-size: 18px;
+		letter-spacing: 0;
+		color: #4a4a4a;
+		margin: 1.5rem 0;
+	}
+
+	input[type=text], input[type=password], input[type=email] {
+		font-size: 18px;
+		letter-spacing: 0;
+		color: #000000;
+
+		border-radius: 5px;
+		background-color: #ffffff;
+		border: solid 1px #b1bfcd;
+
+		padding: 18px 24px;
+	}
+
+	hr {
+    border-top-style: dashed;
+	}
+
+	.account-delete-container {
+		span {
+			font-size: 18px;
+			letter-spacing: 0;
+			text-align: left;
+			color: #4a4a4a;
+		}
+		button {
+			border-radius: 2px;
+			font-size: 20px;
+			letter-spacing: 0;
+			color: #ffffff;
+			padding: 17px 50px;
+			background: $grapefruit;
+			&:hover {
+				color: #fff;
+				background: darken($grapefruit, 5%);
+			}
+			&:focus, &:active {
+				outline: 0 none;
+				box-shadow: none;
+			}
+		}
+	}
+
+}

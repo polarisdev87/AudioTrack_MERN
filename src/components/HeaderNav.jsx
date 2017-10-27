@@ -3,6 +3,9 @@ import { connect } from 'react-redux'
 import { Link } from 'react-router';
 import Scrollchor from 'react-scrollchor';
 import { Collapse, NavbarToggler } from 'reactstrap';
+import ButtonBuyCredit from './header/ButtonBuyCredit';
+import ActivityBox from './header/ActivityBox';
+import ProfileBox from './header/ProfileBox';
 
 class HeaderNav extends React.Component {
   state = {
@@ -14,14 +17,17 @@ class HeaderNav extends React.Component {
     });
   }
 	render() {
-    const { loaded } = this.props;
-    const isHome = this.props.location.pathname === '/';
-    const isLogin = this.props.location.pathname === '/login';
-    const isSignup = this.props.location.pathname === '/signup';
-    const isForgot = this.props.location.pathname === '/forgot';
-    const isConfirm = this.props.location.pathname === '/confirm';
-    const isPayment = this.props.location.pathname === '/payment';
-    const isAuthenticated = this.props.user !== null;
+    const { loaded, user } = this.props;
+    const { pathname } = this.props.location;
+    const isHome = pathname === '/';
+    const isLogin = pathname === '/login';
+    const isSignup = pathname === '/signup';
+    const isForgot = pathname === '/forgot';
+    const isConfirm = pathname === '/confirm';
+    const isPayment = pathname === '/payment';
+    const isDashboard = pathname === '/dashboard';
+    const isProfile = pathname === '/profile';
+    const isAuthenticated = user !== null;
 		return (
 			<nav className="navbar navbar-expand-md navbar-light bg-white header-nav fixed-top">
         <div className="container">
@@ -40,44 +46,49 @@ class HeaderNav extends React.Component {
                   <li className="nav-item" key='pricing'>
                     <Scrollchor to="#pricing" className="nav-link">Pricing</Scrollchor>
                   </li>
-                ] : '' }
+                ] : null }
                 { isLogin ? (
-                  <li className="nav-item" key='login'>
+                  <li className="nav-item">
                     <Link to="/login" className="nav-link active">Login</Link>
                   </li>
-                ) : ''}
-                { isSignup || isPayment ? (
-                  <li className="nav-item" key='signup'>
+                ) : null }
+                { isSignup || isPayment || isConfirm ? (
+                  <li className="nav-item">
                     <Link to="/signup" className="nav-link active">Sign Up</Link>
                   </li>
-                ) : ''}
+                ) : null }
                 { isForgot ? (
-                  <li className="nav-item" key='forgot'>
+                  <li className="nav-item">
                     <Link to="/forgot" className="nav-link active">Forgot Password</Link>
                   </li>
-                ) : ''}
-                { isConfirm ? (
-                  <li className="nav-item" key='forgot'>
-                    <Link to="/signup" className="nav-link active">Sign Up</Link>
+                ) : null }
+                { isDashboard ? (
+                  <li className="nav-item">
+                    <Link to="/dashboard" className="nav-link active with-top-border">My Resumes</Link> 
                   </li>
-                ) : ''}
+                ) : null }
               </ul>
               <div className="navbar-right nav-links">
                 { isLogin ? (
                   <Link to='/signup' className="nav-link single-action">Don’t have an account? Sign up!</Link>
-                ) : ''}
+                ) : null }
                 { isSignup || isPayment ? (
                   <Link to='/login' className="nav-link single-action">Have an account? Sign in!</Link>
-                ) : ''}
+                ) : null }
                 { isForgot || isConfirm ? (
                   <Link to='/login' className="nav-link single-action">Login</Link>
-                ) : ''}
+                ) : null }
                 { isHome ? (
                   <div className="inline-buttons">
                     <Link to="/login" className="btn btn-login">Login</Link>
                     <Link to="/signup" className="btn btn-signup">Sign Up</Link>
                   </div>
-                ) : ''}
+                ) : null }
+                { isDashboard || isProfile ? [
+                  <ButtonBuyCredit { ...this.props } key="button-buy-credit" />,
+                  <ActivityBox type="all" key="activity-box-all" />,
+                  <ProfileBox key="profile-box" />
+                ] : null }
               </div>
             </Collapse>
           )}
@@ -87,4 +98,6 @@ class HeaderNav extends React.Component {
 	}
 }
 
-export default connect()(HeaderNav);
+export default connect(state=>({
+  user: state.auth.user
+}))(HeaderNav);

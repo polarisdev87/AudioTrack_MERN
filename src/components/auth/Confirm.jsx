@@ -5,7 +5,7 @@ import 'react-notifications/lib/notifications.css';
 import {NotificationContainer, NotificationManager} from 'react-notifications';
 
 
-class Forgot extends React.Component {
+class Confirm extends React.Component {
 	state = {
 		sent: false,
 		error: null
@@ -51,4 +51,6 @@ class Forgot extends React.Component {
 	}
 }
 
-export default connect()(Forgot);
+export default connect(state=>({
+	user: state.auth.user
+}))(Confirm);

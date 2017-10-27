@@ -37,23 +37,24 @@ class App extends React.Component {
 		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
 				firebase.database().ref('/users/' + user.uid).on('value', (snapshot) => {
-				  let paymentVerified = (snapshot.val() && snapshot.val().paymentVerified) || false;
+					const currentUser = snapshot.val();
+					this.setState({ user: { ...currentUser }});
+				  let paymentVerified = (currentUser && currentUser.paymentVerified) || false;
 				  if(paymentVerified) {
-						if(!user.emailVerified) {
-							this.props.onLogin(user);
+						if(!user.emailVerified && false) {
+							this.props.onLogin(currentUser);
 							this.props.onRedirect(this.props.next || '/confirm');
 							this.props.onResetNext();
 							if (!this.state.loaded) {
 								this.setState({ loaded: true });
 							}
 						} else {
-							this.props.onLogin(user);
+							this.props.onLogin(currentUser);
 							this.props.onRedirect(this.props.next || '/dashboard');
-							this.setState({ user: firebase.auth().currentUser })
 							this.props.onResetNext();
 						}
 				  } else {
-						this.props.onLogin(user);
+						this.props.onLogin(currentUser);
 				  	this.props.onRedirect(this.props.next || '/payment');
 						this.props.onResetNext();
 				  }

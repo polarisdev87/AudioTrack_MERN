@@ -2,13 +2,18 @@
 
 .header-nav {
 	width: 100%;
-	padding: 17.25px 0;
+	padding: 0;
 	z-index: 99;
 	box-shadow: 0 2px 2px 0 #efefef;
 	.navbar-brand {
 		font-size: 20px;
 		font-weight: 900;
 		letter-spacing: 0.3px;
+		padding: 0;
+		line-height: 72px;
+	}
+	.header-collapse {
+		line-height: 72px;
 	}
 	.navbar-toggler {
 		margin: 0 2rem;
@@ -17,11 +22,15 @@
 		.nav-item {
 			margin-left: 2rem;
 			margin-right: 2rem;
+	    display: flex;
+	    align-items: center;
 		}
 		.nav-link {
 			font-size: 15px;
 			letter-spacing: 0.3px;
 			color: #4a4a4a;
+			padding-top: 0;
+			padding-bottom: 0;
 			&:hover, &:active {
 				color: #6a6a6a;
 			}
@@ -33,20 +42,52 @@
 				font-weight: 600;
 				color: $azure;
 			}
+			&.with-top-border {
+				position: relative;
+				&:before {
+					content: '';
+					display: block;
+					background: $turquoise;
+					height: 3px;
+					width: 100%;
+					position: absolute;
+					left: 0;
+					top: 0;
+				}
+			}
 		}
+	}
+	.navbar-right {
+		display: flex;
+		align-items: center;
 	}
 }
 .header-collapse.show {
+	margin-bottom: 17.25px;
+	line-height: initial;
 	.navbar-nav {
 		.nav-item {
 			margin-left: 0;
+			.nav-link {
+				padding: 9.25px 0;
+			}
+		}
+	}
+	.navbar-right {
+		margin-left: 3rem;
+		.nav-link {
+			padding: 9.25px 0;
 		}
 	}
 	.inline-buttons {
+    flex: 1 0 100%;
 		justify-content: center;
 		a {
 			margin: 0.5rem 3rem;
 		}
+	}
+	.nav-link.with-top-border {
+		border-top: 0;
 	}
 }
 .inline-buttons {
@@ -80,5 +121,203 @@
 	background: $dark-grey-blue;
 	&:hover {
 		background: darken($dark-grey-blue, 5%);
+	}
+}
+.buy-credit-container {
+	margin: 0 3rem;
+}
+.btn-buy-credit {
+	border-radius: 5px;
+	background: $azure;
+	font-size: 10px;
+	letter-spacing: 0;
+	color: #ffffff;
+	padding: 10px 18px;
+	border: 0;
+	outline: 0 none;
+	position: relative;
+	overflow: hidden;
+	&:focus {
+		box-shadow: none;
+	}
+	&:hover:after {
+		content: 'Buy Credits';
+		position: absolute;
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		left: 0;
+		top: 0;
+		width: 100%;
+		height: 100%;
+		background: $dark-grey-blue;
+
+	}
+}
+
+.modal-buy-credit {
+	max-width: 430px;
+	margin-top: 140px;
+	.modal-content {
+		border-radius: 0;
+		background: transparent;
+		border: 0 none;
+		.modal-buy-credit-content {
+			.modal-buy-credit-control-container {
+				border-radius: 2px;
+				background-color: #ffffff;
+				border: solid 2px $turquoise;
+				padding: 1.5rem;
+
+				.modal-buy-credit-label {
+					font-size: 20px;
+					font-weight: 500;
+					letter-spacing: 0.2px;
+					color: #000000;
+					text-align: center;
+				}
+
+				.price-control {
+					display: flex;
+					align-items: center;
+					justify-content: space-between;
+					padding: 0 5%;
+					margin: 3rem 0;
+					.quantity {
+						font-size: 90px;
+						font-weight: 600;
+						letter-spacing: 0.7px;
+						color: #4a4a4a;
+					}
+					.control {
+						margin: 0 2.5rem;
+						cursor: pointer;
+					}
+				}
+
+				.stripe-form {
+					margin-bottom: 2rem;
+				}
+			}
+		}
+		.modal-buy-credit-button-container {
+			margin-top: 20px;
+			button {
+				border-radius: 0;
+				width: 100%;
+				line-height: 63px;
+				padding: 0;
+				font-size: 15px;
+				font-weight: 300;
+				letter-spacing: 0.1px;
+				color: #ffffff;
+			}
+		}
+	}
+}
+
+.activity-container {
+	margin: 0 3rem;
+	.activity-trigger {
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+	}
+}
+.activity-popover {
+	width: 275px;
+	height: 305px;
+	background-color: #ffffff;
+	box-shadow: 0 2px 4px 0 #dbdbdb;
+	border: solid 1px #efefef;
+
+	.popover-inner {
+		width: 100%;
+		height: 100%;
+		.popover-body {
+			width: 100%;
+			height: 100%;
+			padding: 1rem 0;
+		}
+	}
+
+	.arrow::before, .arrow::before {
+		border-bottom-color: #efefef !important;
+	}
+
+	.activity-logs-container {
+		display: flex;
+		flex: 1 0 100%;
+		height: 100%;
+		flex-direction: column;
+		.activity-logs-header {
+			margin: 0 1rem 1rem;
+		}
+		.activity-logs-content {
+			height: 100%;
+			padding: 1rem 0 1rem 1rem;
+			overflow-y: auto;
+			&.empty {
+				padding-right: 1rem;
+				display: flex;
+				align-items: center;
+				justify-content: center;
+				.no-logs {
+					color: #dbdbdb;
+					text-align: center;
+					div {
+						font-size: 15px;
+						font-weight: 300;
+						letter-spacing: 0;
+						text-align: left;
+						color: #dbdbdb;
+					}
+				}
+			}
+		}
+	}
+
+	.activity-logs-header {
+		text-align: center;
+		position: relative;
+		.activity-logs-type {
+			font-size: 12px;
+			font-weight: 600;
+			letter-spacing: 0.2px;
+			color: #000000;
+		}
+		.activity-logs-action {
+			position: absolute;
+			right: 0;
+			top: 0;
+			.action-clear {
+				font-size: 10px;
+				letter-spacing: 0.2px;
+				color: #ff0000;
+				cursor: pointer;
+			}
+		}
+	}
+}
+
+.profilebox-container {
+	margin: 0 3rem;
+	.profilebox-trigger {
+		display: block;
+		cursor: pointer;
+		img {
+			width: 24px;
+			height: 24px;
+			border-radius: 50%;
+		}
+	}
+	.profilebox-links {
+		.dropdown-item {
+			line-height: 20px;
+			a {
+				display: block;
+				text-decoration: none;
+			}
+		}
 	}
 }

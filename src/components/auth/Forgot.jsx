@@ -62,4 +62,6 @@ class Forgot extends React.Component {
 	}
 }
 
-export default connect()(Forgot);
+export default connect(state=>({
+	user: state.auth.user
+}))(Forgot);
