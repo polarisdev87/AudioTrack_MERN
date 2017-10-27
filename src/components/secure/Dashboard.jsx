@@ -209,7 +209,7 @@ class Dashboard extends React.Component {
 							</div> }
 							{ resumes && <div className="resumes-list">
 								{
-									resumes.map((resume, idx) => <ResumeThumbnail resume={resume} />)
+									resumes.map((resume, idx) => <ResumeThumbnail resume={resume} key={idx} />)
 								}
 							</div> }
 						</div>
