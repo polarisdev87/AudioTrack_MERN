@@ -104,10 +104,8 @@
 					height: 100%;
 					background: rgba(255,0,0,0.3);
 					cursor: pointer;
-					z-index: 99;
 				}
 				.resume-info {
-					z-index: 99;
 					position: absolute;
 					width: 100%;
 					height: 105px;
@@ -141,7 +139,6 @@
 						align-items: center;
 						padding: 1.25rem;
 						position: relative;
-						z-index: 99;
 						.resume-state {
 							display: flex;
 							align-items: center;
