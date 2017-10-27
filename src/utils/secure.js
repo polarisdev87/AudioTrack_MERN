@@ -12,7 +12,7 @@ export function requireAuth(store) {
 				pathname: '/login',
 			})
 		} else {
-			if(!firebase.auth().currentUser.emailVerified && false) {
+			if(!firebase.auth().currentUser.emailVerified) {
 				store.dispatch(setNext(nextState.location.pathname));
 				replace({
 					pathname: '/confirm',

@@ -41,7 +41,7 @@ class App extends React.Component {
 					this.setState({ user: { ...currentUser }});
 				  let paymentVerified = (currentUser && currentUser.paymentVerified) || false;
 				  if(paymentVerified) {
-						if(!user.emailVerified && false) {
+						if(!user.emailVerified) {
 							this.props.onLogin(currentUser);
 							this.props.onRedirect(this.props.next || '/confirm');
 							this.props.onResetNext();
