@@ -1,11 +1,12 @@
 import React from 'react';
 import * as firebase from 'firebase';
 import { connect } from 'react-redux';
-import { FormGroup, Label, Input } from 'reactstrap';
+import { FormGroup, Label, Input, Modal } from 'reactstrap';
 import { NotificationManager } from 'react-notifications';
 import Dropzone from 'react-dropzone';
 import { resetNext } from '../../actions/auth';
 import { push } from 'react-router-redux';
+import classnames from 'classnames';
 
 let dropzoneRef, uploadTask;
 
@@ -14,12 +15,24 @@ class Profile extends React.Component {
 		...this.props.user,
 		uid: firebase.auth().currentUser.uid,
 		password: '',
-		old_user: {...this.props.user, uid: firebase.auth().currentUser.uid}
+		verify_password: '',
+		old_user: {...this.props.user, uid: firebase.auth().currentUser.uid},
+		modal: false,
+		mode: ''
 	};
 
 	componentWillReceiveProps(nextProps) {
 		this.setState({...nextProps.user});
 	}
+
+  toggle = () => {
+    this.setState({
+      modal: !this.state.modal
+    });
+    if(!this.state.modal) {
+    	this.setState({ verify_password: '' });
+    }
+  }
 
 	onInputChange(name, event) {
 		var change = {};
@@ -43,9 +56,13 @@ class Profile extends React.Component {
 
 	  		NotificationManager.success('Updating Profile...', '');
 
-				firebase.database().ref('/users/' + uid).update({ photoUrl: downloadURL }).then(() => {
+	  		let promise_list = [];
+	  		promise_list.push(firebase.auth().currentUser.updateProfile({ photoURL: downloadURL }));
+				promise_list.push(firebase.database().ref('/users/' + uid).update({ photoUrl: downloadURL }))
+
+				Promise.all([...promise_list]).then(() => {
+	  			NotificationManager.success('Profile updated successfully', '');
 					this.props.dispatch(push(this.props.next || '/profile'));
-				
 				});
 
 			});
@@ -54,27 +71,56 @@ class Profile extends React.Component {
   }
 
   onChangePassword = () => {
-  // 	const { password } = this.state;
-  // 	const user = firebase.auth().currentUser;
-		// user.updatePassword(password).then(function() {
-	 //  	NotificationManager.success('Password changed successfully', '');
-		// }).catch(function(error) {
-	 //  	NotificationManager.error('Error occured while changing password', '');
-		// });
-		// const { email } = this.state;
-		// const user = firebase.auth().currentUser;
-		// const credential = firebase.auth.EmailAuthProvider.credential(
-		//   email, 
-		//   'test'
-		// );
+  	this.toggle();
+  	this.setState({ mode: 'password'});
+  }
 
-		// // Prompt the user to re-provide their sign-in credentials
+  onUpdateProfile = () => {
+  	this.toggle();
+  	this.setState({ mode: 'email'});
+  }
 
-		// user.reauthenticateWithCredential(credential).then(function() {
-		//   // User re-authenticated.
-		// }).catch(function(error) {
-		//   // An error happened.
-		// });
+  verifyCredentials = () => {
+		const { email, verify_password, password, mode, displayName, old_user, uid } = this.state;
+		const user = firebase.auth().currentUser;
+		const credential = firebase.auth.EmailAuthProvider.credential(old_user.email, verify_password);
+		user.reauthenticateWithCredential(credential).then(() => {
+		  // User re-authenticated.
+
+		  if(mode === 'password') {
+				user.updatePassword(password).then(() => {
+			  	NotificationManager.success('Password changed successfully', '');
+			  	this.setState({ password: '' });
+			  	this.toggle();
+				}).catch((error) => {
+			  	NotificationManager.error('Error occured while changing password', '');
+			  	this.setState({ password: '' });
+			  	this.toggle();
+				});
+			} else {
+		  	let promise_list = [];
+		  	let updates = {};
+				if(old_user.displayName !== displayName) {
+					updates['/users/' + uid + '/displayName'] = displayName;
+					promise_list.push(user.updateProfile({ displayName }));
+				}
+				if(old_user.email !== email) {
+					updates['/users/' + uid + '/email'] = email;
+					promise_list.push(user.updateEmail(email));
+				}
+				promise_list.push(firebase.database().ref().update(updates));
+				Promise.all([...promise_list]).then(() => {
+			  	NotificationManager.success('Profile updated successfully', '');
+			  	this.toggle();
+				}).catch(() => {
+			  	NotificationManager.error('Error occured while updating profile.', '');
+			  	this.toggle();
+				});
+			}
+		}).catch((error) => {
+		  // An error happened.
+	  	NotificationManager.error('Password is wrong, please try again ...', '');
+		});
   }
 
   onDeleteAccount = () => {
@@ -88,8 +134,6 @@ class Profile extends React.Component {
 
 			for (let resume_id in resumes) {
 		    if (!resumes.hasOwnProperty(resume_id)) continue;
-
-		    let resume = resumes[resume_id];
 
 				let resumeRef = storageRef.child('resumes/' + uid + '/' + resume_id + '/source.pdf');
 				promise_list.push(resumeRef.delete());
@@ -117,7 +161,7 @@ class Profile extends React.Component {
   }
 
 	render() {
-		const { signInMethod, email, password, displayName, photoUrl, old_user } = this.state;
+		const { signInMethod, email, password, displayName, photoUrl, old_user, verify_password } = this.state;
 		return (
 			<div className="container profile-container">
 
@@ -145,8 +189,8 @@ class Profile extends React.Component {
 						<div className="col-sm-5">
 			        <FormGroup>
 			          <Label>Add New Password</Label>
-			          <Input type="password" name="password" placeholder="Enter your Password..." value={password} onChange={this.onInputChange.bind(this, 'password')} required disabled={signInMethod !== 'email'} />
-			          { password && <div className="mt-5"><span className="btn-change-password" onClick={this.onChangePassword}>Save</span></div> }
+			          <Input type="password" name="password" placeholder="Enter new Password..." value={password} onChange={this.onInputChange.bind(this, 'password')} required disabled={signInMethod !== 'email'} />
+			          { (password && password.length>=6) && <div className="mt-5"><span className="btn-change-password" onClick={this.onChangePassword}>Save</span></div> }
 			        </FormGroup>
 						</div>
 						<div className="col-sm-5">
@@ -157,6 +201,13 @@ class Profile extends React.Component {
 			        { (email!==old_user.email || displayName!==old_user.displayName) && <div className="mt-5"><span className="btn-update-profile" onClick={this.onUpdateProfile}>Update</span></div> }
 						</div>
 					</div>
+	        <Modal isOpen={this.state.modal} toggle={this.toggle} className={classnames(this.props.className, 'modal-verify-credentials')}>
+	        	<div className="modal-verify-credentials-content">
+							<div className="modal-verify-credentials-title">Verify Yourself</div>
+			        <Input type="password" name="password" placeholder="Enter your password to verify" className="input-verify-password" value={verify_password} onChange={this.onInputChange.bind(this, 'verify_password')} required disabled={signInMethod !== 'email'} />
+			        <button className="btn btn-verify-credentials" onClick={this.verifyCredentials}>Verify</button>
+						</div>
+	        </Modal>
 				</div>
 
 				<hr className="dotted-line mt-5 mb-5" />

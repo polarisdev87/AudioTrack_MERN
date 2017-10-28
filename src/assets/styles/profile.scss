@@ -112,10 +112,66 @@
 	}
 	
 
-	.btn-change-password {
+	.btn-change-password, .btn-update-profile {
 		font-size: 20px;
 		letter-spacing: 0;
-		color: #3fb1ff;
+		color: $turquoise;
+		text-decoration: underline;
+		cursor: pointer;
 	}
 
+}
+
+.modal-verify-credentials {
+
+	max-width: 440px;
+	margin-top: 140px;
+	.modal-content {
+		border-radius: 0;
+		background: transparent;
+		border: 0 none;
+	}
+	.modal-verify-credentials-content {
+		border-radius: 4px;
+		background-color: #ffffff;
+		border: solid 3px $dark-grey-blue;
+		padding: 4rem;
+		text-align: center;
+
+		.modal-verify-credentials-title {
+			font-size: 18px;
+			letter-spacing: 0;
+			color: #000000;
+		}
+
+		.input-verify-password {
+			font-size: 13px;
+			letter-spacing: 0;
+			color: #4a4a4a;
+
+			border-radius: 2px;
+			border: solid 1px #b1becd;
+
+			padding: 19px 20px;
+
+			margin: 53px 0;
+		}
+		.btn-verify-credentials {
+
+			font-size: 15px;
+			font-weight: 500;
+			letter-spacing: 0;
+			color: #ffffff;
+			padding: 13px 43px;
+			border-radius: 2px;
+			background: $turquoise;
+			&:hover {
+				background: darken($turquoise, 5%);
+			}
+			&:focus, &:active {
+				outline: 0 none;
+				box-shadow: none;
+			}
+		}
+	}
 }
