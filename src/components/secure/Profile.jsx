@@ -13,7 +13,8 @@ class Profile extends React.Component {
 	state = {
 		...this.props.user,
 		uid: firebase.auth().currentUser.uid,
-		password: ''
+		password: '',
+		old_user: {...this.props.user, uid: firebase.auth().currentUser.uid}
 	};
 
 	componentWillReceiveProps(nextProps) {
@@ -116,8 +117,7 @@ class Profile extends React.Component {
   }
 
 	render() {
-		const { signInMethod, email, password, displayName, photoUrl } = this.state;
-		const { old_user } = this.props;
+		const { signInMethod, email, password, displayName, photoUrl, old_user } = this.state;
 		return (
 			<div className="container profile-container">
 
