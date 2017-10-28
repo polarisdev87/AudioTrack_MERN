@@ -41,6 +41,7 @@ class App extends React.Component {
 				firebase.database().ref('/users/' + user.uid).on('value', (snapshot) => {
 					const currentUser = snapshot.val();
 					const was_profile = this.props.location.pathname === '/profile';
+    			const was_resumeEdit = this.props.location.pathname.indexOf('/edit/') === 0;
 					this.setState({ user: { ...currentUser }});
 				  let paymentVerified = (currentUser && currentUser.paymentVerified) || false;
 				  if(paymentVerified) {
@@ -52,6 +53,8 @@ class App extends React.Component {
 							this.props.onLogin(currentUser);
 							if(was_profile) {
 								this.props.onRedirect(this.props.next || '/profile');
+							} else if(was_resumeEdit) {
+								this.props.onRedirect(this.props.next || this.props.location.pathname);
 							} else {
 								this.props.onRedirect(this.props.next || '/dashboard');
 							}

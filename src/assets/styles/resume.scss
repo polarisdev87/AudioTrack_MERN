@@ -16,7 +16,8 @@
 			justify-content: center;
 			flex-direction: column;
 			margin-top: 3rem;
-			&>div {
+    	position: fixed;
+			&>div, &>a {
 				margin: 1.5rem 2rem;
 				cursor: pointer;
 				border-radius: 50%;

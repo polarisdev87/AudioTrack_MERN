@@ -3,10 +3,6 @@ import * as firebase from 'firebase';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Document, Page } from 'react-pdf';
-import * as Icon from 'react-feather';
-import { NotificationManager } from 'react-notifications';
-import { resetNext } from '../../actions/auth';
-import { push } from 'react-router-redux';
 
 class PreviewResume extends React.Component {
   state = {

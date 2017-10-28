@@ -7,6 +7,7 @@ import * as Icon from 'react-feather';
 import { NotificationManager } from 'react-notifications';
 import { resetNext } from '../../actions/auth';
 import { push } from 'react-router-redux';
+import { Link } from 'react-router';
 
 class EditResume extends React.Component {
   state = {
@@ -42,8 +43,8 @@ class EditResume extends React.Component {
   }
 
   onPreviewResume = () => {
-    this.props.dispatch(push(this.props.next || '/preview/'+this.state.resume.resume_id));
-    this.props.dispatch(resetNext());
+    // this.props.dispatch(push(this.props.next || '/preview/'+this.state.resume.resume_id));
+    // this.props.dispatch(resetNext());
   }
 
   onPublishResume = () => {
@@ -69,7 +70,8 @@ class EditResume extends React.Component {
           <div className="resume-builder">
             <div className="resume-builder-icons">
               <div onClick={this.onDeleteResume}><i className="icon-img icon-trash" style={{backgroundColor: '#f54056' }}><Icon.Trash size={20} color="white" /></i></div>
-              <div onClick={this.onPreviewResume}><i className="icon-img icon-preview" style={{backgroundColor: '#0097ff' }}><Icon.Eye size={20} color="white" /></i></div>
+              {/*<div onClick={this.onPreviewResume}><i className="icon-img icon-preview" style={{backgroundColor: '#0097ff' }}><Icon.Eye size={20} color="white" /></i></div>*/}
+              <Link to={'/preview/' + resume.resume_id} target="_blank"><i className="icon-img icon-preview" style={{backgroundColor: '#0097ff' }}><Icon.Eye size={20} color="white" /></i></Link>
               { !resume.published && <div onClick={this.onPublishResume}><i className="icon-img icon-rocket" style={{backgroundColor: '#00c695' }}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-rocket.svg'} alt="rocket" /></i></div> }
             </div>
           </div>

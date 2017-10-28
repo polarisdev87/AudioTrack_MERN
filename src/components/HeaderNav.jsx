@@ -6,7 +6,9 @@ import { Collapse, NavbarToggler } from 'reactstrap';
 import ButtonBuyCredit from './header/ButtonBuyCredit';
 import ActivityBox from './header/ActivityBox';
 import ProfileBox from './header/ProfileBox';
-import ResumeLink from './header/ResumeLink';
+import ResumePreviewLink from './header/ResumePreviewLink';
+import ResumeEditTitle from './header/ResumeEditTitle';
+import ResumeEditLink from './header/ResumeEditLink';
 
 class HeaderNav extends React.Component {
   state = {
@@ -33,6 +35,10 @@ class HeaderNav extends React.Component {
     const isResumePreview = pathname.indexOf('/preview/') === 0;
     const isResumePublished = pathname.indexOf('/r/') === 0;
     const isAuthenticated = user !== null;
+
+    if(isResumePreview) {
+      return null;
+    }
 		return (
 			<nav className="navbar navbar-expand-md navbar-light bg-white header-nav fixed-top">
         <div className="container">
@@ -72,8 +78,10 @@ class HeaderNav extends React.Component {
                     <Link to="/dashboard" className="nav-link active with-top-border">My Resumes</Link> 
                   </li>
                 ) : null }
-                { isResume ? <ResumeLink {...this.props} /> : null }
+                { isResume ? <ResumePreviewLink {...this.props} /> : null }
+                { isResumeEdit ? <ResumeEditTitle {...this.props} /> : null}
               </ul>
+              { isResumeEdit ? <div className="mr-auto"><ResumeEditLink {...this.props} /></div> : null}
               <div className="navbar-right nav-links">
                 { isLogin ? (
                   <Link to='/signup' className="nav-link single-action">Don’t have an account? Sign up!</Link>

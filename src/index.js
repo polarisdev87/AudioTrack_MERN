@@ -28,7 +28,7 @@ import Profile from './components/secure/Profile'
 import Resume from './components/secure/Resume'
 import PreviewResume from './components/secure/PreviewResume'
 import EditResume from './components/secure/EditResume'
-import Published from './components/secure/Published'
+import Published from './components/public/Published'
 
 const reducer = combineReducers({
 	...reducers,
@@ -51,6 +51,7 @@ ReactDOM.render(
 	<Provider store={store}>
     <StripeProvider apiKey="pk_test_GFZkKo51tFb2tpOiSxsIcAxQ">
 			<Router history={history}>
+				<Route path='r/:resume_id' component={Published}/>
 				<Route path='/' component={App}>
 					<IndexRoute component={Home}/>
 					<Route path='terms' component={Terms}/>
@@ -66,7 +67,6 @@ ReactDOM.render(
 					<Route path='edit/:resume_id' component={EditResume} onEnter={secure}/>
 					<Route path='preview/:resume_id' component={PreviewResume} onEnter={secure}/>
 					<Route path='resume/:resume_id' component={Resume} onEnter={secure}/>
-					<Route path='r/:resume_id' component={Published} onEnter={secure}/>
 				</Route>
 			</Router>
     </StripeProvider>

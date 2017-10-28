@@ -116,7 +116,7 @@ class Profile extends React.Component {
   }
 
 	render() {
-		const { signInMethod, accept, email, password, displayName, photoUrl } = this.state;
+		const { signInMethod, email, password, displayName, photoUrl } = this.state;
 		const { old_user } = this.props;
 		return (
 			<div className="container profile-container">
@@ -144,9 +144,9 @@ class Profile extends React.Component {
 					<div className="row justify-content-between mt-5 mb-5">
 						<div className="col-sm-5">
 			        <FormGroup>
-			          <Label>Password</Label>
+			          <Label>Add New Password</Label>
 			          <Input type="password" name="password" placeholder="Enter your Password..." value={password} onChange={this.onInputChange.bind(this, 'password')} required disabled={signInMethod !== 'email'} />
-			          { password && <div className="mt-5"><span className="btn-change-password" onClick={this.onChangePassword}>Change Password</span></div> }
+			          { password && <div className="mt-5"><span className="btn-change-password" onClick={this.onChangePassword}>Save</span></div> }
 			        </FormGroup>
 						</div>
 						<div className="col-sm-5">
@@ -154,6 +154,7 @@ class Profile extends React.Component {
 			          <Label>Email</Label>
 			          <Input type="email" name="email" placeholder="Enter your Email Address..." value={email} onChange={this.onInputChange.bind(this, 'email')} required disabled={signInMethod !== 'email'} />
 			        </FormGroup>
+			        { (email!=old_user.email || displayName!=old_user.displayName) && <div className="mt-5"><span className="btn-update-profile" onClick={this.onUpdateProfile}>Update</span></div> }
 						</div>
 					</div>
 				</div>
