@@ -154,7 +154,7 @@ class Profile extends React.Component {
 			          <Label>Email</Label>
 			          <Input type="email" name="email" placeholder="Enter your Email Address..." value={email} onChange={this.onInputChange.bind(this, 'email')} required disabled={signInMethod !== 'email'} />
 			        </FormGroup>
-			        { (email!=old_user.email || displayName!=old_user.displayName) && <div className="mt-5"><span className="btn-update-profile" onClick={this.onUpdateProfile}>Update</span></div> }
+			        { (email!==old_user.email || displayName!==old_user.displayName) && <div className="mt-5"><span className="btn-update-profile" onClick={this.onUpdateProfile}>Update</span></div> }
 						</div>
 					</div>
 				</div>

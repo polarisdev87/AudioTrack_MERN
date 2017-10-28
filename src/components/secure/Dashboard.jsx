@@ -8,6 +8,8 @@ import { resetNext } from '../../actions/auth';
 import { push } from 'react-router-redux';
 import { NotificationManager } from 'react-notifications';
 import ResumeThumbnail from './ResumeThumbnail';
+import $ from 'jquery';
+
 
 let dropzoneRef, uploadTask;
 
@@ -58,7 +60,33 @@ class Dashboard extends React.Component {
     });
   }
 
-  onDrop = (files) => {
+  onDrop = (files, rejected) => {
+
+  	let cancelled = false;
+
+  	if(rejected.length > 0) {
+	  	NotificationManager.error('Files are rejected', '');
+  	}
+
+  	if(files.length === 0) {
+  		cancelled = true;
+  	}
+
+  	if(this.state.user.credits === 0) {
+  		cancelled = true;
+	  	NotificationManager.error('You have no credits left to upload resume.', '');
+	  	$('.btn-buy-credit').click();
+  	}
+
+  	if(cancelled) {
+	    this.setState({
+	      files,
+	      dropzoneActive: false,
+	      upload: {...this.state.upload, progress: 0, status: 0}
+	    });
+	    return false;
+  	}
+
   	const { uid } = this.state.user;
 		const newResumeKey = firebase.database().ref().child('resumes').push().key;
 
@@ -141,12 +169,10 @@ class Dashboard extends React.Component {
   }
 
   onOpenFileDialog = () => {
-  	if(this.state.user.credits > 0) {
-	  	dropzoneRef.open();
-	    this.setState({
-	      dropzoneActive: true
-	    });
-	  }
+  	dropzoneRef.open();
+    this.setState({
+      dropzoneActive: true
+    });
   }
 
   onFileDialogCancel = () => {
@@ -163,7 +189,7 @@ class Dashboard extends React.Component {
 
 
 	render() {
-		const { user, loaded, resumes, accept, dropzoneActive, upload } = this.state;
+		const { loaded, resumes, accept, dropzoneActive, upload } = this.state;
 
 		return (
       <Dropzone
@@ -177,7 +203,6 @@ class Dashboard extends React.Component {
         onDragEnter={this.onDragEnter}
         onDragLeave={this.onDragLeave}
         onFileDialogCancel={this.onFileDialogCancel}
-        disabled={user.credits === 0}
       >
 				<div className="container dashboard-container">
 					<div className="dashboard-toolbar">
