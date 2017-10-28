@@ -40,6 +40,7 @@ class App extends React.Component {
 			if (user) {
 				firebase.database().ref('/users/' + user.uid).on('value', (snapshot) => {
 					const currentUser = snapshot.val();
+					const was_profile = this.props.location.pathname === '/profile';
 					this.setState({ user: { ...currentUser }});
 				  let paymentVerified = (currentUser && currentUser.paymentVerified) || false;
 				  if(paymentVerified) {
@@ -47,12 +48,13 @@ class App extends React.Component {
 							this.props.onLogin(currentUser);
 							this.props.onRedirect(this.props.next || '/confirm');
 							this.props.onResetNext();
-							if (!this.state.loaded) {
-								this.setState({ loaded: true });
-							}
 						} else {
 							this.props.onLogin(currentUser);
-							this.props.onRedirect(this.props.next || '/dashboard');
+							if(was_profile) {
+								this.props.onRedirect(this.props.next || '/profile');
+							} else {
+								this.props.onRedirect(this.props.next || '/dashboard');
+							}
 							this.props.onResetNext();
 						}
 				  } else {

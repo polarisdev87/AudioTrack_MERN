@@ -16,10 +16,12 @@
 		.profile-img {
 			flex: 0 0 92px;
 			margin-right: 2rem;
+			cursor: pointer;
+			border-radius: 50%;
+			overflow: hidden;
 			img {
 				width: 92px;
 				height: 92px;
-				border-radius: 50%;
 				display: block;
 			}
 		}
@@ -27,6 +29,7 @@
 			a {
 				display: block;
 				position: relative;
+				cursor: pointer;
 				input {
 					opacity: 0;
 					position: absolute;
@@ -44,7 +47,6 @@
 						height: 100%;
 						left: 0;
 						top: 0;
-						cursor: pointer;
 					}
 				}
 				span {
@@ -74,6 +76,10 @@
 		border: solid 1px #b1bfcd;
 
 		padding: 18px 24px;
+
+		&:disabled {
+			background: transparent;
+		}
 	}
 
 	hr {
@@ -103,6 +109,13 @@
 				box-shadow: none;
 			}
 		}
+	}
+	
+
+	.btn-change-password {
+		font-size: 20px;
+		letter-spacing: 0;
+		color: #3fb1ff;
 	}
 
 }

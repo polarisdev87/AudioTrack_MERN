@@ -45,7 +45,7 @@ class Login extends React.Component {
 						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,
-						singInMethod: 'google',
+						signInMethod: 'google',
 						paymentVerified: false,
 						credits: 0,
 						activities: [],
@@ -57,7 +57,7 @@ class Login extends React.Component {
 						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,
-						singInMethod: 'google'
+						signInMethod: 'google'
 					})
 				}
     	})

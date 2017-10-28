@@ -89,7 +89,7 @@ class ResumeThumbnail extends React.Component {
 									<Icon.Download size={20} /><span>{resume.downloads}</span>
 								</div>
 							</div>
-							{ resume.published && <Link className="resume-link" to={resume.link}><Icon.Link2 size={20} /></Link> }
+							{ resume.published && <Link className="resume-link" to={'/r/'+resume.link}><Icon.Link2 size={20} /></Link> }
 						</div>
 					</div>
 				</div>

@@ -33,8 +33,8 @@ class Signup extends React.Component {
 				firebase.database().ref('/users/' + user.uid).set({
 					displayName: this.state.fullname,
 					email: user.email,
-					photoUrl: user.photoURL || 'http://via.placeholder.com/100x100',
-					singInMethod: 'email',
+					photoUrl: user.photoURL || 'https://firebasestorage.googleapis.com/v0/b/cezan-1903a.appspot.com/o/avatar-big-icon.svg?alt=media&token=70e5663c-b08f-49c5-8073-d6670e6205f2',
+					signInMethod: 'email',
 					paymentVerified: false,
 					credits: 0,
 					activities: [],
@@ -75,7 +75,7 @@ class Signup extends React.Component {
 						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,
-						singInMethod: 'google',
+						signInMethod: 'google',
 						paymentVerified: false,
 						credits: 0,
 						activities: [],
@@ -87,7 +87,7 @@ class Signup extends React.Component {
 						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,
-						singInMethod: 'google'
+						signInMethod: 'google'
 					})
 				}
 			});
