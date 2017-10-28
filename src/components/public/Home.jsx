@@ -137,14 +137,6 @@ class Home extends React.Component {
 					</div>
 				</div>
 				<div className="section bg-duck-egg-blue bottom-offer-section">
-					<div className="container">
-						<div className="row">
-							<div className="col text-center">
-								<div className="section-sub-title pt-5">A $3 dollar investment can take you far!</div>
-								<Link to="/signup" className="btn btn-dark-grey-blue btn-signup mt-5">Sign Up</Link>
-							</div>
-						</div>
-					</div>
           <img className="bp1-group2" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezangroup 2.svg'} alt="" />
           <img className="bp1-image2" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezangroup 2.svg'} alt="" />
           <img className="bp1-image3" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezangroup 2.svg'} alt="" />
@@ -161,6 +153,14 @@ class Home extends React.Component {
           <img className="bp1-image11" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanpath 5.svg'} alt="" />
           <img className="bp1-image12" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanpath 5.svg'} alt="" />
           <img className="bp1-image13" src={process.env.PUBLIC_URL + '/assets/img/shapes/cezanpath 5.svg'} alt="" />
+					<div className="container">
+						<div className="row">
+							<div className="col text-center">
+								<div className="section-sub-title pt-5">A $3 dollar investment can take you far!</div>
+								<Link to="/signup" className="btn btn-dark-grey-blue btn-signup mt-5">Sign Up</Link>
+							</div>
+						</div>
+					</div>
 				</div>
 				<div className="section footer-section">
 					<div className="container pt-4 pb-4">

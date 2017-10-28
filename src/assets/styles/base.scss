@@ -9,12 +9,12 @@ body {
 	font-family: inherit;
 	font-size: inherit;
 	background: $pale-grey;
-	padding-top: 72px;
 	height: 100%;
 	div#root {
 		height: 100%;
 		.wrapper {
 			height: 100%;
+			padding-top: 72px;
 			.content {
 				height: 100%;
 			}

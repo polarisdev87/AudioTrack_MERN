@@ -18,9 +18,11 @@ class Resume extends React.Component {
 	componentWillMount() {
     const { resume_id } = this.props.params;
     this.setState({ resume_id });
-    firebase.database().ref('/resumes/'+resume_id).once('value', (snapshot) => {
-    	this.setState({ resume: {...snapshot.val(), resume_id}})
-    })
+    if(!this.props.user['resumes'] || !this.props.user.resumes[resume_id]) {
+      this.props.dispatch(push(this.props.next || '/404'));
+      this.props.dispatch(resetNext());
+    }
+    this.setState({ resume: {...this.props.user.resumes[resume_id], resume_id}});
 	}
 
   onDocumentLoad = ({ numPages }) => {
@@ -33,11 +35,12 @@ class Resume extends React.Component {
       let updates = {};
       updates['/resumes/' + resume.resume_id] = null;
       updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
-      console.log(updates);
       NotificationManager.success('Resume successfully deleted', '');
       firebase.database().ref().update(updates).then(() => {
-        this.props.dispatch(push(this.props.next || '/dashboard'));
-        this.props.dispatch(resetNext());
+        firebase.storage().ref().child('resumes/' + this.state.user.uid + '/' + resume.resume_id + '/source.pdf').delete().then(() => {
+          this.props.dispatch(push(this.props.next || '/dashboard'));
+          this.props.dispatch(resetNext());
+        })
       });
     }
   }

@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import { createStore, combineReducers, applyMiddleware, compose } from 'redux';
 import { Provider } from 'react-redux';
 import { StripeProvider } from 'react-stripe-elements';
-import { Router, Route, IndexRoute, browserHistory } from 'react-router';
+import { Router, Route, IndexRoute, browserHistory, Redirect } from 'react-router';
 import { syncHistoryWithStore, routerReducer, routerMiddleware } from 'react-router-redux';
 import { requireAuth } from './utils/secure';
 import * as reducers from './reducers'
@@ -29,6 +29,7 @@ import Resume from './components/secure/Resume'
 import PreviewResume from './components/secure/PreviewResume'
 import EditResume from './components/secure/EditResume'
 import Published from './components/public/Published'
+import NotFound from './components/public/NotFound'
 
 const reducer = combineReducers({
 	...reducers,
@@ -52,6 +53,7 @@ ReactDOM.render(
     <StripeProvider apiKey="pk_test_GFZkKo51tFb2tpOiSxsIcAxQ">
 			<Router history={history}>
 				<Route path='r/:resume_id' component={Published}/>
+				<Route path='404' component={NotFound}/>
 				<Route path='/' component={App}>
 					<IndexRoute component={Home}/>
 					<Route path='terms' component={Terms}/>
@@ -67,6 +69,7 @@ ReactDOM.render(
 					<Route path='edit/:resume_id' component={EditResume} onEnter={secure}/>
 					<Route path='preview/:resume_id' component={PreviewResume} onEnter={secure}/>
 					<Route path='resume/:resume_id' component={Resume} onEnter={secure}/>
+					<Redirect from='*' to='/404' />
 				</Route>
 			</Router>
     </StripeProvider>

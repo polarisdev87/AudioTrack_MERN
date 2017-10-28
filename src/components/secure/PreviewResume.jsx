@@ -3,6 +3,8 @@ import * as firebase from 'firebase';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Document, Page } from 'react-pdf';
+import { resetNext } from '../../actions/auth';
+import { push } from 'react-router-redux';
 
 class PreviewResume extends React.Component {
   state = {
@@ -14,9 +16,11 @@ class PreviewResume extends React.Component {
 	componentWillMount() {
     const { resume_id } = this.props.params;
     this.setState({ resume_id });
-    firebase.database().ref('/resumes/'+resume_id).once('value', (snapshot) => {
-    	this.setState({ resume: {...snapshot.val(), resume_id}})
-    })
+    if(!this.props.user['resumes'] || !this.props.user.resumes[resume_id]) {
+      this.props.dispatch(push(this.props.next || '/404'));
+      this.props.dispatch(resetNext());
+    }
+    this.setState({ resume: {...this.props.user.resumes[resume_id], resume_id}});
 	}
 
   onDocumentLoad = ({ numPages }) => {

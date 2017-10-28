@@ -5,6 +5,7 @@ import * as firebase from 'firebase';
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem } from 'reactstrap';
 import * as Icon from 'react-feather';
 import { push } from 'react-router-redux';
+import { resetNext } from '../../actions/auth';
 import { NotificationManager } from 'react-notifications';
 const moment = require('moment');
 const ContentEditable = require("react-contenteditable");
@@ -21,6 +22,12 @@ class ResumeThumbnail extends React.Component {
   		let updates = {};
 			updates['/resumes/' + resume.resume_id] = null;
 			updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
+      firebase.database().ref().update(updates).then(() => {
+        firebase.storage().ref().child('resumes/' + this.state.user.uid + '/' + resume.resume_id + '/source.pdf').delete().then(() => {
+          this.props.dispatch(push(this.props.next || '/dashboard'));
+          this.props.dispatch(resetNext());
+        })
+      });
 			firebase.database().ref().update(updates).then(() => {
 	  		NotificationManager.success('Resume successfully deleted', '');
 			});
