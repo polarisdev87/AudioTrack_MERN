@@ -316,6 +316,7 @@
 
 .profilebox-container {
 	margin: 0 3rem;
+	width: 24px;
 	.profilebox-trigger {
 		display: block;
 		cursor: pointer;
@@ -339,6 +340,8 @@
 .resume-preview-link-container {
 	display: flex;
 	align-items: center;
+	line-height: normal;
+	
 	a {
 		text-decoration: none;
 		color: inherit;

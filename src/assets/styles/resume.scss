@@ -4,19 +4,23 @@
 	padding-top: 3rem;
 	display: flex;
 	justify-content: space-evenly;
+	position: relative;
 	.resume-wrapper {
 		.ReactPDF__Loader, .ReactPDF__Error {
 			text-align: center;
 		}
 	}
 	.resume-builder {
+    position: absolute;
+    left: 1rem;
+    z-index: 9;
 		.resume-builder-icons {
 			display: flex;
 			align-items: center;
 			justify-content: center;
 			flex-direction: column;
 			margin-top: 3rem;
-    	position: fixed;
+			position: fixed;
 			&>div, &>a {
 				margin: 1.5rem 2rem;
 				cursor: pointer;
