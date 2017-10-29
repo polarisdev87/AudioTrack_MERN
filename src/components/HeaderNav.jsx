@@ -81,7 +81,7 @@ class HeaderNav extends React.Component {
                 { isResume ? <ResumePreviewLink {...this.props} /> : null }
                 { isResumeEdit ? <ResumeEditTitle {...this.props} /> : null}
               </ul>
-              { isResumeEdit ? <div className="mr-auto"><ResumeEditLink {...this.props} /></div> : null}
+              { isResumeEdit ? <div className="header-center-container"><ResumeEditLink {...this.props} /></div> : null}
               <div className="navbar-right nav-links">
                 { isLogin ? (
                   <Link to='/signup' className="nav-link single-action">Don’t have an account? Sign up!</Link>

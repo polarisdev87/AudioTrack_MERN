@@ -43,7 +43,7 @@ class ResumeEditLink extends React.Component {
 				updates['/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id + '/link'] = this.state.resume_link || this.state.resume.link;
 				firebase.database().ref().update(updates).then(() => {
 					this.setState({ resume: {...this.state.resume, link: this.state.resume_link}});
-			  	NotificationManager.success('Resume Title successfully updated', '');
+			  	NotificationManager.success('Resume Link successfully updated', '');
 				});
 			}
 		}
