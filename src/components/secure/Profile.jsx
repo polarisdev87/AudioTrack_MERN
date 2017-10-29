@@ -204,7 +204,7 @@ class Profile extends React.Component {
 	        <Modal isOpen={this.state.modal} toggle={this.toggle} className={classnames(this.props.className, 'modal-verify-credentials')}>
 	        	<div className="modal-verify-credentials-content">
 							<div className="modal-verify-credentials-title">Verify Yourself</div>
-			        <Input type="password" name="password" placeholder="Enter your password to verify" className="input-verify-password" value={verify_password} onChange={this.onInputChange.bind(this, 'verify_password')} required disabled={signInMethod !== 'email'} />
+			        <Input type="password" name="password" placeholder="Enter current password" className="input-verify-password" value={verify_password} onChange={this.onInputChange.bind(this, 'verify_password')} required disabled={signInMethod !== 'email'} />
 			        <button className="btn btn-verify-credentials" onClick={this.verifyCredentials}>Verify</button>
 						</div>
 	        </Modal>
