@@ -4,6 +4,8 @@ import { connect } from 'react-redux';
 import { NotificationManager } from 'react-notifications';
 const ContentEditable = require("react-contenteditable");
 import $ from 'jquery';
+import { resetNext } from '../../actions/auth';
+import { push } from 'react-router-redux';
 
 class ResumeEditLink extends React.Component {
 	state = {
@@ -15,7 +17,6 @@ class ResumeEditLink extends React.Component {
 
 	componentWillMount() {
     const { resume_id } = this.props.params;
-    this.setState({ resume_id });
     firebase.database().ref('/resumes/'+resume_id).once('value', (snapshot) => {
     	const resume = snapshot.val();
     	this.setState({ resume: {...resume, resume_id}, resume_link: resume.link });
@@ -33,17 +34,48 @@ class ResumeEditLink extends React.Component {
   	}
   }
 
+  validateResume = () => {
+    const { resume, resume_link } = this.state;
+    return new Promise((resolve, reject) => {
+      firebase.database().ref().child('resumes').once('value', (snapshot) => {
+        let resumes = [];
+        snapshot.forEach((childSnapshot) => {
+          resumes.push({...childSnapshot.val(), resume_id: childSnapshot.key});
+        });
+        resumes.every((r) => {
+          if(r.resume_id !== resume.resume_id && r.published===true) {
+            if(resume_link === r.link) {
+              reject();
+              return false;
+            }
+          }
+          return true;
+        });
+        resolve();
+      });
+    });
+  }
+
 	updateLink = () => {
 		if(!this.state.resume_link.trim()) {
 			this.setState({ resume_link: this.state.resume.link});
 		} else {
 			if(this.state.resume_link !== this.state.resume.link) {
-				let updates = {};
-				updates['/resumes/' + this.state.resume.resume_id + '/link'] = this.state.resume_link || this.state.resume.link;
-				updates['/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id + '/link'] = this.state.resume_link || this.state.resume.link;
-				firebase.database().ref().update(updates).then(() => {
-					this.setState({ resume: {...this.state.resume, link: this.state.resume_link}});
-			  	NotificationManager.success('Resume Link successfully updated', '');
+				this.validateResume().then(() => {
+					let updates = {};
+					updates['/resumes/' + this.state.resume.resume_id + '/link'] = this.state.resume_link || this.state.resume.link;
+					updates['/resumes/' + this.state.resume.resume_id + '/link_modified'] = true
+					updates['/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id + '/link'] = this.state.resume_link || this.state.resume.link;
+					updates['/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id + '/link_modified'] = true;
+					firebase.database().ref().update(updates).then(() => {
+						this.setState({ resume: {...this.state.resume, link: this.state.resume_link}});
+				  	NotificationManager.success('Resume Link successfully updated', '');
+						// this.props.dispatch(push(this.props.next || '/edit/'+this.state.resume.resume_id));
+						// this.props.dispatch(resetNext());
+					});
+				}).catch((e) => {
+      		NotificationManager.error('Duplicate Link exists...', 'Cannot publish this resume.');
+					this.setState({ resume_link: this.state.resume.link});
 				});
 			}
 		}
@@ -54,7 +86,7 @@ class ResumeEditLink extends React.Component {
 		if(!resume) return null;
 		return (
 			<div className="resume-edit-link-container">
-				<span>www.cezan.co/</span><ContentEditable className="resume-link" html={resume_link} disabled={editable} onKeyPress={(e) => {this.handleKeyPress(e)}} onChange={(e) => {this.handleChange(e)}} onBlur={this.updateLink} />
+				<span>www.cezan.co/r/</span><ContentEditable className="resume-link" html={resume_link} disabled={editable} onKeyPress={(e) => {this.handleKeyPress(e)}} onChange={(e) => {this.handleChange(e)}} onBlur={this.updateLink} />
 			</div>
 		);
 	}

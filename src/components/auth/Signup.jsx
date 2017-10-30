@@ -86,6 +86,7 @@ class Signup extends React.Component {
 					})
 				} else {
 					firebase.database().ref('/users/' + user.uid).update({
+						...snapshot.val(),
 						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,

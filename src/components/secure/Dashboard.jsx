@@ -141,7 +141,8 @@ class Dashboard extends React.Component {
 					modified: new Date(),
 					title: 'Resume ' + this.state.user.lifetime,
 					published: false,
-					link: 'Title Your Resume'
+					link: 'Title Your Resume',
+					link_modified: false
 				};
 				updates['/resumes/' + newResumeKey] = resumeData;
 				updates['/users/' + uid + '/resumes/' + newResumeKey] = resumeData;

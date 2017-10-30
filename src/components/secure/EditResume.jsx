@@ -22,13 +22,21 @@ class EditResume extends React.Component {
 
 	componentWillMount() {
     const { resume_id } = this.props.params;
-    this.setState({ resume_id });
     if(!this.props.user['resumes'] || !this.props.user.resumes[resume_id]) {
       this.props.dispatch(push(this.props.next || '/404'));
       this.props.dispatch(resetNext());
     }
     this.setState({ resume: {...this.props.user.resumes[resume_id], resume_id}});
 	}
+
+  componentWillReceiveProps() {
+    const { resume_id } = this.state.resume;
+    if(!this.props.user['resumes'] || !this.props.user.resumes[resume_id]) {
+      this.props.dispatch(push(this.props.next || '/404'));
+      this.props.dispatch(resetNext());
+    }
+    this.setState({ resume: {...this.props.user.resumes[resume_id], resume_id}});
+  }
 
   onDocumentLoad = ({ numPages }) => {
     this.setState({ numPages });
@@ -48,16 +56,51 @@ class EditResume extends React.Component {
     });
   }
 
-  onPublishResume = () => {
+  validateResume = () => {
     const { resume } = this.state;
-    let updates = {};
-    updates['/resumes/' + resume.resume_id + '/published'] = true;
-    updates['/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id + '/published'] = true;
-    updates['/users/' + this.state.user.uid + '/credits'] = this.state.user.credits - 1;
-    firebase.database().ref().update(updates).then(() => {
-      NotificationManager.success('Resume published successfully', '');
-      this.props.dispatch(push(this.props.next || '/dashboard'));
-      this.props.dispatch(resetNext());
+    return new Promise((resolve, reject) => {
+      if(resume.link_modified === true) {
+        return resolve();
+      } else {
+        firebase.database().ref().child('resumes').once('value', (snapshot) => {
+          let resumes = [];
+          snapshot.forEach((childSnapshot) => {
+            resumes.push({...childSnapshot.val(), resume_id: childSnapshot.key});
+          });
+          resumes.every((r) => {
+            if(r.resume_id !== resume.resume_id && r.published===true) {
+              if(resume.link === r.link) {
+                reject();
+                return false;
+              }
+            }
+            return true;
+          });
+          resolve();
+        });
+      }
+    });
+  }
+
+  onPublishResume = () => {
+    this.validateResume().then(() => {
+      const { resume } = this.state;
+      let updates = {};
+      const resumeData = {
+        ...resume,
+        published: true,
+        modified: new Date()
+      };
+      updates['/resumes/' + resume.resume_id] = resumeData;
+      updates['/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id] = resumeData;
+      updates['/users/' + this.state.user.uid + '/credits'] = this.state.user.credits - 1;
+      firebase.database().ref().update(updates).then(() => {
+        NotificationManager.success('Resume published successfully', '');
+        this.props.dispatch(push(this.props.next || '/dashboard'));
+        this.props.dispatch(resetNext());
+      });
+    }).catch((e) => {
+      NotificationManager.error('Duplicate Link exists...', 'Cannot publish this resume.');
     });
   }
 
@@ -68,6 +111,7 @@ class EditResume extends React.Component {
   }
 
   confirmPublish = () => {
+    this.toggleConfirmPublish();
     this.onPublishResume();
   }
 
