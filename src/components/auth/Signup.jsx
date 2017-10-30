@@ -39,7 +39,8 @@ class Signup extends React.Component {
 					credits: 0,
 					activities: [],
 					resumes: [],
-					lifetime: 1
+					lifetime: 1,
+					created: new Date()
 				})
 
 				// send Verification Email
@@ -71,7 +72,7 @@ class Signup extends React.Component {
 				let email = (snapshot.val() && snapshot.val().email) || '';
 				if(!email) {
 					// add User Data to database
-					firebase.database().ref('/users/' + user.uid).set({
+					firebase.database().ref('/users/' + user.uid).update({
 						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,
@@ -80,14 +81,16 @@ class Signup extends React.Component {
 						credits: 0,
 						activities: [],
 						resumes: [],
-						lifetime: 1
+						lifetime: 1,
+						created: new Date()
 					})
 				} else {
 					firebase.database().ref('/users/' + user.uid).update({
 						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,
-						signInMethod: 'google'
+						signInMethod: 'google',
+						updated: new Date()
 					})
 				}
 			});

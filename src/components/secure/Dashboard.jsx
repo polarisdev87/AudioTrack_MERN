@@ -72,7 +72,7 @@ class Dashboard extends React.Component {
   		cancelled = true;
   	}
 
-  	if(this.state.user.credits === 0) {
+  	if(this.state.user.credits <= 0) {
   		cancelled = true;
 	  	NotificationManager.error('You have no credits left to upload resume.', '');
 	  	$('.btn-buy-credit').click();

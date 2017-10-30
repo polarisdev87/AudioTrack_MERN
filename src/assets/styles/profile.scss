@@ -176,3 +176,52 @@
 		}
 	}
 }
+
+
+.modal-confirm-delete-account {
+
+	max-width: 440px;
+	margin-top: 140px;
+	.modal-content {
+		border-radius: 0;
+		background: transparent;
+		border: 0 none;
+	}
+	.modal-confirm-delete-content {
+		border-radius: 4px;
+		background-color: #ffffff;
+		padding: 4rem;
+		text-align: center;
+
+		.input-confirm-delete {
+			font-size: 13px;
+			letter-spacing: 0;
+			color: #4a4a4a;
+
+			border-radius: 2px;
+			border: solid 1px #b1becd;
+
+			padding: 19px 20px;
+
+			margin: 41px 0;
+		}
+		.btn-confirm-delete {
+
+			font-size: 15px;
+			font-weight: 500;
+			letter-spacing: 0;
+			color: #ffffff;
+			padding: 13px 16px;
+			border-radius: 2px;
+			background: #ff3636;
+			text-transform: uppercase;
+			&:hover {
+				background: darken(#ff3636, 5%);
+			}
+			&:focus, &:active {
+				outline: 0 none;
+				box-shadow: none;
+			}
+		}
+	}
+}

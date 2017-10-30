@@ -7,6 +7,7 @@ import Dropzone from 'react-dropzone';
 import { resetNext } from '../../actions/auth';
 import { push } from 'react-router-redux';
 import classnames from 'classnames';
+import * as Icon from 'react-feather';
 
 let dropzoneRef, uploadTask;
 
@@ -17,7 +18,9 @@ class Profile extends React.Component {
 		password: '',
 		verify_password: '',
 		old_user: {...this.props.user, uid: firebase.auth().currentUser.uid},
-		modal: false,
+		modal_verify_credentials: false,
+		modal_confirm_delete: false,
+		confirm_delete: '',
 		mode: ''
 	};
 
@@ -25,12 +28,21 @@ class Profile extends React.Component {
 		this.setState({...nextProps.user});
 	}
 
-  toggle = () => {
+  toggleVerifyCredentials = () => {
     this.setState({
-      modal: !this.state.modal
+      modal_verify_credentials: !this.state.modal_verify_credentials
     });
-    if(!this.state.modal) {
+    if(!this.state.modal_verify_credentials) {
     	this.setState({ verify_password: '' });
+    }
+  }
+
+  toggleConfirmDelete = () => {
+    this.setState({
+      modal_confirm_delete: !this.state.modal_confirm_delete
+    });
+    if(!this.state.modal_confirm_delete) {
+    	this.setState({ confirm_delete: '' });
     }
   }
 
@@ -71,19 +83,20 @@ class Profile extends React.Component {
   }
 
   onChangePassword = () => {
-  	this.toggle();
+  	this.toggleVerifyCredentials();
   	this.setState({ mode: 'password'});
   }
 
   onUpdateProfile = () => {
-  	this.toggle();
+  	this.toggleVerifyCredentials();
   	this.setState({ mode: 'email'});
   }
 
   verifyCredentials = () => {
 		const { email, verify_password, password, mode, displayName, old_user, uid } = this.state;
 		const user = firebase.auth().currentUser;
-		const credential = firebase.auth.EmailAuthProvider.credential(old_user.email, verify_password);
+		let credential;
+		credential = firebase.auth.EmailAuthProvider.credential(old_user.email, verify_password);
 		user.reauthenticateWithCredential(credential).then(() => {
 		  // User re-authenticated.
 
@@ -91,13 +104,13 @@ class Profile extends React.Component {
 				user.updatePassword(password).then(() => {
 			  	NotificationManager.success('Password changed successfully', '');
 			  	this.setState({ password: '' });
-			  	this.toggle();
+			  	this.toggleVerifyCredentials();
 				}).catch((error) => {
 			  	NotificationManager.error('Error occured while changing password', '');
 			  	this.setState({ password: '' });
-			  	this.toggle();
+			  	this.toggleVerifyCredentials();
 				});
-			} else {
+			} else if(mode === 'email') {
 		  	let promise_list = [];
 		  	let updates = {};
 				if(old_user.displayName !== displayName) {
@@ -111,11 +124,13 @@ class Profile extends React.Component {
 				promise_list.push(firebase.database().ref().update(updates));
 				Promise.all([...promise_list]).then(() => {
 			  	NotificationManager.success('Profile updated successfully', '');
-			  	this.toggle();
+			  	this.toggleVerifyCredentials();
 				}).catch(() => {
 			  	NotificationManager.error('Error occured while updating profile.', '');
-			  	this.toggle();
+			  	this.toggleVerifyCredentials();
 				});
+			} else {
+				this.onDeleteAccount();
 			}
 		}).catch((error) => {
 		  // An error happened.
@@ -124,44 +139,63 @@ class Profile extends React.Component {
   }
 
   onDeleteAccount = () => {
-  	if(confirm("Do you really wanna abandon your account?")) {
-  		const { uid } = this.state;
-  		const resumes = this.props.user.resumes || [];
+		const { uid } = this.state;
+		const resumes = this.props.user.resumes || [];
 
-			const storageRef = firebase.storage().ref();
+		const storageRef = firebase.storage().ref();
 
-			let promise_list = [];
+		let promise_list = [];
 
-			for (let resume_id in resumes) {
-		    if (!resumes.hasOwnProperty(resume_id)) continue;
+		for (let resume_id in resumes) {
+	    if (!resumes.hasOwnProperty(resume_id)) continue;
 
-				let resumeRef = storageRef.child('resumes/' + uid + '/' + resume_id + '/source.pdf');
-				promise_list.push(resumeRef.delete());
-
-	      let updates = {};
-	      updates['/resumes/' + resume_id] = null;
-	      promise_list.push(firebase.database().ref().update(updates));
-			}
-
-			let profileRef = storageRef.child('profile/' + uid + '.png');
-			profileRef.delete().then(() => {}).catch((e) => {});
-
-			promise_list.push(firebase.auth().currentUser.delete());
+			let resumeRef = storageRef.child('resumes/' + uid + '/' + resume_id + '/source.pdf');
+			promise_list.push(resumeRef.delete());
 
       let updates = {};
-      updates['/users/' + uid] = null;
+      updates['/resumes/' + resume_id] = null;
       promise_list.push(firebase.database().ref().update(updates));
+		}
 
-      Promise.all([...promise_list]).then(() => {
-	  		NotificationManager.success('Account deleted...', '');
-				this.props.dispatch(push(this.props.next || '/'));
-				this.props.dispatch(resetNext());
-      });
-  	}
+		let profileRef = storageRef.child('profile/' + uid + '.png');
+		profileRef.delete().then(() => {}).catch((e) => {});
+
+		promise_list.push(firebase.auth().currentUser.delete());
+
+    let updates = {};
+    updates['/users/' + uid] = null;
+    promise_list.push(firebase.database().ref().update(updates));
+
+    Promise.all([...promise_list]).then(() => {
+  		NotificationManager.success('Account deleted...', '');
+			this.props.dispatch(push(this.props.next || '/'));
+			this.props.dispatch(resetNext());
+    });
   }
 
+	confirmDelete = () => {
+		if(this.state.signInMethod === 'google') {
+			let provider = new firebase.auth.GoogleAuthProvider();
+			provider.addScope('profile');
+			provider.addScope('email');
+			this.toggleConfirmDelete();
+	  	NotificationManager.success('Checking with Google Provider...', '');
+			firebase.auth().signInWithPopup(provider).then((result) => {
+				const user = result.user;
+				user.reauthenticateWithCredential(result.credential).then(() => {
+	  			NotificationManager.success('Deleting Account...', '');
+					this.onDeleteAccount();
+				});
+			});
+		} else {
+			this.toggleConfirmDelete();
+	  	this.toggleVerifyCredentials();
+	  	this.setState({ mode: 'delete'});
+		}
+	}
+
 	render() {
-		const { signInMethod, email, password, displayName, photoUrl, old_user, verify_password } = this.state;
+		const { signInMethod, email, password, displayName, photoUrl, old_user, verify_password, confirm_delete } = this.state;
 		return (
 			<div className="container profile-container">
 
@@ -201,10 +235,10 @@ class Profile extends React.Component {
 			        { (email!==old_user.email || displayName!==old_user.displayName) && <div className="mt-5"><span className="btn-update-profile" onClick={this.onUpdateProfile}>Update</span></div> }
 						</div>
 					</div>
-	        <Modal isOpen={this.state.modal} toggle={this.toggle} className={classnames(this.props.className, 'modal-verify-credentials')}>
+	        <Modal isOpen={this.state.modal_verify_credentials} toggle={this.toggleVerifyCredentials} className={classnames(this.props.className, 'modal-verify-credentials')}>
 	        	<div className="modal-verify-credentials-content">
 							<div className="modal-verify-credentials-title">Verify Yourself</div>
-			        <Input type="password" name="password" placeholder="Enter current password" className="input-verify-password" value={verify_password} onChange={this.onInputChange.bind(this, 'verify_password')} required disabled={signInMethod !== 'email'} />
+			        <Input type="password" name="verify_password" placeholder="Enter current password" className="input-verify-password" value={verify_password} onChange={this.onInputChange.bind(this, 'verify_password')} required />
 			        <button className="btn btn-verify-credentials" onClick={this.verifyCredentials}>Verify</button>
 						</div>
 	        </Modal>
@@ -216,10 +250,20 @@ class Profile extends React.Component {
 					<h2 className="mt-5 mb-5">Delete Account</h2>
 					<div className="d-flex align-items-end justify-content-between account-delete-container">
 						<span>All contact info, resumes and links will all be deleted!</span>
-						<button className="btn btn-delete-account" onClick={this.onDeleteAccount}>DELETE</button>
+						<button className="btn btn-delete-account" onClick={this.toggleConfirmDelete}>DELETE</button>
 					</div>
+	        <Modal isOpen={this.state.modal_confirm_delete} toggle={this.toggleConfirmDelete} className={classnames(this.props.className, 'modal-confirm-delete-account')}>
+	        	<div className="modal-confirm-delete-content">
+	        		<div className="d-flex flex-column align-items-center">
+	        			<Icon.AlertTriangle color="#ff3636" />
+	        			<div className="font-18 letter-spacing-0 black-text mt-2">Delete Account</div>
+	        			<div className="font-13 letter-spacing-0 muted-text">Warning: this cannot be undone</div>
+	        		</div>
+			        <Input type="text" name="confirm_delete" placeholder="Type 'Delete' to confirm" className="input-confirm-delete" value={confirm_delete} onChange={this.onInputChange.bind(this, 'confirm_delete')} required />
+			        <button className="btn btn-confirm-delete" onClick={this.confirmDelete} disabled={confirm_delete.toLowerCase()!=='delete'}>DELETE FOREVER</button>
+						</div>
+	        </Modal>
 				</div>
-
 			</div>
 		)
 	}
