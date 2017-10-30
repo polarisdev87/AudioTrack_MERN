@@ -4,8 +4,6 @@ import { connect } from 'react-redux';
 import { NotificationManager } from 'react-notifications';
 const ContentEditable = require("react-contenteditable");
 import $ from 'jquery';
-import { resetNext } from '../../actions/auth';
-import { push } from 'react-router-redux';
 
 class ResumeEditLink extends React.Component {
 	state = {
@@ -70,8 +68,6 @@ class ResumeEditLink extends React.Component {
 					firebase.database().ref().update(updates).then(() => {
 						this.setState({ resume: {...this.state.resume, link: this.state.resume_link}});
 				  	NotificationManager.success('Resume Link successfully updated', '');
-						// this.props.dispatch(push(this.props.next || '/edit/'+this.state.resume.resume_id));
-						// this.props.dispatch(resetNext());
 					});
 				}).catch((e) => {
       		NotificationManager.error('Duplicate Link exists...', 'Cannot publish this resume.');
@@ -93,5 +89,3 @@ class ResumeEditLink extends React.Component {
 }
 
 export default connect()(ResumeEditLink);
-
-

@@ -187,8 +187,6 @@ class Dashboard extends React.Component {
 	  NotificationManager.error('Upload cancelled by user...', '');
   }
 
-
-
 	render() {
 		const { loaded, resumes, accept, dropzoneActive, upload } = this.state;
 

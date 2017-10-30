@@ -101,6 +101,9 @@
 				.action-delete {
 					margin: 1rem;
 					cursor: pointer;
+					.dropdown-item {
+						cursor: pointer;
+					}
 				}
 				.resume-overlay {
 					position: absolute;

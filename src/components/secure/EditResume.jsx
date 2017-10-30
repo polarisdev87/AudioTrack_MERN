@@ -139,7 +139,7 @@ class EditResume extends React.Component {
                 <div className="modal-confirm-delete-content">
                   <div className="d-flex flex-column align-items-center">
                     <div className="font-18 weight-600 letter-spacing-4 black-text">Heads Up!</div>
-                    <div className="font-15 weight-300 letter-spacing-3 black-text mt-5">By deleteing your resume all data pretained to it and your link will no longer be avaliable. </div>
+                    <div className="font-15 weight-300 letter-spacing-3 black-text mt-5">By deleting your resume all data pretained to it and your link will no longer be avaliable. </div>
                   </div>
                   <button className="btn btn-confirm-delete mt-5" onClick={this.confirmDelete}>Delete Forever</button>
                 </div>
