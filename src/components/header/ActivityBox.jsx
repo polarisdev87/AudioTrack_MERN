@@ -1,12 +1,85 @@
 import React from 'react';
-// import * as firebase from 'firebase';
+import * as firebase from 'firebase';
 import { connect } from 'react-redux';
 import * as Icon from 'react-feather';
 import { Popover, PopoverBody } from 'reactstrap';
 import classnames from 'classnames';
+import Moment from 'react-moment';
+
+const EmojiIcons = [ {
+		name: 'Horse',
+		icon: '🐎'
+	}, {
+		name: 'Goat',
+		icon: '🐎'
+	}, {
+		name: 'Camel',
+		icon: '🐪'
+	}, {
+		name: 'Pig',
+		icon: '🐖'
+	}, {
+		name: 'Boar',
+		icon: '🐗'
+	}, {
+		name: 'Ram',
+		icon: '🐏'
+	}, {
+		name: 'Mouse',
+		icon: '🐁'
+	}, {
+		name: 'Elephant',
+		icon: '🐘'
+	}, {
+		name: 'Bat',
+		icon: '🦇'
+	}, {
+		name: 'Rooster',
+		icon: '🐓'
+	}
+];
+
+class ActivityLog extends React.Component {
+	state = {
+		...this.props.data
+	};
+
+	componentWillMount() {
+		this.setState({emoji: EmojiIcons[Math.floor(Math.random()*EmojiIcons.length)], backgroundColor: this.getRandomColor()});
+	}
+
+	getRandomColor = () => {
+	  let letters = '0123456789ABCDEF';
+	  let color = '#';
+	  for (let i = 0; i < 6; i++) {
+	    color += letters[Math.floor(Math.random() * 16)];
+	  }
+	  return color;
+	}
+
+
+	render() {
+		const { type, title, location, at, emoji, backgroundColor, log_type } = this.state;
+		return (
+			<div className="notification activity-log">
+				<div className="profile">
+					<div className="profile-img" style={{backgroundColor}}>{emoji.icon}</div>
+				</div>
+				<div className="description">
+					<div className="description-content">Anonymus {emoji.name} {type}ed your {log_type === 'all' ? title : 'resume'} from {location.city}, {location.state}</div>
+					<div className="description-time"><Moment fromNow>{at}</Moment></div>
+				</div>
+				<div className="action">
+					<i className="icon-img icon-download"><Icon.Download color="black" /></i>
+				</div>
+			</div>
+		)
+	}
+}
 
 class ActivityBox extends React.Component {
 	state = {
+		user: {...this.props.user, uid: firebase.auth().currentUser.uid},
 		type: this.props.type,
 		popoverOpen: false,
 		loaded: true,
@@ -14,12 +87,76 @@ class ActivityBox extends React.Component {
 	};
 
 	componentWillMount() {
-		// firebase.database().ref('/users/' + firebase.auth().currentUser.uid + '/activities').on('value', (snapshot) => {
-		// 	this.setState({ loaded: true });
-		// });
+		const { type } = this.state;
+    const { resume_id } = this.props.params;
+    firebase.database().ref('/resumes/'+resume_id).once('value', (snapshot) => {
+    	const resume = snapshot.val();
+    	this.setState({ resume: {...resume, resume_id} });
+    })
+		switch(type) {
+			case 'all':
+				firebase.database().ref('/activities/' + this.state.user.uid).on('value', (snapshot) => {
+					let activities = snapshot.val() || {};
+					let list = [];
+					Object.keys(activities).every((activity_id) => {
+						list.push({...activities[activity_id], activity_id});
+						return true;
+					});
+					list.sort((a, b) => {
+						return new Date(b.at) - new Date(a.at);
+					});
+					this.setState({ activities: [...list]});
+				});
+				break;
+			case 'view':
+				firebase.database().ref('/resumes/' + resume_id + '/activities').on('value', (snapshot) => {
+					let activities = snapshot.val() || {};
+					let list = [];
+					Object.keys(activities).every((activity_id) => {
+						if(activities[activity_id].type === 'view') {
+							list.push({...activities[activity_id], activity_id});
+						}
+						return true;
+					});
+					list.sort((a, b) => {
+						return new Date(b.at) - new Date(a.at);
+					});
+					this.setState({ activities: [...list]});
+				});
+				break;
+			case 'download':
+				firebase.database().ref('/resumes/' + resume_id + '/activities').on('value', (snapshot) => {
+					let activities = snapshot.val() || {};
+					let list = [];
+					Object.keys(activities).every((activity_id) => {
+						if(activities[activity_id].type === 'download') {
+							list.push({...activities[activity_id], activity_id});
+						}
+						return true;
+					});
+					list.sort((a, b) => {
+						return new Date(b.at) - new Date(a.at);
+					});
+					this.setState({ activities: [...list]});
+				});
+				break;
+			default:
+				break;
+		}
 	}
 	componentWillUnmount() {
-		// firebase.database().ref('/users/' + firebase.auth().currentUser.uid + '/activities').off();
+		const { type } = this.state;
+		switch(type) {
+			case 'all':
+				firebase.database().ref('/activities/' + firebase.auth().currentUser.uid).off();
+				break;
+			case 'view':
+				firebase.database().ref('/resumes/' + this.state.resume.resume_id + '/activities').off();
+			case 'download':
+				firebase.database().ref('/resumes/' + this.state.resume.resume_id + '/activities').off();
+			default:
+				break;
+		}
 	}
 
   toggle = () => {
@@ -29,7 +166,9 @@ class ActivityBox extends React.Component {
   }
 
   onClearLogs = () => {
-
+  	let updates = {};
+    updates['/activities/' + firebase.auth().currentUser.uid] = null;
+  	firebase.database().ref().update(updates);
   }
 
 	render() {
@@ -70,7 +209,7 @@ class ActivityBox extends React.Component {
 	          	<div className={classnames('activity-logs-content', {'empty': activities.length===0 })}>
 		          	{ loaded ? (
 		          		activities.length>0 ? (
-		          			activities.map((activity) => <span>1</span>)
+		          			activities.map((activity, ind) => <ActivityLog data={activity} log_type={type} key={ind} />)
 		          		) : (
 	          				<div className="no-logs">
 		          				{

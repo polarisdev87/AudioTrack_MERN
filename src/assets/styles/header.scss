@@ -413,3 +413,49 @@
 	left: 50%;
 	transform: translateX(-50%);
 }
+
+.activity-logs-content {
+	.notification {
+		background: #fff;
+		display: flex;
+		align-items: center;
+		padding: 0 0.5rem;
+		margin-top: 0;
+		margin-bottom: 2rem;
+		box-shadow: none;
+		&:last-of-type {
+			margin-bottom: 0;
+		}
+		.profile {
+			.profile-img {
+				width: 35px;
+				height: 35px;
+				border-radius: 50%;
+				font-size: 20px;
+				text-align: center;
+				line-height: 35px;
+			}
+		}
+		.description {
+			margin: 0 1.5rem;
+			line-height: 1.2;
+			.description-content {
+				font-size: 10px;
+				letter-spacing: 0.2px;
+				color: #000000;
+				margin-bottom: 0.8rem;
+			}
+			.description-time {
+				font-size: 9px;
+				letter-spacing: 0.1px;
+				color: #9b9b9b;
+			}
+		}
+		.action {
+			flex: 1 0 26px;
+			i {
+				display: block;
+			}
+		}
+	}
+}

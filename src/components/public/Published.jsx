@@ -5,63 +5,87 @@ import classnames from 'classnames';
 import { Document, Page } from 'react-pdf';
 import * as Icon from 'react-feather';
 import { NotificationManager } from 'react-notifications';
-import { resetNext } from '../../actions/auth';
-import { push } from 'react-router-redux';
+import axios from 'axios';
 
 class Published extends React.Component {
   state = {
-    user: {...this.props.user, uid: firebase.auth().currentUser.uid},
     numPages: null,
     resume: null,
   }
 
 	componentWillMount() {
-    const { resume_id } = this.props.params;
-    this.setState({ resume_id });
-    firebase.database().ref('/resumes/'+resume_id).once('value', (snapshot) => {
-    	this.setState({ resume: {...snapshot.val(), resume_id}})
+    const { resume_link } = this.props.params;
+    this.setState({ resume_link });
+
+    let authPromise = new Promise((resolve, reject) => {
+      firebase.auth().onAuthStateChanged(user => {
+        if (user) {
+          this.setState({ user: { uid: user.uid }});
+        } else {
+          this.setState({ user: null });
+        }
+        resolve();
+      });
+    });
+
+    let resumePromise = new Promise((resolve, reject) => {
+      firebase.database().ref().child('resumes').once('value', (snapshot) => {
+        let resume_data = snapshot.val();
+        Object.keys(resume_data).every((resume_id) => {
+          let resume = resume_data[resume_id];
+          if(!resume.published) return true;
+          if(resume.link !== resume_link) return true;
+          this.setState({ resume: {...resume, resume_id} });
+          return false;
+        });
+        resolve();
+      });
+    });
+
+    Promise.all([authPromise, resumePromise]).then(() => {
+      if(!this.state.user || this.state.user.uid !== this.state.resume.uid) {
+        axios.get('https://geoip-db.com/json/').then((res) => {
+          const location_data = res.data;
+
+          let updates = {};
+
+          const newActivityKey = firebase.database().ref().child('resumes').push().key;
+          const activityData = {
+            type: 'view',
+            location: {
+              city: location_data.city,
+              state: location_data.state
+            },
+            at: new Date(),
+            title: this.state.resume.title
+          };
+
+          updates['/activities/' + this.state.resume.uid + '/' + newActivityKey] = activityData;
+          updates['/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey] = activityData;
+          updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey] = activityData;
+          updates['/resumes/' + this.state.resume.resume_id + '/views'] = this.state.resume.views + 1;
+          updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/views'] = this.state.resume.views + 1;
+          firebase.database().ref().update(updates).then(() => {
+          });
+        })
+        console.log('good');
+      } else {
+        console.log('bad');
+      }
     })
 	}
 
+  componentDidMount() {
+  }
+
   onDocumentLoad = ({ numPages }) => {
     this.setState({ numPages });
-  }
-
-  onDeleteResume = () => {
-    if(confirm("Do you really wanna delete this resume?")) {
-      const { resume } = this.state;
-      let updates = {};
-      updates['/resumes/' + resume.resume_id] = null;
-      updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
-      NotificationManager.success('Resume successfully deleted', '');
-      firebase.database().ref().update(updates).then(() => {
-        this.props.dispatch(push(this.props.next || '/dashboard'));
-        this.props.dispatch(resetNext());
-      });
-    }
-  }
-
-  onPreviewResume = () => {
-
-  }
-
-  onEditResume = () => {
-    
   }
 
 	render() {
 		const { numPages, resume } = this.state;
 		return (
 			<div className={classnames('container', 'resume-container')}>
-        { resume && (
-          <div className="resume-builder">
-            <div className="resume-builder-icons">
-              <div onClick={this.onDeleteResume}><i className="icon-img icon-trash" style={{backgroundColor: '#f54056' }}><Icon.Trash size={20} color="white" /></i></div>
-              <div onClick={this.onPreviewResume}><i className="icon-img icon-preview" style={{backgroundColor: '#0097ff' }}><Icon.Eye size={20} color="white" /></i></div>
-              <div onClick={this.onEditResume}><i className="icon-img icon-preview" style={{backgroundColor: '#4a4a4a' }}><Icon.Edit2 size={20} color="white" /></i></div>
-            </div>
-          </div>
-        ) }
 				{ resume && (
 					<div className="resume-wrapper">
 		        <Document file={resume.file} onLoadSuccess={this.onDocumentLoad} className="resume-pages-wrapper" >

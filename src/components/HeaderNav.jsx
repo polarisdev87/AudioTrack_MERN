@@ -100,11 +100,11 @@ class HeaderNav extends React.Component {
                 ) : null }
                 { isDashboard || isProfile ? [
                   <ButtonBuyCredit { ...this.props } key="button-buy-credit" />,
-                  <ActivityBox type="all" key="activity-box-all" />
+                  <ActivityBox type="all" key="activity-box-all" { ...this.props } />
                 ] : null }
                 { isResume ? [
-                  <ActivityBox type="view" key="activity-box-view" />,
-                  <ActivityBox type="download" key="activity-box-download" />
+                  <ActivityBox type="view" key="activity-box-view" { ...this.props } />,
+                  <ActivityBox type="download" key="activity-box-download" { ...this.props } />
                 ] : null }
                 { isDashboard || isProfile || isResume || isResumeEdit || isResumePreview || isResumePublished ? (
                   <ProfileBox key="profile-box" />

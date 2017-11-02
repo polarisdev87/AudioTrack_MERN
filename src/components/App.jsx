@@ -81,6 +81,16 @@ class App extends React.Component {
 				}
 			}
 		});
+
+		// window.$crisp=[];
+		// window.CRISP_WEBSITE_ID="253e51e3-7297-4df6-9194-674e9bcbee95";
+		// (function(){
+		// 	let d=document;
+		// 	let s=d.createElement("script");
+		// 	s.src="https://client.crisp.chat/l.js";
+		// 	s.async=1;
+		// 	d.getElementsByTagName("head")[0].appendChild(s);
+		// })();
 	}
 	componentWillUnmount() {
 		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).off();

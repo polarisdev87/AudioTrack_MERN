@@ -52,7 +52,7 @@ ReactDOM.render(
 	<Provider store={store}>
     <StripeProvider apiKey="pk_test_GFZkKo51tFb2tpOiSxsIcAxQ">
 			<Router history={history}>
-				<Route path='r/:resume_id' component={Published}/>
+				<Route path='r/:resume_link' component={Published}/>
 				<Route path='404' component={NotFound}/>
 				<Route path='/' component={App}>
 					<IndexRoute component={Home}/>
