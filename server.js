@@ -2,7 +2,9 @@ const express = require("express");
 const bodyParser = require("body-parser");
 const fs = require("fs");
 const path = require("path");
+const https = require("https");
 const app = express();
+const request = require('request');
 
 const stripe = require("stripe")(
   "sk_test_2wl6eN9DurfaKXN8yuAtoAtl"
@@ -46,6 +48,15 @@ app.post("/checkout", (req, res) => {
 			})	
 	  }
 	});
+})
+
+app.get("/download", (req, res) => {
+	const file_url = req.url.replace('/download?file=','');
+  https.get(file_url, function(response) {
+	  res.setHeader('Content-disposition', 'attachment; filename=' + 'resume.pdf');
+	  res.setHeader('Content-type', 'application/octet-stream');
+    response.pipe(res);
+  });
 })
 
 // Catch all other routes and return the index file

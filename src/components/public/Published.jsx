@@ -6,6 +6,7 @@ import { Document, Page } from 'react-pdf';
 import * as Icon from 'react-feather';
 import { NotificationManager } from 'react-notifications';
 import axios from 'axios';
+import { serverUrl } from '../../../config';
 
 class Published extends React.Component {
   state = {
@@ -82,10 +83,50 @@ class Published extends React.Component {
     this.setState({ numPages });
   }
 
+  downloadResume = (resume) => {
+    
+    window.open(serverUrl + '/download?file=' + resume.file);
+
+    if(!this.state.user || this.state.user.uid !== this.state.resume.uid) {
+      axios.get('https://geoip-db.com/json/').then((res) => {
+        const location_data = res.data;
+
+        let updates = {};
+
+        const newActivityKey = firebase.database().ref().child('resumes').push().key;
+        const activityData = {
+          type: 'download',
+          location: {
+            city: location_data.city,
+            state: location_data.state
+          },
+          at: new Date(),
+          title: this.state.resume.title
+        };
+
+        updates['/activities/' + this.state.resume.uid + '/' + newActivityKey] = activityData;
+        updates['/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey] = activityData;
+        updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey] = activityData;
+        updates['/resumes/' + this.state.resume.resume_id + '/downloads'] = this.state.resume.downloads + 1;
+        updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/downloads'] = this.state.resume.downloads + 1;
+        firebase.database().ref().update(updates).then(() => {
+        });
+      })
+      console.log('good');
+    } else {
+      console.log('bad');
+    }
+  }
+
 	render() {
 		const { numPages, resume } = this.state;
 		return (
-			<div className={classnames('container', 'resume-container')}>
+			<div className={classnames('container', 'resume-container', 'resume-published-view')}>
+        <div className="btn-download-resume" onClick={() => {this.downloadResume(resume)}}><Icon.Download /><span>Download Resume</span></div>
+        <div className="logo-powered">
+          <div className="font-15 weight-600 letter-spacing-6 grey-text">Powered by</div>
+          <div className="font-30 weight-900 letter-spacing-7 grey-text">CEZAN</div>
+        </div>
 				{ resume && (
 					<div className="resume-wrapper">
 		        <Document file={resume.file} onLoadSuccess={this.onDocumentLoad} className="resume-pages-wrapper" >

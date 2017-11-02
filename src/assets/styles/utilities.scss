@@ -38,17 +38,24 @@ img {
 .font-15 {
 	font-size: 15px;
 }
+.font-30 {
+	font-size: 30px;
+}
 
 .letter-spacing-0 {
 	letter-spacing: 0;
 }
-
+.letter-spacing-3  {
+	letter-spacing: 0.3px;
+}
 .letter-spacing-4 {
 	letter-spacing: 0.4px;
 }
-
-.letter-spacing-3  {
-	letter-spacing: 0.3px;
+.letter-spacing-6 {
+	letter-spacing: 0.6px;
+}
+.letter-spacing-7 {
+	letter-spacing: 0.7px;
 }
 
 .muted-text {
@@ -62,7 +69,9 @@ img {
 .weight-300 {
 	font-weight: 300 !important;
 }
-
 .weight-600 {
 	font-weight: 600 !important;
+}
+.weight-900 {
+	font-weight: 900 !important;
 }

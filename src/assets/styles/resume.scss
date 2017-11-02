@@ -140,3 +140,34 @@
 		}
 	}
 }
+
+
+.resume-published-view {
+	.btn-download-resume {
+		position: fixed;
+		top: 4rem;
+		right: 3rem;
+		border-radius: 3px;
+		background: #3fb1ff;
+		padding: 16px 24px;
+		font-size: 16px;
+		letter-spacing: 0;
+		color: #ffffff;
+		display: flex;
+		align-items: center;
+		cursor: pointer;
+		z-index: 9999;
+		span {
+			margin-left: 0.5rem;
+		}
+		&:hover {
+			background: darken(#3fb1ff, 5%);
+		}
+	}
+	.logo-powered {
+		position: fixed;
+		right: 134px;
+		bottom: 75px;
+		z-index: 9999;
+	}
+}
