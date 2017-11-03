@@ -4,9 +4,7 @@ import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Document, Page } from 'react-pdf';
 import * as Icon from 'react-feather';
-import { NotificationManager } from 'react-notifications';
 import axios from 'axios';
-import { serverUrl } from '../../../config';
 
 class Published extends React.Component {
   state = {
@@ -69,9 +67,6 @@ class Published extends React.Component {
           firebase.database().ref().update(updates).then(() => {
           });
         })
-        console.log('good');
-      } else {
-        console.log('bad');
       }
     })
 	}
@@ -84,38 +79,49 @@ class Published extends React.Component {
   }
 
   downloadResume = (resume) => {
-    
-    window.open(serverUrl + '/download?file=' + resume.file);
+    let url = resume.file;
+    let filename = 'resume.pdf';
+    let xhr = new XMLHttpRequest();
+    xhr.responseType = 'blob';
+    xhr.onload = () => {
+      let a = document.createElement('a');
+      a.href = window.URL.createObjectURL(xhr.response);
+      a.download = filename;
+      a.style.display = 'none';
+      document.body.appendChild(a);
+      a.click();
 
-    if(!this.state.user || this.state.user.uid !== this.state.resume.uid) {
-      axios.get('https://geoip-db.com/json/').then((res) => {
-        const location_data = res.data;
+      if(!this.state.user || this.state.user.uid!== this.state.resume.uid) {
+        axios.get('https://geoip-db.com/json/').then((res) => {
+          const location_data = res.data;
 
-        let updates = {};
+          let updates = {};
 
-        const newActivityKey = firebase.database().ref().child('resumes').push().key;
-        const activityData = {
-          type: 'download',
-          location: {
-            city: location_data.city,
-            state: location_data.state
-          },
-          at: new Date(),
-          title: this.state.resume.title
-        };
+          const newActivityKey = firebase.database().ref().child('resumes').push().key;
+          const activityData = {
+            type: 'download',
+            location: {
+              city: location_data.city,
+              state: location_data.state
+            },
+            at: new Date(),
+            title: this.state.resume.title
+          };
 
-        updates['/activities/' + this.state.resume.uid + '/' + newActivityKey] = activityData;
-        updates['/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey] = activityData;
-        updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey] = activityData;
-        updates['/resumes/' + this.state.resume.resume_id + '/downloads'] = this.state.resume.downloads + 1;
-        updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/downloads'] = this.state.resume.downloads + 1;
-        firebase.database().ref().update(updates).then(() => {
-        });
-      })
-      console.log('good');
-    } else {
-      console.log('bad');
-    }
+          updates['/activities/' + this.state.resume.uid + '/' + newActivityKey] = activityData;
+          updates['/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey] = activityData;
+          updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey] = activityData;
+          updates['/resumes/' + this.state.resume.resume_id + '/downloads'] = this.state.resume.downloads + 1;
+          updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/downloads'] = this.state.resume.downloads + 1;
+          firebase.database().ref().update(updates).then(() => {
+            this.setState({resume: {...resume, downloads: this.state.resume.downloads+1}});
+          });
+        })
+      }
+
+    };
+    xhr.open('GET', url);
+    xhr.send();
   }
 
 	render() {

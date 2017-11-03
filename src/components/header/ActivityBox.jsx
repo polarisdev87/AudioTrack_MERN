@@ -152,8 +152,10 @@ class ActivityBox extends React.Component {
 				break;
 			case 'view':
 				firebase.database().ref('/resumes/' + this.state.resume.resume_id + '/activities').off();
+				break;
 			case 'download':
 				firebase.database().ref('/resumes/' + this.state.resume.resume_id + '/activities').off();
+				break;
 			default:
 				break;
 		}
@@ -176,7 +178,9 @@ class ActivityBox extends React.Component {
 		return (
 			<div className="activity-container">
 				<div className="activity-trigger" id={'popover-'+type} onClick={this.toggle}>
-					{ type==='all' && <Icon.Zap /> }
+					{ type==='all' && (
+						<div className="activity-trigger-all"><Icon.Zap />{ activities.length>0 && <span>{activities.length}</span>}</div>
+					) }
 					{ type==='view' && (
 						<div className="activity-trigger-view"><Icon.Eye size={28} /><span>{activities.length}</span></div>
 					) }
