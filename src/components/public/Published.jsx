@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Document, Page } from 'react-pdf';
 import * as Icon from 'react-feather';
+import { Link } from 'react-router';
 import axios from 'axios';
 
 class Published extends React.Component {
@@ -129,10 +130,10 @@ class Published extends React.Component {
 		return (
 			<div className={classnames('container', 'resume-container', 'resume-published-view')}>
         <div className="btn-download-resume" onClick={() => {this.downloadResume(resume)}}><Icon.Download /><span>Download Resume</span></div>
-        <div className="logo-powered">
+        <Link className="logo-powered" to="/">
           <div className="font-15 weight-600 letter-spacing-6 grey-text">Powered by</div>
           <div className="font-30 weight-900 letter-spacing-7 grey-text">CEZAN</div>
-        </div>
+        </Link>
 				{ resume && (
 					<div className="resume-wrapper">
 		        <Document file={resume.file} onLoadSuccess={this.onDocumentLoad} className="resume-pages-wrapper" >

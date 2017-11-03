@@ -169,5 +169,14 @@
 		right: 134px;
 		bottom: 75px;
 		z-index: 9999;
+		div {
+			transition: all 0.15s ease;
+		}
+		&:hover {
+			text-decoration: none;
+			div {
+				color: lighten(#4a4a4a, 10%);
+			}
+		}
 	}
 }
