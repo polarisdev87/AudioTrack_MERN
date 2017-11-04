@@ -23,6 +23,7 @@
     "node-sass-chokidar": "0.0.3",
     "npm-run-all": "^4.1.1",
     "react": "^15.3.2",
+    "react-addons-css-transition-group": "^15.6.2",
     "react-contenteditable": "^2.0.5",
     "react-dom": "^15.3.2",
     "react-dropzone": "^4.2.1",
@@ -35,6 +36,7 @@
     "react-router-redux": "^4.0.7",
     "react-scrollchor": "^4.0.0",
     "react-stripe-elements": "^1.2.0",
+    "react-transition-group": "^1.2.1",
     "reactstrap": "^5.0.0-alpha.3",
     "redux": "^3.6.0",
     "stripe": "^5.1.1"

@@ -84,7 +84,7 @@ class ActivityLog extends React.Component {
 					<div className="description-time"><Moment fromNow>{at}</Moment></div>
 				</div>
 				<div className="action">
-					<i className="icon-img icon-download"><Icon.Download color="black" /></i>
+					<i className="icon-img icon-download">{ type === 'view' ? <Icon.Eye color="black" /> : <Icon.Download color="black" /> }</i>
 				</div>
 			</div>
 		)

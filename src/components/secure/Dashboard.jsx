@@ -9,6 +9,7 @@ import { push } from 'react-router-redux';
 import { NotificationManager } from 'react-notifications';
 import ResumeThumbnail from './ResumeThumbnail';
 import $ from 'jquery';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 
 let dropzoneRef, uploadTask;
@@ -190,6 +191,8 @@ class Dashboard extends React.Component {
 	render() {
 		const { loaded, resumes, accept, dropzoneActive, upload } = this.state;
 
+		const dom_resumes = resumes.map((resume, idx) => <ResumeThumbnail resume={resume} key={idx} {...this.props} />);
+
 		return (
       <Dropzone
       	ref={(node) => { dropzoneRef = node; }}
@@ -215,11 +218,13 @@ class Dashboard extends React.Component {
 								<div className="empty-resumes-title">My Resumes</div>
 								<div className="empty-resumes-label">All of your resumes will be located here. Drag and drop your resume to get started!</div>
 							</div> }
-							{ resumes && <div className="resumes-list">
-								{
-									resumes.map((resume, idx) => <ResumeThumbnail resume={resume} key={idx} {...this.props} />)
-								}
-							</div> }
+							{ resumes && (
+								<div className="resumes-list">
+				          <ReactCSSTransitionGroup transitionName="fade" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+										{dom_resumes}
+        					</ReactCSSTransitionGroup>
+								</div>
+							) }
 						</div>
 					}
 				</div>
