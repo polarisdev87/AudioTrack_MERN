@@ -219,11 +219,11 @@ class Dashboard extends React.Component {
 								<div className="empty-resumes-label">All of your resumes will be located here. Drag and drop your resume to get started!</div>
 							</div> }
 							{ resumes && (
-								<div className="resumes-list">
-				          <ReactCSSTransitionGroup transitionName="floatfromtop" transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
-										{dom_resumes}
-        					</ReactCSSTransitionGroup>
-								</div>
+				        <ReactCSSTransitionGroup transitionName="floatfromtop" transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
+									<div className="resumes-list">
+											{dom_resumes}
+									</div>
+        				</ReactCSSTransitionGroup>
 							) }
 						</div>
 					}
