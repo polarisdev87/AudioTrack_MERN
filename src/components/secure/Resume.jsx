@@ -8,6 +8,7 @@ import { NotificationManager } from 'react-notifications';
 import { resetNext } from '../../actions/auth';
 import { push } from 'react-router-redux';
 import { Modal } from 'reactstrap';
+import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 
 class Resume extends React.Component {
   state = {
@@ -71,20 +72,22 @@ class Resume extends React.Component {
 			<div className={classnames('container', 'resume-container')}>
         { resume && (
           <div className="resume-builder">
-            <div className="resume-builder-icons">
-              <div onClick={this.toggleConfirmDelete}><i className="icon-img icon-trash" style={{backgroundColor: '#f54056' }}><Icon.Trash size={20} color="white" /></i></div>
-              <div onClick={this.onPreviewResume}><i className="icon-img icon-preview" style={{backgroundColor: '#0097ff' }}><Icon.Eye size={20} color="white" /></i></div>
-              <div onClick={this.onEditResume}><i className="icon-img icon-preview" style={{backgroundColor: '#4a4a4a' }}><Icon.Edit2 size={20} color="white" /></i></div>
-              <Modal isOpen={this.state.modal_confirm_delete} toggle={this.toggleConfirmDelete} className={classnames(this.props.className, 'modal-confirm-delete-resume')}>
-                <div className="modal-confirm-delete-content">
-                  <div className="d-flex flex-column align-items-center">
-                    <div className="font-18 weight-600 letter-spacing-4 black-text">Heads Up!</div>
-                    <div className="font-15 weight-300 letter-spacing-3 black-text mt-5">By deleting your resume all data pretained to it and your link will no longer be avaliable. </div>
+            <ReactCSSTransitionGroup transitionName="floatfromleft" transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
+              <div className="resume-builder-icons" key={1}>
+                <div onClick={this.toggleConfirmDelete}><i className="icon-img icon-trash" style={{backgroundColor: '#f54056' }}><Icon.Trash size={20} color="white" /></i></div>
+                <div onClick={this.onPreviewResume}><i className="icon-img icon-preview" style={{backgroundColor: '#0097ff' }}><Icon.Eye size={20} color="white" /></i></div>
+                <div onClick={this.onEditResume}><i className="icon-img icon-preview" style={{backgroundColor: '#4a4a4a' }}><Icon.Edit2 size={20} color="white" /></i></div>
+                <Modal isOpen={this.state.modal_confirm_delete} toggle={this.toggleConfirmDelete} className={classnames(this.props.className, 'modal-confirm-delete-resume')}>
+                  <div className="modal-confirm-delete-content">
+                    <div className="d-flex flex-column align-items-center">
+                      <div className="font-18 weight-600 letter-spacing-4 black-text">Heads Up!</div>
+                      <div className="font-15 weight-300 letter-spacing-3 black-text mt-5">By deleting your resume all data pretained to it and your link will no longer be avaliable. </div>
+                    </div>
+                    <button className="btn btn-confirm-delete mt-5" onClick={this.confirmDelete}>Delete Forever</button>
                   </div>
-                  <button className="btn btn-confirm-delete mt-5" onClick={this.confirmDelete}>Delete Forever</button>
-                </div>
-              </Modal>
-            </div>
+                </Modal>
+              </div>
+            </ReactCSSTransitionGroup>
           </div>
         ) }
 				{ resume && (

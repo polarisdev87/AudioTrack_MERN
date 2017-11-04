@@ -220,7 +220,7 @@ class Dashboard extends React.Component {
 							</div> }
 							{ resumes && (
 								<div className="resumes-list">
-				          <ReactCSSTransitionGroup transitionName="fade" transitionEnterTimeout={500} transitionLeaveTimeout={300}>
+				          <ReactCSSTransitionGroup transitionName="floatfromtop" transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
 										{dom_resumes}
         					</ReactCSSTransitionGroup>
 								</div>
