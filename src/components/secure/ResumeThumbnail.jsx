@@ -122,5 +122,6 @@ class ResumeThumbnail extends React.Component {
 }
 
 export default connect(state=>({
+	next: state.auth.next,
 	user: state.auth.user
 }))(ResumeThumbnail);

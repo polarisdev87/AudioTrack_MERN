@@ -20,13 +20,23 @@ class Resume extends React.Component {
 
 	componentWillMount() {
     const { resume_id } = this.props.params;
-    this.setState({ resume_id });
     if(!this.props.user['resumes'] || !this.props.user.resumes[resume_id]) {
       this.props.dispatch(push(this.props.next || '/404'));
       this.props.dispatch(resetNext());
+      location.href='/404';
     }
     this.setState({ resume: {...this.props.user.resumes[resume_id], resume_id}});
 	}
+
+  componentWillReceiveProps() {
+    const { resume_id } = this.state.resume;
+    if(!this.props.user['resumes'] || !this.props.user.resumes[resume_id]) {
+      this.props.dispatch(push(this.props.next || '/404'));
+      this.props.dispatch(resetNext());
+      location.href='/404';
+    }
+    this.setState({ resume: {...this.props.user.resumes[resume_id], resume_id}});
+  }
 
   onDocumentLoad = ({ numPages }) => {
     this.setState({ numPages });
@@ -116,5 +126,6 @@ class Resume extends React.Component {
 }
 
 export default connect(state=>({
+  next: state.auth.next, 
 	user: state.auth.user
 }))(Resume);
