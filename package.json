@@ -25,6 +25,7 @@
     "react": "^15.3.2",
     "react-addons-css-transition-group": "^15.6.2",
     "react-contenteditable": "^2.0.5",
+    "react-css-stagger": "0.0.5",
     "react-dom": "^15.3.2",
     "react-dropzone": "^4.2.1",
     "react-feather": "^1.0.7",

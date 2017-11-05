@@ -10,7 +10,7 @@ import { NotificationManager } from 'react-notifications';
 import ResumeThumbnail from './ResumeThumbnail';
 import $ from 'jquery';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
-
+import Stagger from 'react-css-stagger';
 
 let dropzoneRef, uploadTask;
 
@@ -219,11 +219,11 @@ class Dashboard extends React.Component {
 								<div className="empty-resumes-label">All of your resumes will be located here. Drag and drop your resume to get started!</div>
 							</div> }
 							{ resumes && (
-				        <ReactCSSTransitionGroup transitionName="floatfromtop" transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
-									<div className="resumes-list">
-											{dom_resumes}
-									</div>
-        				</ReactCSSTransitionGroup>
+								<Stagger transition="floatfromtop" delay={150} className="resumes-list">
+									{
+										resumes.map((resume, idx) => <div className="resume-wrapper-container"><ResumeThumbnail resume={resume} key={idx} {...this.props} /></div>)
+									}
+								</Stagger>
 							) }
 						</div>
 					}

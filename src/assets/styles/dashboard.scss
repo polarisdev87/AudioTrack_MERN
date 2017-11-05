@@ -86,89 +86,91 @@
 		display: flex;
 		flex-wrap: wrap;
 		justify-content: flex-start;
-		.resume-wrapper {
+		.resume-wrapper-container {
 	    flex: 0 0 33.3%;
 	    min-width: calc(240px + 2rem);
 	    margin: 3rem 0;
 	    padding: 0 2rem;
-			.resume {
-				width: 230px;
-				height: 230px;
-				margin: auto;
-				background-color: #f4f8f9;
-				box-shadow: 0 3px 4px 0 rgba(239, 239, 239, 0.6);
-				position: relative;
-				.action-delete {
-					margin: 1rem;
-					cursor: pointer;
-					.dropdown-item {
+	    .resume-wrapper {
+				.resume {
+					width: 230px;
+					height: 230px;
+					margin: auto;
+					background-color: #f4f8f9;
+					box-shadow: 0 3px 4px 0 rgba(239, 239, 239, 0.6);
+					position: relative;
+					.action-delete {
+						margin: 1rem;
+						cursor: pointer;
+						.dropdown-item {
+							cursor: pointer;
+						}
+					}
+					.resume-overlay {
+						position: absolute;
+						width: 100%;
+						height: 100%;
+						background: rgba(255,0,0,0);
 						cursor: pointer;
 					}
-				}
-				.resume-overlay {
-					position: absolute;
-					width: 100%;
-					height: 100%;
-					background: rgba(255,0,0,0);
-					cursor: pointer;
-				}
-				.resume-info {
-					position: absolute;
-					width: 100%;
-					height: 105px;
-					bottom: 0;
-					left: 0;
-					background: #fff;
-					display: flex;
-					flex-direction: column;
-					justify-content: space-between;
-					align-items: center;
-					.resume-title-wrapper {
-						text-align: center;
-						.resume-title {
-							font-size: 15px;
-							font-weight: 600;
-							letter-spacing: 0.3px;
-							color: #000000;
-							margin: 10px 0 3px;
-							&:active, &:focus {
-								outline: 0 none;
-								border-bottom: dotted 1px #f00;
-							}
-						}
-						.resume-modified {
-							font-size: 8px;
-							font-weight: 300;
-							letter-spacing: 0.2px;
-							color: #4a4a4a;
-						}
-					}
-					.resume-actions {
-						display: flex;
+					.resume-info {
+						position: absolute;
 						width: 100%;
+						height: 105px;
+						bottom: 0;
+						left: 0;
+						background: #fff;
+						display: flex;
+						flex-direction: column;
 						justify-content: space-between;
 						align-items: center;
-						padding: 1.25rem;
-						position: relative;
-						.resume-state {
-							display: flex;
-							align-items: center;
-							div {
-								display: flex;
-								align-items: center;
-							}
-							span {
-								font-size: 12px;
+						.resume-title-wrapper {
+							text-align: center;
+							.resume-title {
+								font-size: 15px;
+								font-weight: 600;
 								letter-spacing: 0.3px;
 								color: #000000;
-								margin: 0 1rem 0 0.5rem;
+								margin: 10px 0 3px;
+								&:active, &:focus {
+									outline: 0 none;
+									border-bottom: dotted 1px #f00;
+								}
+							}
+							.resume-modified {
+								font-size: 8px;
+								font-weight: 300;
+								letter-spacing: 0.2px;
+								color: #4a4a4a;
 							}
 						}
-						.resume-link {
+						.resume-actions {
 							display: flex;
+							width: 100%;
+							justify-content: space-between;
 							align-items: center;
-							cursor: pointer;
-							color: #000000;
+							padding: 1.25rem;
+							position: relative;
+							.resume-state {
+								display: flex;
+								align-items: center;
+								div {
+									display: flex;
+									align-items: center;
+								}
+								span {
+									font-size: 12px;
+									letter-spacing: 0.3px;
+									color: #000000;
+									margin: 0 1rem 0 0.5rem;
+								}
+							}
+							.resume-link {
+								display: flex;
+								align-items: center;
+								cursor: pointer;
+								color: #000000;
+							}
 						}
 					}
 				}

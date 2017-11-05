@@ -10,6 +10,7 @@ import { push } from 'react-router-redux';
 import { Link } from 'react-router';
 import { Modal } from 'reactstrap';
 import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
+import Stagger from 'react-css-stagger';
 
 class EditResume extends React.Component {
   state = {
@@ -132,32 +133,30 @@ class EditResume extends React.Component {
 			<div className={classnames('container', 'resume-container')}>
         { resume && (
           <div className="resume-builder">
-            <ReactCSSTransitionGroup transitionName="floatfromleft" transitionAppear={true} transitionAppearTimeout={500} transitionEnter={false} transitionLeave={false}>
-              <div className="resume-builder-icons">
-                <div onClick={this.toggleConfirmDelete}><i className="icon-img icon-trash" style={{backgroundColor: '#f54056' }}><Icon.Trash size={20} color="white" /></i></div>
-                <Link to={'/preview/' + resume.resume_id} target="_blank"><i className="icon-img icon-preview" style={{backgroundColor: '#0097ff' }}><Icon.Eye size={20} color="white" /></i></Link>
-                { !resume.published && <div onClick={this.toggleConfirmPublish}><i className="icon-img icon-rocket" style={{backgroundColor: '#00c695' }}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-rocket.svg'} alt="rocket" /></i></div> }
-                <Modal isOpen={this.state.modal_confirm_delete} toggle={this.toggleConfirmDelete} className={classnames(this.props.className, 'modal-confirm-delete-resume')}>
-                  <div className="modal-confirm-delete-content">
-                    <div className="d-flex flex-column align-items-center">
-                      <div className="font-18 weight-600 letter-spacing-4 black-text">Heads Up!</div>
-                      <div className="font-15 weight-300 letter-spacing-3 black-text mt-5">By deleting your resume all data pretained to it and your link will no longer be avaliable. </div>
-                    </div>
-                    <button className="btn btn-confirm-delete mt-5" onClick={this.confirmDelete}>Delete Forever</button>
-                  </div>
-                </Modal>
-                <Modal isOpen={this.state.modal_confirm_publish} toggle={this.toggleConfirmPublish} className={classnames(this.props.className, 'modal-confirm-publish')}>
-                  <div className="modal-confirm-publish-content">
-                    <div className="d-flex flex-column align-items-center">
-                      <Icon.ThumbsUp color="#04cda0" />
-                      <div className="font-18 letter-spacing-0 black-text mt-2">Ready to Publish?</div>
-                      <div className="font-15 letter-spacing-0 grey-text">Be sure to double check your resume for typos!</div>
-                    </div>
-                    <button className="btn btn-confirm-publish mt-5" onClick={this.confirmPublish}>PUBLISH 🚀</button>
-                  </div>
-                </Modal>
+            <Stagger transition="floatfromleft" delay={150} className="resume-builder-icons">
+              <div onClick={this.toggleConfirmDelete}><i className="icon-img icon-trash" style={{backgroundColor: '#f54056' }}><Icon.Trash size={20} color="white" /></i></div>
+              <Link to={'/preview/' + resume.resume_id} target="_blank"><i className="icon-img icon-preview" style={{backgroundColor: '#0097ff' }}><Icon.Eye size={20} color="white" /></i></Link>
+              { !resume.published && <div onClick={this.toggleConfirmPublish}><i className="icon-img icon-rocket" style={{backgroundColor: '#00c695' }}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-rocket.svg'} alt="rocket" /></i></div> }
+            </Stagger>
+            <Modal isOpen={this.state.modal_confirm_delete} toggle={this.toggleConfirmDelete} className={classnames(this.props.className, 'modal-confirm-delete-resume')}>
+              <div className="modal-confirm-delete-content">
+                <div className="d-flex flex-column align-items-center">
+                  <div className="font-18 weight-600 letter-spacing-4 black-text">Heads Up!</div>
+                  <div className="font-15 weight-300 letter-spacing-3 black-text mt-5">By deleting your resume all data pretained to it and your link will no longer be avaliable. </div>
+                </div>
+                <button className="btn btn-confirm-delete mt-5" onClick={this.confirmDelete}>Delete Forever</button>
               </div>
-            </ReactCSSTransitionGroup>
+            </Modal>
+            <Modal isOpen={this.state.modal_confirm_publish} toggle={this.toggleConfirmPublish} className={classnames(this.props.className, 'modal-confirm-publish')}>
+              <div className="modal-confirm-publish-content">
+                <div className="d-flex flex-column align-items-center">
+                  <Icon.ThumbsUp color="#04cda0" />
+                  <div className="font-18 letter-spacing-0 black-text mt-2">Ready to Publish?</div>
+                  <div className="font-15 letter-spacing-0 grey-text">Be sure to double check your resume for typos!</div>
+                </div>
+                <button className="btn btn-confirm-publish mt-5" onClick={this.confirmPublish}>PUBLISH 🚀</button>
+              </div>
+            </Modal>
           </div>
         ) }
 				{ resume && (
