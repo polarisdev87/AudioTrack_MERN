@@ -130,7 +130,7 @@ class Published extends React.Component {
 		return (
 			<div className={classnames('container', 'resume-container', 'resume-published-view')}>
         <div className="btn-download-resume" onClick={() => {this.downloadResume(resume)}}><Icon.Download /><span>Download Resume</span></div>
-        <Link className="logo-powered" to="/">
+        <Link className="logo-powered" to="/" target="_blank">
           <div className="font-15 weight-600 letter-spacing-6 grey-text">Powered by</div>
           <div className="font-30 weight-900 letter-spacing-7 grey-text">CEZAN</div>
         </Link>
