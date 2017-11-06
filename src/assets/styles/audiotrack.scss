@@ -31,7 +31,9 @@
 	background: $dark-grey-blue;
 	border-radius: 100px;
 	border: 0 none;
+	margin-bottom: 6px !important;
 	.arrow {
+		display: none;
 		&:before {
     	border-top-color: $dark-grey-blue !important;
 		}

@@ -9,7 +9,8 @@ class AudioTracks extends React.Component {
 		resume: this.props.resume,
 		type: this.props.type,
 		pageNumber: this.props.pageNumber,
-		tracks: []
+		tracks: [],
+		last_created: null
 	};
 
 	componentWillMount() {
@@ -52,15 +53,16 @@ class AudioTracks extends React.Component {
 		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + newTrackKey] = trackData;
 
  		firebase.database().ref().update(updates).then(() => {
+ 			this.setState({ last_created: newTrackKey });
  		});
 	}
 
 	render() {
-		const { loaded, tracks } = this.state;
+		const { loaded, tracks, last_created } = this.state;
 		return (
 			<div className="audio-track-container">
 				<div className="audio-track-overlay" onClick={(e) => {this.handleAddNewPoint(e)}}></div>
-				{ loaded && tracks.map((track, idx) => <AudioTrackElement track={track} key={track.track_id} {...this.props} />) }
+				{ loaded && tracks.map((track, idx) => <AudioTrackElement track={track} key={track.track_id} defaultOpen={track.track_id === last_created} {...this.props} />) }
 			</div>
 		);
 	}

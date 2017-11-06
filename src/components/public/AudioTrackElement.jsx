@@ -10,7 +10,7 @@ class AudioTrackElement extends React.Component {
 		type: this.props.type,
 		pageNumber: this.props.type,
 		track: this.props.track,
-    popoverOpen: false,
+    popoverOpen: this.props.defaultOpen || false,
     isPlaying: false,
     curTime: '1:00'
 	};
@@ -19,6 +19,10 @@ class AudioTrackElement extends React.Component {
 	}
 
 	componentWillUnmount() {
+	}
+
+	componentWillReceiveProps(nextProps) {
+		this.setState({ popoverOpen: nextProps.defaultOpen });
 	}
 
   toggle = () => {
