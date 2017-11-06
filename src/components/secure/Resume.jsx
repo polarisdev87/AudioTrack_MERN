@@ -8,7 +8,6 @@ import { NotificationManager } from 'react-notifications';
 import { resetNext } from '../../actions/auth';
 import { push } from 'react-router-redux';
 import { Modal } from 'reactstrap';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Stagger from 'react-css-stagger';
 
 class Resume extends React.Component {

@@ -30,7 +30,7 @@ class Signup extends React.Component {
 				})
 
 				// add User Data to database
-				firebase.database().ref('/users/' + user.uid).set({
+				firebase.database().ref('/users/' + user.uid).update({
 					displayName: this.state.fullname,
 					email: user.email,
 					photoUrl: user.photoURL || 'https://firebasestorage.googleapis.com/v0/b/cezan-1903a.appspot.com/o/avatar-big-icon.svg?alt=media&token=70e5663c-b08f-49c5-8073-d6670e6205f2',

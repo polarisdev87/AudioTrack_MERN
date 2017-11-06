@@ -9,7 +9,6 @@ import { push } from 'react-router-redux';
 import { NotificationManager } from 'react-notifications';
 import ResumeThumbnail from './ResumeThumbnail';
 import $ from 'jquery';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Stagger from 'react-css-stagger';
 
 let dropzoneRef, uploadTask;
@@ -191,8 +190,6 @@ class Dashboard extends React.Component {
 	render() {
 		const { loaded, resumes, accept, dropzoneActive, upload } = this.state;
 
-		const dom_resumes = resumes.map((resume, idx) => <ResumeThumbnail resume={resume} key={idx} {...this.props} />);
-
 		return (
       <Dropzone
       	ref={(node) => { dropzoneRef = node; }}
@@ -221,7 +218,7 @@ class Dashboard extends React.Component {
 							{ resumes && (
 								<Stagger transition="floatfromtop" delay={150} className="resumes-list">
 									{
-										resumes.map((resume, idx) => <div className="resume-wrapper-container"><ResumeThumbnail resume={resume} key={idx} {...this.props} /></div>)
+										resumes.map((resume, idx) => <div className="resume-wrapper-container" key={idx}><ResumeThumbnail resume={resume} {...this.props} /></div>)
 									}
 								</Stagger>
 							) }

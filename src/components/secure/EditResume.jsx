@@ -9,8 +9,8 @@ import { resetNext } from '../../actions/auth';
 import { push } from 'react-router-redux';
 import { Link } from 'react-router';
 import { Modal } from 'reactstrap';
-import ReactCSSTransitionGroup from 'react-addons-css-transition-group';
 import Stagger from 'react-css-stagger';
+import AudioTracks from '../public/AudioTracks';
 
 class EditResume extends React.Component {
   state = {
@@ -170,9 +170,11 @@ class EditResume extends React.Component {
                       key={`page_${index + 1}`}
                       pageNumber={index + 1}
                       onRenderSuccess={this.onPageRenderSuccess}
-                      width={Math.min(600, document.body.clientWidth - 52)}
+                      /*width={Math.min(600, document.body.clientWidth - 52)}*/ width={600}
                       className="resume-page"
-                    />
+                    >
+                      <AudioTracks resume={resume} pageNumber={index + 1} type="edit" />
+                    </Page>
                   ),
                 )
               }
