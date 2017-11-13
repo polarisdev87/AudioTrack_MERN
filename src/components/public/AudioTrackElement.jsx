@@ -60,6 +60,8 @@ class AudioTrackElement extends React.Component {
 		if(nextProps.blobs.length > 0 && this.state.track.step === 2 && this.state.final_output === null && this.state.readyToAcceptBlog === true) {
 			let blob = nextProps.blobs[nextProps.blobs.length-1];
 			this.setState({ final_output: blob, readyToAcceptBlog: false });
+			aplayer = null;
+			aplayer = new window.Audio();
 			aplayer.src = window.URL.createObjectURL(blob);
 		}
 		// this.setState({ track: { ...this.state.track, ...nextProps.track}});
