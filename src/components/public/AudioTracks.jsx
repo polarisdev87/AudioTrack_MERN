@@ -3,6 +3,8 @@ import { connect } from 'react-redux';
 import * as firebase from 'firebase';
 import AudioTrackElement from './AudioTrackElement';
 
+// let last_created = null;
+
 class AudioTracks extends React.Component {
 	state = {
 		// user: {...this.props.user, uid: firebase.auth().currentUser.uid},
@@ -52,8 +54,9 @@ class AudioTracks extends React.Component {
 		updates['/resumes/' + resume.resume_id + '/tracks/' + newTrackKey] = trackData;
 		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + newTrackKey] = trackData;
 
+	 	this.setState({ last_created: null });
  		firebase.database().ref().update(updates).then(() => {
- 			this.setState({ last_created: newTrackKey });
+	 		this.setState({ last_created: newTrackKey });
  		});
 	}
 
