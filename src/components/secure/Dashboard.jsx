@@ -230,7 +230,7 @@ class Dashboard extends React.Component {
         		<div className="container">
       			{ upload.status>0 && (
       				<div className="resume-uploading-container">
-      					<Progress animated color="danger" value={upload.progress} />
+      					<Progress animated color="success" value={upload.progress} />
       					<div className="resume-uploading-actions">
       						<button className="btn-cancel-upload" onClick={this.resumeCancelUpload}>Cancel</button>
       					</div>

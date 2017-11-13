@@ -45,6 +45,12 @@ class AudioTrackElement extends React.Component {
 	}
 
 	componentWillUnmount() {
+		if(this.state.autoTimerID) {
+			clearInterval(this.state.autoTimerID);
+		}
+		if(this.state.playTimerID) {
+			clearInterval(this.state.playTimerID);
+		}
 	}
 
 	componentWillReceiveProps(nextProps) {
