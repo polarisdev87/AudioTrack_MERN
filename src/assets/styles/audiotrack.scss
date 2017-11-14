@@ -17,27 +17,18 @@
 		position: absolute;
 		transform: translate(-50%, -50%);
 		.audio-track-element-trigger {
-			width: 25px;
-			height: 25px;
 			border-radius: 50%;
-	    background: rgba(255, 200, 0, 0.8);
-	    border: double 4px #ff0;
 	    cursor: pointer;
 	    &.audio-track-element-trigger-activated {
-	    	background: rgba(16, 82, 16, 0.8);
-	    	border-color: #0f0;
 	    }
 		}
 	}
 }
 
-.audio-track-element-popup {
-	background: $dark-grey-blue;
-	border-radius: 100px;
+.audio-track-element-popup-wrapper {
 	border: 0 none;
-	margin-bottom: 6px !important;
 	padding: 0;
-	height: 41px;
+	margin-bottom: 6px !important;
 	.arrow {
 		display: none;
 		&:before {
@@ -47,77 +38,85 @@
 			border-top-color: $dark-grey-blue !important;
 		}
 	}
-	.audio-track-element-actions {
-		position: absolute;
-		bottom: 100%;
-		right: 0;
-		display: flex;
-		[class^="audio-track-element-action-"] {
-			margin-left: 0.5rem;
-			margin-bottom: 0.5rem;
-			cursor: pointer;
-			font-size: 10px;
-			letter-spacing: 0.4px;
-			color: #ffffff;
-			border-radius: 100px;
-			padding: 3px 15px 4px;
-		}
-		.audio-track-element-action-cancel {
-			background: #9b9b9b;
-			&:hover {
-				background: darken(#9b9b9b, 5%);
-			}
-		}
-		.audio-track-element-action-delete {
-			background: #ff3535;
-			&:hover {
-				background: darken(#ff3535, 5%);
-			}
-		}
-		.audio-track-element-action-save {
-			background: $turquoise;
-			&:hover {
-				background: darken($turquoise, 5%);
-			}
-		}
+	.audio-track-element-container {
 	}
-	.audio-track-element-player {
-		width: 200px;
-		padding: 6px 16px 6px 8px;
-		display: flex;
-		align-items: center;
-		.audio-track-element-player-bar-container {
-			position: relative;
-			flex: 1 0;
-			margin-left: 0.5rem;
-			margin-bottom: 4px;
-			.audio-track-element-player-bar-wrapper {
-				background: #ffffff;
-				height: 3px;
-				width: 100%;
-				.audio-track-element-player-bar {
-					height: 3px;
-					background: #00C695;
-					transition: width 0.15s ease;
-				}
-			}
-			.audio-track-element-player-bar-length {
-				position: absolute;
-				top: 100%;
-				right: 0;
-				margin-top: 5px;
+	.audio-track-element-popup {
+		background: $dark-grey-blue;
+		border-radius: 100px;
+		height: 41px;
+		.audio-track-element-actions {
+			position: absolute;
+			bottom: 100%;
+			right: 0;
+			display: flex;
+			[class^="audio-track-element-action-"] {
+				margin-left: 0.5rem;
+				margin-bottom: 0.5rem;
+				cursor: pointer;
 				font-size: 10px;
 				letter-spacing: 0.4px;
 				color: #ffffff;
+				border-radius: 100px;
+				padding: 3px 15px 4px;
+			}
+			.audio-track-element-action-cancel {
+				background: #9b9b9b;
+				&:hover {
+					background: darken(#9b9b9b, 5%);
+				}
+			}
+			.audio-track-element-action-delete {
+				background: #ff3535;
+				&:hover {
+					background: darken(#ff3535, 5%);
+				}
+			}
+			.audio-track-element-action-save {
+				background: $turquoise;
+				&:hover {
+					background: darken($turquoise, 5%);
+				}
 			}
 		}
-		.audio-track-element-player-action {
-			border-radius: 50%;
-			cursor: pointer;
+		.audio-track-element-player {
+			width: 200px;
+			padding: 6px 16px 6px 8px;
+			display: flex;
+			align-items: center;
+			.audio-track-element-player-bar-container {
+				position: relative;
+				flex: 1 0;
+				margin-left: 0.5rem;
+				margin-bottom: 4px;
+				.audio-track-element-player-bar-wrapper {
+					background: #ffffff;
+					height: 3px;
+					width: 100%;
+					.audio-track-element-player-bar {
+						height: 3px;
+						background: #00C695;
+						transition: width 1s linear;
+					}
+				}
+				.audio-track-element-player-bar-length {
+					position: absolute;
+					top: 100%;
+					right: 0;
+					margin-top: 5px;
+					font-size: 10px;
+					letter-spacing: 0.4px;
+					color: #ffffff;
+				}
+			}
+			.audio-track-element-player-action {
+				border-radius: 50%;
+				cursor: pointer;
+				width: 29px;
+				height: 29px;
+			}
 		}
 	}
 }
-
 
 .audio-preview-track-container {
 	position: absolute;
@@ -135,14 +134,16 @@
 	.audio-track-element {
 		position: absolute;
 		&.pin-left {
-			margin-right: 1rem;
+			margin-right: 2rem;
 		}
 		&.pin-right {
-			margin-left: 1rem;
+			margin-left: 2rem;
 		}
 		.audio-track-element-trigger {
 			border-radius: 50%;
 	    cursor: pointer;
+	    width: 36px;
+	    height: 36px;
 		}
 	}
 }

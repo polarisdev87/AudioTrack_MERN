@@ -179,4 +179,35 @@
 			}
 		}
 	}
+	.guide-tour {
+		position: fixed;
+		top: 4rem;
+		left: 3rem;
+
+		border-radius: 5px;
+		background-color: #ffffff;
+		box-shadow: 0 2px 4px 0 #b1becd;
+
+		width: 251px;
+		padding: 24px 12px;
+		text-align: center;
+
+		z-index: 999;
+
+		.btn-okay-tour {
+			font-size: 12px;
+			font-weight: 300;
+			letter-spacing: 0.3px;
+			color: #fff;
+			border-radius: 2px;
+			background: $turquoise;
+			padding: 7px 21px;
+			display: inline-block;
+			transition: all 0.15s ease;
+			cursor: pointer;
+			&:hover {
+				background: darken($turquoise, 5%);
+			}
+		}
+	}
 }

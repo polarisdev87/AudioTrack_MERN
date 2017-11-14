@@ -1,8 +1,6 @@
 import React  from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
-import * as Icon from 'react-feather';
-
 
 let aplayer;
 
@@ -56,10 +54,10 @@ class AudioPreviewTrackElement extends React.Component {
 			<div className={classnames('audio-track-element', {'pin-right': track.pos.x<0.5, 'pin-left': track.pos.x>=0.5})} style={pos}>
 				<div className={classnames('audio-track-element-trigger', {'audio-track-element-trigger-activated': this.state.popoverOpen})}>
         	{ 
-        		!isPlaying && <div className="audio-track-element-player-action-play" onClick={this.onPlayerStartClicked}><Icon.PlayCircle color="rgba(255,200,0,0.8)" /></div>
+        		!isPlaying && <div className="audio-track-element-player-action-play" onClick={this.onPlayerStartClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-button-play.svg'} alt="icon-record" /></div>
         	}
         	{
-        		isPlaying && <div className="audio-track-element-player-action-pause" onClick={this.onPlayerStopClicked}><Icon.StopCircle color="rgba(200,0,0,0.8)" /></div>
+        		isPlaying && <div className="audio-track-element-player-action-pause" onClick={this.onPlayerStopClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-button-stop.svg'} alt="icon-record" /></div>
         	}
 				</div>
 			</div>

@@ -6,7 +6,7 @@ import { Recorder } from 'react-recorder-redux';
 import { recorderStart } from 'react-recorder-redux/actions';
 import { recorderStop } from 'react-recorder-redux/actions';
 import classnames from 'classnames';
-
+import { NotificationManager } from 'react-notifications';
 
 let aplayer;
 
@@ -101,6 +101,14 @@ class AudioTrackElement extends React.Component {
 
   cancelTrack = () => {
   	const { resume, track } = this.state;
+
+		if(this.state.isPlaying) {
+			this.onPlayerStopClicked();
+		}
+		if(this.state.isRecording) {
+			this.onRecorderStopClicked();
+		}
+
 		let updates = {};
 		updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id] = null;
 		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id] = null;
@@ -108,6 +116,8 @@ class AudioTrackElement extends React.Component {
       firebase.storage().ref().child('resumes/' + resume.uid + '/' + resume.resume_id + '/' + track.track_id + '.wav').delete().then(() => {
       })
 		}
+
+	  NotificationManager.success('Audio track has been deleted.', 'Resume Updated');
 
  		firebase.database().ref().update(updates).then(() => {
  		});
@@ -144,6 +154,9 @@ class AudioTrackElement extends React.Component {
 			updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/file'] = uploadTask.snapshot.downloadURL;
 			updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/step'] = 3;
 			updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/step'] = 3;
+
+	  	NotificationManager.success('Audio track has been saved.', 'Resume Updated');	  
+
 	 		firebase.database().ref().update(updates).then(() => {
 	 		});
 		});
@@ -154,6 +167,17 @@ class AudioTrackElement extends React.Component {
   }
 
   onPlayerStartClicked = () => {
+
+  	aplayer = null;
+  	aplayer = new window.Audio();
+  	// console.log('before',this.state.final_output);
+		if(this.state.track.step > 2) {
+			aplayer.src = this.state.track.file;
+		} else if(this.state.track.step === 2 && this.state.final_output) {
+			// console.log('after',this.state.final_output);
+			aplayer.src = window.URL.createObjectURL(this.state.final_output);
+		}
+
   	aplayer.play();
   	this.setState({ isPlaying: true, curTime: 0 });
   	let playTimerID = setInterval(() => {
@@ -180,47 +204,51 @@ class AudioTrackElement extends React.Component {
 		const pos = { left: track.pos.x*100+'%', top: track.pos.y*100+'%' };
 		return (
 			<div className="audio-track-element" style={pos}>
-				<div className={classnames('audio-track-element-trigger', {'audio-track-element-trigger-activated': this.state.popoverOpen})} onClick={this.toggle} id={'popover-'+track.track_id}></div>
+				<div className={classnames('audio-track-element-trigger', {'audio-track-element-trigger-activated': this.state.popoverOpen})} onClick={this.toggle} id={'popover-'+track.track_id}>
+					<img src={process.env.PUBLIC_URL + '/assets/img/icons/' + (!this.state.popoverOpen?'icon-circle-normal.svg':'icon-circle-active.svg')} alt="icon-record" />
+				</div>
 				<Recorder />
-        <Popover placement="top" isOpen={this.state.popoverOpen} target={'popover-'+track.track_id} toggle={this.toggle} className="audio-track-element-popup">
-          <div className="audio-track-element-player">
-          	<div className="audio-track-element-player-action">
-          	{
-          		track.step === 0 && <div className="audio-track-element-player-action-record" onClick={this.onRecorderStartClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-record.svg'} alt="icon-record" /></div>
-          	}
-          	{
-          		track.step === 1 && <div className="audio-track-element-player-action-stop" onClick={this.onRecorderStopClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-pause.svg'} alt="icon-record" /></div>
-          	}
-          	{ 
-          		track.step > 1 && !isPlaying && <div className="audio-track-element-player-action-play" onClick={this.onPlayerStartClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-play.svg'} alt="icon-record" /></div>
-          	}
-          	{
-          		track.step > 1 && isPlaying && <div className="audio-track-element-player-action-pause" onClick={this.onPlayerStopClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-pause.svg'} alt="icon-record" /></div>
-          	}
-          	</div>
-          	<div className="audio-track-element-player-bar-container">
-          		<div className="audio-track-element-player-bar-wrapper">
-          			<div className="audio-track-element-player-bar" style={{width: (length>0?curTime/length*100:0) + '%'}}></div>
-          		</div>
-          		{ track.step > 0  && <div className="audio-track-element-player-bar-length">{this.getTimeString(curTime || length)}</div> }
-          	</div>
-          </div>
-          <div className="audio-track-element-actions">
-          	{
-          		track.step === 0 && <div className="audio-track-element-action-cancel" onClick={this.cancelTrack}>Cancel</div>
-            }
-          	{
-          		track.step === 1 && null
-            }
-          	{
-          		track.step === 2 && [
-          			<div className="audio-track-element-action-save" key={'action-save'} onClick={this.saveTrack}>Save</div>,
-          			<div className="audio-track-element-action-delete" key={'action-delete'} onClick={this.deleteTrack}>Delete</div>,
-          		]
-            }
-          	{
-          		track.step === 3 && <div className="audio-track-element-action-delete" onClick={this.deleteTrack}>Delete</div>
-            }
+        <Popover placement="top" isOpen={this.state.popoverOpen} target={'popover-'+track.track_id} toggle={this.toggle} className="audio-track-element-popup-wrapper">
+					<div  className="audio-track-element-popup">
+	          <div className="audio-track-element-player">
+	          	<div className="audio-track-element-player-action">
+	          	{
+	          		track.step === 0 && <div className="audio-track-element-player-action-record" onClick={this.onRecorderStartClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-record.svg'} alt="icon-record" /></div>
+	          	}
+	          	{
+	          		track.step === 1 && <div className="audio-track-element-player-action-stop" onClick={this.onRecorderStopClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-pause.svg'} alt="icon-record" /></div>
+	          	}
+	          	{ 
+	          		track.step > 1 && !isPlaying && <div className="audio-track-element-player-action-play" onClick={this.onPlayerStartClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-play.svg'} alt="icon-record" /></div>
+	          	}
+	          	{
+	          		track.step > 1 && isPlaying && <div className="audio-track-element-player-action-pause" onClick={this.onPlayerStopClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-pause.svg'} alt="icon-record" /></div>
+	          	}
+	          	</div>
+	          	<div className="audio-track-element-player-bar-container">
+	          		<div className="audio-track-element-player-bar-wrapper">
+	          			<div className="audio-track-element-player-bar" style={{width: (length>0?curTime/length*100:0) + '%'}}></div>
+	          		</div>
+	          		{ track.step > 0  && <div className="audio-track-element-player-bar-length">{this.getTimeString(curTime || length)}</div> }
+	          	</div>
+	          </div>
+	          <div className="audio-track-element-actions">
+	          	{
+	          		track.step === 0 && <div className="audio-track-element-action-cancel" onClick={this.cancelTrack}>Cancel</div>
+	            }
+	          	{
+	          		track.step === 1 && null
+	            }
+	          	{
+	          		track.step === 2 && [
+	          			<div className="audio-track-element-action-save" key={'action-save'} onClick={this.saveTrack}>Save</div>,
+	          			<div className="audio-track-element-action-delete" key={'action-delete'} onClick={this.deleteTrack}>Delete</div>,
+	          		]
+	            }
+	          	{
+	          		track.step === 3 && <div className="audio-track-element-action-delete" onClick={this.deleteTrack}>Delete</div>
+	            }
+	          </div>
           </div>
         </Popover>
 			</div>

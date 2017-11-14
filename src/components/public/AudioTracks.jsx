@@ -2,6 +2,7 @@ import React  from 'react';
 import { connect } from 'react-redux';
 import * as firebase from 'firebase';
 import AudioTrackElement from './AudioTrackElement';
+import { NotificationManager } from 'react-notifications';
 
 // let last_created = null;
 
@@ -55,6 +56,9 @@ class AudioTracks extends React.Component {
 		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + newTrackKey] = trackData;
 
 	 	this.setState({ last_created: null });
+
+	  NotificationManager.success('New audio track has been added.', 'Resume Updated');
+
  		firebase.database().ref().update(updates).then(() => {
 	 		this.setState({ last_created: newTrackKey });
  		});

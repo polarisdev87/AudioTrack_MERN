@@ -12,6 +12,7 @@ class Published extends React.Component {
   state = {
     numPages: null,
     resume: null,
+    authorName: null
   }
 
 	componentWillMount() {
@@ -44,6 +45,9 @@ class Published extends React.Component {
     });
 
     Promise.all([authPromise, resumePromise]).then(() => {
+      firebase.database().ref('/users/' + this.state.resume.uid + '/displayName').once('value', (snapshot) => {
+        this.setState({ authorName: snapshot.val() });
+      });
       if(!this.state.user || this.state.user.uid !== this.state.resume.uid) {
         axios.get('https://geoip-db.com/json/').then((res) => {
           const location_data = res.data;
@@ -127,9 +131,16 @@ class Published extends React.Component {
   }
 
 	render() {
-		const { numPages, resume } = this.state;
+		const { numPages, resume, authorName } = this.state;
 		return (
 			<div className={classnames('container', 'resume-container', 'resume-published-view')}>
+        { authorName && (
+          <div className="guide-tour">
+            <div className="font-15 weight-bold letter-spacing-3">Hear {authorName} Speak!</div>
+            <div className="font-12 letter-spacing-3 line-height-16" style={{ margin: '1rem 0' }}>Click the <img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-play-small.svg'} alt="icon-record" /> buttons to hear {authorName} tell his story about some of his experiences!</div>
+            <div className="btn-okay-tour">Okay!</div>
+          </div>
+        ) }
         <div className="btn-download-resume" onClick={() => {this.downloadResume(resume)}}><Icon.Download /><span>Download Resume</span></div>
         <Link className="logo-powered" to="/" target="_blank">
           <div className="font-15 weight-600 letter-spacing-6 grey-text">Powered by</div>
