@@ -124,18 +124,16 @@ class AudioTrackElement extends React.Component {
   }
 
   onRecorderStartClicked = () => {
-  	if(confirm('Do you really want to start record?')) {
-	  	this.setState({ isRecording: true, track: {...this.state.track, step: 1}});
-	  	this.props.onRecorderStart();
+  	this.setState({ isRecording: true, track: {...this.state.track, step: 1}});
+  	this.props.onRecorderStart();
 
-	  	let autoTimerID = setInterval(() => {
-	  		this.setState({length: this.state.length+1})
-	  		if(this.state.length>=60) {
-	  			this.onRecorderStopClicked();
-	  		}
-	  	}, 1000);
-	  	this.setState({ autoTimerID });
-	  }
+  	let autoTimerID = setInterval(() => {
+  		this.setState({length: this.state.length+1})
+  		if(this.state.length>=60) {
+  			this.onRecorderStopClicked();
+  		}
+  	}, 1000);
+	  this.setState({ autoTimerID });
   }
   onRecorderStopClicked = () => {
 	  clearInterval(this.state.autoTimerID);
