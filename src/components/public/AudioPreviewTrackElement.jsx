@@ -49,9 +49,9 @@ class AudioPreviewTrackElement extends React.Component {
 
 	render() {
 		const { track, isPlaying } = this.state;
-		const pos = { left: track.pos.x>=0.5?'auto':'100%', right: track.pos.x<0.5?'auto':'100%', top: track.pos.y*100+'%' };
+		const pos = { left: track.pos.x<0.5?'auto':'100%', right: track.pos.x>=0.5?'auto':'100%', top: track.pos.y*100+'%' };
 		return (
-			<div className={classnames('audio-track-element', {'pin-right': track.pos.x<0.5, 'pin-left': track.pos.x>=0.5})} style={pos}>
+			<div className={classnames('audio-track-element', {'pin-right': track.pos.x>=0.5, 'pin-left': track.pos.x<0.5})} style={pos}>
 				<div className={classnames('audio-track-element-trigger', {'audio-track-element-trigger-activated': this.state.popoverOpen})}>
         	{ 
         		!isPlaying && <div className="audio-track-element-player-action-play" onClick={this.onPlayerStartClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-button-play.svg'} alt="icon-record" /></div>
