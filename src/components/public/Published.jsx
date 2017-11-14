@@ -12,7 +12,8 @@ class Published extends React.Component {
   state = {
     numPages: null,
     resume: null,
-    authorName: null
+    authorName: null,
+    finishGuide: false
   }
 
 	componentWillMount() {
@@ -84,6 +85,11 @@ class Published extends React.Component {
     this.setState({ numPages });
   }
 
+  setFinishGuide = () => {
+    this.setState({ finishGuide: true });
+  }
+
+
   downloadResume = (resume) => {
     let url = resume.file;
     let filename = 'resume.pdf';
@@ -131,14 +137,14 @@ class Published extends React.Component {
   }
 
 	render() {
-		const { numPages, resume, authorName } = this.state;
+		const { numPages, resume, authorName, finishGuide } = this.state;
 		return (
 			<div className={classnames('container', 'resume-container', 'resume-published-view')}>
-        { authorName && (
+        { authorName && !finishGuide && (
           <div className="guide-tour">
             <div className="font-15 weight-bold letter-spacing-3">Hear {authorName} Speak!</div>
             <div className="font-12 letter-spacing-3 line-height-16" style={{ margin: '1rem 0' }}>Click the <img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-play-small.svg'} alt="icon-record" /> buttons to hear {authorName} tell his story about some of his experiences!</div>
-            <div className="btn-okay-tour">Okay!</div>
+            <div className="btn-okay-tour" onClick={this.setFinishGuide}>Okay!</div>
           </div>
         ) }
         <div className="btn-download-resume" onClick={() => {this.downloadResume(resume)}}><Icon.Download /><span>Download Resume</span></div>
