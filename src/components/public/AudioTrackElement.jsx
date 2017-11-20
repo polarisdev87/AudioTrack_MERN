@@ -170,7 +170,11 @@ class AudioTrackElement extends React.Component {
   	aplayer = new window.Audio();
   	// console.log('before',this.state.final_output);
 		if(this.state.track.step > 2) {
-			aplayer.src = this.state.track.file;
+			if(this.state.track.file) {
+				aplayer.src = this.state.track.file;
+			} else {
+				aplayer.src = window.URL.createObjectURL(this.state.final_output);
+			}
 		} else if(this.state.track.step === 2 && this.state.final_output) {
 			// console.log('after',this.state.final_output);
 			aplayer.src = window.URL.createObjectURL(this.state.final_output);
