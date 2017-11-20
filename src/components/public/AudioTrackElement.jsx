@@ -139,8 +139,12 @@ class AudioTrackElement extends React.Component {
 		}
 
 		let updates = {};
+		let modifiedTime = new Date();
 		updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id] = null;
 		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id] = null;
+		updates['/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
+		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
+		
 		if(track.file !== '') {
       firebase.storage().ref().child('resumes/' + resume.uid + '/' + resume.resume_id + '/' + track.track_id + '.wav').delete().then(() => {
       })
@@ -179,12 +183,15 @@ class AudioTrackElement extends React.Component {
   	let uploadTask = firebase.storage().ref().child('resumes/' + track.uid + '/' + track.resume_id + '/' + track.track_id + '.wav').put(this.state.final_output);
 		uploadTask.then((snapshot) => {
 			let updates = {};
+			let modifiedTime = new Date();
 			updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/length'] = this.state.length;
 			updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/length'] = this.state.length;
 			updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/file'] = uploadTask.snapshot.downloadURL;
 			updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/file'] = uploadTask.snapshot.downloadURL;
 			updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/step'] = 3;
 			updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/step'] = 3;
+			updates['/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
+			updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
 
 	  	NotificationManager.success('Audio track has been saved.', 'Resume Updated');	  
 

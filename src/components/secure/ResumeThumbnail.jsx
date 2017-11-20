@@ -66,8 +66,11 @@ class ResumeThumbnail extends React.Component {
 		} else {
 			if(this.state.resume_title !== this.props.resume.title) {
 				let updates = {};
+				let modifiedTime = new Date();
 				updates['/resumes/' + this.props.resume.resume_id + '/title'] = this.state.resume_title || this.props.resume.title;
 				updates['/users/' + this.state.user.uid + '/resumes/' + this.props.resume.resume_id + '/title'] = this.state.resume_title || this.props.resume.title;
+				updates['/resumes/' + this.props.resume.resume_id + '/modified'] = modifiedTime;
+				updates['/users/' + this.props.resume.uid + '/resumes/' + this.props.resume.resume_id + '/modified'] = modifiedTime;
 				firebase.database().ref().update(updates).then(() => {
 					this.setState({ resume: {...this.state.resume, title: this.state.resume_title}});
 			  	NotificationManager.success('Resume Title successfully updated', '');
