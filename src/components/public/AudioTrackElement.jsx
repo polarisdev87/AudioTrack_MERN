@@ -74,6 +74,13 @@ class AudioTrackElement extends React.Component {
 	}
 
   toggle = () => {
+  	// console.log('toggle', this.state.popoverOpen, this.node);
+    // attach/remove event handler
+    if (this.state.popoverOpen) {
+      document.addEventListener('click', this.handleOutsideClick, false);
+    } else {
+      document.removeEventListener('click', this.handleOutsideClick, false);
+    }
     this.setState({
       popoverOpen: !this.state.popoverOpen
     });
@@ -83,7 +90,11 @@ class AudioTrackElement extends React.Component {
     	aplayer = new window.Audio();
     	// console.log('before',this.state.final_output);
 			if(this.state.track.step > 2) {
-				aplayer.src = this.state.track.file;
+				if(this.state.track.file) {
+					aplayer.src = this.state.track.file;
+				} else {
+					aplayer.src = window.URL.createObjectURL(this.state.final_output);
+				}
 			} else if(this.state.track.step === 2 && this.state.final_output) {
 				// console.log('after',this.state.final_output);
 				aplayer.src = window.URL.createObjectURL(this.state.final_output);
@@ -97,6 +108,24 @@ class AudioTrackElement extends React.Component {
 			}
 		}
     // console.log(aplayer);
+  }
+
+  handleOutsideClick = (e) => {
+
+    // ignore clicks on the component itself
+    if (this.node.contains(e.target)) {
+      return;
+    }
+
+		if(this.state.isPlaying) {
+			this.onPlayerStopClicked();
+		}
+		if(this.state.isRecording) {
+			this.onRecorderStopClicked();
+		}
+
+		// this.toggle();
+
   }
 
   cancelTrack = () => {
@@ -137,7 +166,11 @@ class AudioTrackElement extends React.Component {
   }
   onRecorderStopClicked = () => {
 	  clearInterval(this.state.autoTimerID);
-  	this.props.onRecorderStop();
+	  try {
+  		this.props.onRecorderStop();
+  	} catch(err) {
+  		// console.log(err);
+  	}
 	  this.setState({ isRecording: false, track: {...this.state.track, step: 2}, readyToAcceptBlog: true});
   }
 
@@ -205,7 +238,7 @@ class AudioTrackElement extends React.Component {
 		const { track, isPlaying, curTime, length } = this.state;
 		const pos = { left: track.pos.x*100+'%', top: track.pos.y*100+'%' };
 		return (
-			<div className="audio-track-element" style={pos}>
+			<div className="audio-track-element" style={pos} ref={node => { this.node = node; }}>
 				<div className={classnames('audio-track-element-trigger', {'audio-track-element-trigger-activated': this.state.popoverOpen})} onClick={this.toggle} id={'popover-'+track.track_id}>
 					<img src={process.env.PUBLIC_URL + '/assets/img/icons/' + (!this.state.popoverOpen?'icon-circle-normal.svg':'icon-circle-active.svg')} alt="icon-record" />
 				</div>
