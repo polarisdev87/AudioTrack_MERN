@@ -4,6 +4,12 @@ import { connect } from 'react-redux';
 class Terms extends React.Component {
 	render() {
 		return (
+			<iframe width="100%" style={{height: "calc(100vh - 72px)", display: "block"}} src="https://app.termly.io/document/terms-of-use-for-saas/d86bfb4f-0a0e-4867-b9af-504e66740ac2" frameBorder="0" allowFullScreen>
+			  <p>Your browser does not support iframes.</p>
+			</iframe>
+		)
+
+		/*
 			<div className="container-fluid public-wrapper pb-5">
 				<div className="container pb-5 mb-5">
 					<div className="dd-title text-center pt-5 mt-5 pb-5 mb-5">Terms</div>
@@ -44,7 +50,7 @@ class Terms extends React.Component {
 					<div className="dd-description">This Policy is current as of the Effective Date set forth above. We may change this Policy from time to time, so please be sure to check back periodically. We will post any changes to this Policy on our Site, at www.cezan.co. If we make any changes to this Policy that materially affect our practices with regard to the personal information we have previously collected from you, we will endeavor to provide you with notice in advance of such change by highlighting the change on our Site.</div>
 				</div>
 			</div>
-		)
+		*/
 	}
 }
 

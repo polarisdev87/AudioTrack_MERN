@@ -4,8 +4,14 @@ import { connect } from 'react-redux';
 class Privacy extends React.Component {
 	render() {
 		return (
-			<div className="container-fluid public-wrapper pb-5">
-				<div className="container pb-5 mb-5">
+			<iframe width="100%" style={{height: "calc(100vh - 72px)", display: "block"}} src="https://app.termly.io/document/privacy-policy-for-website/77565e15-cbce-42c5-8ed7-e82610384dec" frameBorder="0" allowFullScreen>
+			  <p>Your browser does not support iframes.</p>
+			</iframe>
+		)
+
+		/*
+			<div className="container-fluid public-wrapper">
+				<div className="container">
 					<div className="dd-title text-center pt-5 mt-5 pb-5 mb-5">Privacy Policy</div>
 					<div className="dd-description">Cezan values your privacy. At www.cezan.co we offer an app used for entering data and building a resume. In this Privacy Policy ("Policy"), we describe how we collect, use, and disclose information that we obtain about visitors to our website https://www.cezan.co (the "Site") and the services available through our Site (collectively, the "Services").</div>
 					<div className="dd-description">By visiting the Site, or using any of our Services, you agree that your personal information will be handled as described in this Policy. Your use of our Site or Services, and any dispute over privacy, is subject to this Policy and our Terms of Service, including its applicable limitations on damages and the resolution of disputes.</div>
@@ -41,10 +47,10 @@ class Privacy extends React.Component {
 					<div className="dd-title">Contact Us</div>
 					<div className="dd-description">If you have questions about the privacy aspects of our Services or would like to make a complaint, please contact us at contact@cezan.co.</div>
 					<div className="dd-title">Changes to this Policy</div>
-					<div className="dd-description">This Policy is current as of the Effective Date set forth above. We may change this Policy from time to time, so please be sure to check back periodically. We will post any changes to this Policy on our Site, at www.cezan.co. If we make any changes to this Policy that materially affect our practices with regard to the personal information we have previously collected from you, we will endeavor to provide you with notice in advance of such change by highlighting the change on our Site.</div>
+					<div className="dd-description">This Policy is current as of the Effective Date set forth above. We may change this Policy from time to time, so please be sure to check back periodically. We will post any changes to this Policy on our Site, at www.cezan.co. If we make any changes to this Policy that materially affect our practices with regard to the personal information we have previously collected from you, we will endeavor to provide you with notice in advance of such change by highlighting the change on our Site.</div>					
 				</div>
 			</div>
-		)
+		*/
 	}
 }
 
