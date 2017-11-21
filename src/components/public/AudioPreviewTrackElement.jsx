@@ -2,7 +2,7 @@ import React  from 'react';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 
-let aplayer;
+// let aplayer;
 
 class AudioPreviewTrackElement extends React.Component {
 	state = {
@@ -15,17 +15,30 @@ class AudioPreviewTrackElement extends React.Component {
     curTime: 0,
     length: 0,
     playTimerID: null,
-    initiated: false
+    initiated: false,
+    canPlay: false,
+    aplayer: null
 	};
 
 	componentWillMount() {
 		this.setState({ length: this.state.track.length });
+    // document.addEventListener('click', this.handleOutsideClick, false);
 	}
 
+	componentWillUnmount() {
+    // document.removeEventListener('click', this.handleOutsideClick, false);
+  }
+
+  componentWillReceiveProps(newProps) {
+  	if(!newProps.isPlayingTrack) {
+  		this.onPlayerControlClicked();
+  	}
+  }
+
   onPlayerStartClicked = () => {
-		aplayer = new window.Audio();
-		aplayer.src = this.state.track.file;
-  	aplayer.play();
+		this.state.aplayer = new window.Audio();
+		this.state.aplayer.src = this.state.track.file;
+  	this.state.aplayer.play();
   	this.setState({ isPlaying: true, curTime: 0 });
   	let playTimerID = setInterval(() => {
 	  	this.setState({curTime: this.state.curTime+1})
@@ -36,11 +49,57 @@ class AudioPreviewTrackElement extends React.Component {
   	this.setState({ playTimerID });
   }
   onPlayerStopClicked = () => {
-  	aplayer.pause();
-  	aplayer.currentTime = 0;
+  	this.state.aplayer.pause();
+  	this.state.aplayer.currentTime = 0;
   	clearInterval(this.state.playTimerID);
   	this.setState({ isPlaying: false, curTime: 0 });
   	// aplayer = null;
+  }
+
+  onPlayerControlClicked = () => {
+
+    // if (!this.state.isPlaying) {
+    // 	console.log('listening');
+    //   document.addEventListener('click', this.handleOutsideClick, false);
+    // } else {
+    // 	console.log('removing');
+    //   document.removeEventListener('click', this.handleOutsideClick, false);
+    // }
+
+  	this.setState({ isPlaying: !this.state.isPlaying, curTime: 0 });
+
+  	if(!this.state.isPlaying) {
+			this.state.aplayer = new window.Audio();
+			this.state.aplayer.src = this.state.track.file;
+	  	this.state.aplayer.play();
+	  	let playTimerID = setInterval(() => {
+		  	this.setState({curTime: this.state.curTime+1})
+	  		if(this.state.curTime > this.state.length) {
+	  			this.onPlayerStopClicked();
+	  		}
+	  	}, 1000);
+	  	this.setState({ playTimerID });
+
+	  	this.props.iamPlaying(this.state.track.track_id);
+  	} else {
+	  	this.state.aplayer.pause();
+	  	this.state.aplayer.currentTime = 0;
+	  	clearInterval(this.state.playTimerID);
+  	}
+  }
+
+  handleOutsideClick = (e) => {
+    // ignore clicks on the component itself
+    // console.log(this.node, e.target);
+    // if (this.node.contains(e.target)) {
+    // 	this.onPlayerStartClicked();
+    // } else {
+    // 	this.onPlayerStopClicked();
+    // }
+
+    // console.log('passed');
+
+    // this.onPlayerControlClicked();
   }
 
   getTimeString = (t) => {
@@ -51,14 +110,9 @@ class AudioPreviewTrackElement extends React.Component {
 		const { track, isPlaying } = this.state;
 		const pos = { left: track.pos.x<0.5?'auto':'100%', right: track.pos.x>=0.5?'auto':'100%', top: track.pos.y*100+'%' };
 		return (
-			<div className={classnames('audio-track-element', {'pin-right': track.pos.x>=0.5, 'pin-left': track.pos.x<0.5})} style={pos}>
+			<div className={classnames('audio-track-element', {'pin-right': track.pos.x>=0.5, 'pin-left': track.pos.x<0.5})} style={pos} ref={node => { this.node = node; }}>
 				<div className={classnames('audio-track-element-trigger', {'audio-track-element-trigger-activated': this.state.popoverOpen})}>
-        	{ 
-        		!isPlaying && <div className="audio-track-element-player-action-play" onClick={this.onPlayerStartClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-button-play.svg'} alt="icon-record" /></div>
-        	}
-        	{
-        		isPlaying && <div className="audio-track-element-player-action-pause" onClick={this.onPlayerStopClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-button-stop.svg'} alt="icon-record" /></div>
-        	}
+      		<div className="audio-track-element-player-action-control" onClick={this.onPlayerControlClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-button-' + (!isPlaying?'play':'stop') + '.svg'} alt="icon-control" /></div>
 				</div>
 			</div>
 		);

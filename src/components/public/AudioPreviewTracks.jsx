@@ -9,7 +9,8 @@ class AudioPreviewTracks extends React.Component {
 		resume: this.props.resume,
 		type: this.props.type,
 		pageNumber: this.props.pageNumber,
-		tracks: []
+		tracks: [],
+		isPlayingTrack: null
 	};
 
 	componentWillMount() {
@@ -30,12 +31,16 @@ class AudioPreviewTracks extends React.Component {
 		firebase.database().ref('/resumes/'+this.state.resume.resume_id+'/tracks').off();
 	}
 
+	iamPlaying = (isPlayingTrack) => {
+		this.setState({ isPlayingTrack });
+	}
+
 	render() {
-		const { loaded, tracks } = this.state;
+		const { loaded, tracks, isPlayingTrack } = this.state;
 		return (
 			<div className="audio-preview-track-container">
 				<div className="audio-preview-track-overlay"></div>
-				{ loaded && tracks.map((track, idx) => <AudioPreviewTrackElement track={track} key={track.track_id} {...this.props} />) }
+				{ loaded && tracks.map((track, idx) => <AudioPreviewTrackElement track={track} key={track.track_id} {...this.props} iamPlaying={this.iamPlaying} isPlayingTrack={isPlayingTrack === track.track_id} />) }
 			</div>
 		);
 	}

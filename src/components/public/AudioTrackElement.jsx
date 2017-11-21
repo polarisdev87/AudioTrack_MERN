@@ -51,6 +51,7 @@ class AudioTrackElement extends React.Component {
 		if(this.state.playTimerID) {
 			clearInterval(this.state.playTimerID);
 		}
+    document.removeEventListener('click', this.handleOutsideClick, false);
 	}
 
 	componentWillReceiveProps(nextProps) {
@@ -113,7 +114,7 @@ class AudioTrackElement extends React.Component {
   handleOutsideClick = (e) => {
 
     // ignore clicks on the component itself
-    if (this.node.contains(e.target)) {
+    if (this.node && this.node.contains(e.target)) {
       return;
     }
 
@@ -144,7 +145,7 @@ class AudioTrackElement extends React.Component {
 		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id] = null;
 		updates['/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
 		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
-		
+
 		if(track.file !== '') {
       firebase.storage().ref().child('resumes/' + resume.uid + '/' + resume.resume_id + '/' + track.track_id + '.wav').delete().then(() => {
       })
