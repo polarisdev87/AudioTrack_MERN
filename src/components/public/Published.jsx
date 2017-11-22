@@ -143,7 +143,7 @@ class Published extends React.Component {
         { authorName && !finishGuide && (
           <div className="guide-tour">
             <div className="font-15 weight-bold letter-spacing-3">Hear {authorName} Speak!</div>
-            <div className="font-12 letter-spacing-3 line-height-16" style={{ margin: '1rem 0' }}>Click the <img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-play-small.svg'} alt="icon-record" /> buttons to hear {authorName} tell his story about some of his experiences!</div>
+            <div className="font-12 letter-spacing-3 line-height-16" style={{ margin: '1rem 0' }}>Click the <img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-play-small.svg'} alt="icon-record" /> buttons to hear {authorName}'s story and experiences!</div>
             <div className="btn-okay-tour" onClick={this.setFinishGuide}>Okay!</div>
           </div>
         ) }
