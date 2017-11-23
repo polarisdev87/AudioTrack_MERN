@@ -5,15 +5,16 @@ import classnames from 'classnames';
 import { Document, Page } from 'react-pdf';
 import * as Icon from 'react-feather';
 import { Link } from 'react-router';
-import axios from 'axios';
 import AudioPreviewTracks from '../public/AudioPreviewTracks';
+import axios from 'axios';
+import { serverUrl } from '../../../config';
 
 class Published extends React.Component {
   state = {
     numPages: null,
     resume: null,
-    authorName: null,
-    finishGuide: false
+    finishGuide: false,
+    author: null
   }
 
 	componentWillMount() {
@@ -46,11 +47,12 @@ class Published extends React.Component {
     });
 
     Promise.all([authPromise, resumePromise]).then(() => {
-      firebase.database().ref('/users/' + this.state.resume.uid + '/displayName').once('value', (snapshot) => {
-        this.setState({ authorName: snapshot.val() });
+      firebase.database().ref('/users/' + this.state.resume.uid).once('value', (snapshot) => {
+        this.setState({ author: {...snapshot.val()} });
       });
       if(!this.state.user || this.state.user.uid !== this.state.resume.uid) {
-        axios.get('https://geoip-db.com/json/').then((res) => {
+        // axios.get('https://geoip-db.com/json/').then((res) => {
+        axios.get('http://freegeoip.net/json/').then((res) => {
           const location_data = res.data;
 
           let updates = {};
@@ -60,7 +62,8 @@ class Published extends React.Component {
             type: 'view',
             location: {
               city: location_data.city,
-              state: location_data.state
+              state: location_data.region_name
+              // state: location_data.state
             },
             at: new Date(),
             title: this.state.resume.title
@@ -72,6 +75,13 @@ class Published extends React.Component {
           updates['/resumes/' + this.state.resume.resume_id + '/views'] = this.state.resume.views + 1;
           updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/views'] = this.state.resume.views + 1;
           firebase.database().ref().update(updates).then(() => {
+            axios.post(serverUrl + '/sendmail', {
+              content: {
+                to: this.state.author.email,
+                author: this.state.author,
+                ...activityData
+              }
+            });
           });
         })
       }
@@ -104,7 +114,8 @@ class Published extends React.Component {
       a.click();
 
       if(!this.state.user || this.state.user.uid!== this.state.resume.uid) {
-        axios.get('https://geoip-db.com/json/').then((res) => {
+        // axios.get('https://geoip-db.com/json/').then((res) => {
+        axios.get('https://freegeoip.com/json/').then((res) => {
           const location_data = res.data;
 
           let updates = {};
@@ -114,7 +125,8 @@ class Published extends React.Component {
             type: 'download',
             location: {
               city: location_data.city,
-              state: location_data.state
+              state: location_data.region_name
+              // state: location_data.state
             },
             at: new Date(),
             title: this.state.resume.title
@@ -127,6 +139,14 @@ class Published extends React.Component {
           updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/downloads'] = this.state.resume.downloads + 1;
           firebase.database().ref().update(updates).then(() => {
             this.setState({resume: {...resume, downloads: this.state.resume.downloads+1}});
+
+            axios.post(serverUrl + '/sendmail', {
+              content: {
+                to: this.state.author.email,
+                author: this.state.author,
+                ...activityData
+              }
+            });
           });
         })
       }
@@ -137,13 +157,13 @@ class Published extends React.Component {
   }
 
 	render() {
-		const { numPages, resume, authorName, finishGuide } = this.state;
+		const { numPages, resume, author, finishGuide } = this.state;
 		return (
 			<div className={classnames('container', 'resume-container', 'resume-published-view')}>
-        { authorName && !finishGuide && (
+        { author && !finishGuide && (
           <div className="guide-tour">
-            <div className="font-15 weight-bold letter-spacing-3">Hear {authorName} Speak!</div>
-            <div className="font-12 letter-spacing-3 line-height-16" style={{ margin: '1rem 0' }}>Click the <img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-play-small.svg'} alt="icon-record" /> buttons to hear {authorName}'s story and experiences!</div>
+            <div className="font-15 weight-bold letter-spacing-3">Hear {author.displayName} Speak!</div>
+            <div className="font-12 letter-spacing-3 line-height-16" style={{ margin: '1rem 0' }}>Click the <img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-play-small.svg'} alt="icon-record" /> buttons to hear {author.displayName}'s story and experiences!</div>
             <div className="btn-okay-tour" onClick={this.setFinishGuide}>Okay!</div>
           </div>
         ) }

@@ -5,63 +5,7 @@ import * as Icon from 'react-feather';
 import { Popover, PopoverBody } from 'reactstrap';
 import classnames from 'classnames';
 import Moment from 'react-moment';
-
-const EmojiIcons = [ {
-		name: 'Penguin',
-		icon: '🐧',
-		color: '#FFA793'
-	},
-	{
-		name: 'Frog',
-		icon: '🐸',
-		color: '#F74C61'
-	},
-	{
-		name: 'Chick',
-		icon: '🐥',
-		color: '#4A90E2'
-	},
-	{
-		name: 'Tiger',
-		icon: '🐯',
-		color: '#FF9CF7'
-	},
-	{
-		name: 'Bear',
-		icon: '🐻',
-		color: '#3B9C86'
-	},
-	{
-		name: 'Monkey',
-		icon: '🐵',
-		color: '#B89CFF'
-	},
-	{
-		name: 'Dog',
-		icon: '🐶',
-		color: '#FFD548'
-	},
-	{
-		name: 'Cat',
-		icon: '🐱',
-		color: '#73C6FF'
-	},
-	{
-		name: 'Koala',
-		icon: '🐨',
-		color: '#FF8695'
-	},
-	{
-		name: 'Wolf',
-		icon: '🐺',
-		color: '#05CCA0'
-	},
-	{
-		name: 'Whale',
-		icon: '🐋',
-		color: '#FFE797'
-	},
-];
+import { EmojiIcons } from '../../../config';
 
 class ActivityLog extends React.Component {
 	state = {
