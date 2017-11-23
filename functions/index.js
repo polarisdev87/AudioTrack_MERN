@@ -4,6 +4,17 @@ const https = require("https");
 const stripe = require("stripe")(
   "sk_test_2wl6eN9DurfaKXN8yuAtoAtl"
 );
+const nodemailer = require('nodemailer');
+const transporter = nodemailer.createTransport({
+  pool: true,
+  host: 'smtp.gmail.com',
+  port: 465,
+  secure: true, // use SSL
+	auth: {
+		user: 'hicezan@gmail.com',
+		pass: 'huskies5'
+	}
+});
 const EmojiIcons = [ {
 		name: 'Penguin',
 		icon: '🐧',
