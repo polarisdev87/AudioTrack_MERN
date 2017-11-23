@@ -115,7 +115,7 @@ class Published extends React.Component {
 
       if(!this.state.user || this.state.user.uid!== this.state.resume.uid) {
         // axios.get('https://geoip-db.com/json/').then((res) => {
-        axios.get('https://freegeoip.com/json/').then((res) => {
+        axios.get('https://freegeoip.net/json/').then((res) => {
           const location_data = res.data;
 
           let updates = {};
