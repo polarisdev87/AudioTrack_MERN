@@ -9,6 +9,7 @@ import ProfileBox from './header/ProfileBox';
 import ResumePreviewLink from './header/ResumePreviewLink';
 import ResumeEditTitle from './header/ResumeEditTitle';
 import ResumeEditLink from './header/ResumeEditLink';
+import $ from 'jquery';
 
 class HeaderNav extends React.Component {
   state = {
@@ -19,6 +20,17 @@ class HeaderNav extends React.Component {
       isOpen: !this.state.isOpen
     });
   }
+
+  componentDidMount() {
+    console.log('abc', $('.header-collapse'));
+    $(document).on('click', (e) => {
+      if($(e.target).hasClass('nav-link') || $(e.target).hasClass('btn-login') || $(e.target).hasClass('btn-signup')) {
+        console.log('abc');
+        $('.header-collapse.show').removeClass('show');
+      }
+    })
+  }
+
 	render() {
     const { loaded, user } = this.props;
     const { pathname } = this.props.location;

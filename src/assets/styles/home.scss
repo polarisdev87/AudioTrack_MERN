@@ -539,3 +539,9 @@
 		}
 	}
 }
+
+@media (max-width: 767px) {
+	.home-wrapper .landing-1-marker {
+		display: none;
+	}
+}
