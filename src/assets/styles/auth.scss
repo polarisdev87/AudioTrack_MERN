@@ -190,4 +190,7 @@
 			transform: translate(-50%, 40px);
 		}
 	}
+	@media (max-width: 767px) {
+		display: none;
+	}
 }
