@@ -107,6 +107,17 @@
 			letter-spacing: 0.2px;
 			color: #ffffff;
 		}
+		.view-sample-resume {
+			font-size: 12px;
+			font-weight: 900;
+			letter-spacing: 0.5px;
+			color: $turquoise;
+			span {
+				line-height: 24px;
+				display: inline-block;
+				vertical-align: top;
+			}
+		}
 		.plan-wrapper {
 			width: 330px;
 			margin: 6rem auto;

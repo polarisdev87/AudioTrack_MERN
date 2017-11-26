@@ -23,6 +23,9 @@ class Home extends React.Component {
 								<div className="section-description">
 									<Link to="/signup" className="btn btn-dark-grey-blue">Lets get you an interview!</Link>
 								</div>
+								<div className="section-description">
+									<Link to="/" className="view-sample-resume"><span>VIEW SAMPLE RESUME</span><Icon.ArrowRight /></Link>
+								</div>
 							</div>
 						</div>
 					</div>
