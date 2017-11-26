@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="242" height="74" viewBox="0 0 242 74">
+    <g fill="none" fill-rule="evenodd">
+        <path fill="#293A49" d="M24.963 24h192.074C230.824 24 242 35.176 242 48.963s-11.176 24.963-24.963 24.963H24.963C11.176 73.926 0 62.75 0 48.963S11.176 24 24.963 24z"/>
+        <path stroke="#FFF" stroke-linecap="round" stroke-width="3" d="M65.5 50.5h149.52"/>
+        <circle cx="35.5" cy="48.5" r="14.5" fill="#FFF"/>
+        <rect width="11" height="11" x="30" y="43" fill="#FF3232" rx="5.5"/>
+        <rect width="52.875" height="18" x="188" fill="#FF3636" rx="9"/>
+        <text fill="#FFF" font-family="Lato-Regular, Lato" font-size="8" letter-spacing=".333">
+            <tspan x="201" y="12">Delete</tspan>
+        </text>
+    </g>
+</svg>

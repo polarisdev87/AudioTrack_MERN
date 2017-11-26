@@ -10,8 +10,12 @@ class Home extends React.Component {
 				<div className="section">
 					<div className="container">
 						<div className="row">
-							<div className="col-md-8 order-2">
-								<img src={process.env.PUBLIC_URL + '/assets/img/landing1.png'} alt="landing1" />
+							<div className="col-lg-8 order-2">
+								<div className="landing-1-marker">
+									<img src={process.env.PUBLIC_URL + '/assets/img/resume-pg.png'} alt="landing1" style={{maxWidth: "581px"}} />
+									<img src={process.env.PUBLIC_URL + '/assets/img/landing-cursor1.svg'} alt="landing-cursor1" className="landing-cursor1" />
+									<img src={process.env.PUBLIC_URL + '/assets/img/player-record.svg'} alt="landing-player1" className="landing-player1" />
+								</div>
 							</div>
 							<div className="col ml-lg-5 text-center text-lg-left order-1 order-lg-3">
 								<div className="section-title">CEZAN</div>
@@ -34,12 +38,22 @@ class Home extends React.Component {
 								<div className="icon-sets">
 									<i className="icon-img icon-trash" style={{backgroundColor: '#f54056' }}><Icon.Trash color="white" /></i>
 									<i className="icon-img icon-preview" style={{backgroundColor: '#0097ff' }}><Icon.Eye color="white" /></i>
-									<i className="icon-img icon-upload" style={{backgroundColor: '#9b9b9b' }}><Icon.Upload color="white" /></i>
 									<i className="icon-img icon-rocket" style={{backgroundColor: '#00c695' }}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-rocket.svg'} alt="rocket" /></i>
 								</div>
 							</div>
 							<div className="col-lg-5">
-								<img src={process.env.PUBLIC_URL + '/assets/img/landing2.png'} alt="landing2" />
+								<div className="landing-2-wrapper mt-5 pt-5">
+									<div className="landing-3-marker">
+										<span>Miguel Santos</span>
+										<img src={process.env.PUBLIC_URL + '/assets/img/landing-cursor2.svg'} alt="landing cursor" className="landing-cursor2" />
+										<img src={process.env.PUBLIC_URL + '/assets/img/player-playing.svg'} alt="landing player" className="landing-player2" />
+									</div>
+									<p className="font-30 letter-spacing-3 grey-text mb-5">Product Designer</p>
+									<p className="font-20 weight-600 letter-spacing-2 grey-text">Work Experience</p>
+									<p className="font-20 letter-spacing-2 grey-text">Product Designer, Stripe | Aug 2016 - Present</p>
+									<p className="font-20 letter-spacing-2 grey-text">Jr Designer, Stripe | Jan 2016 - Aug 2016</p>
+									<p className="font-20 letter-spacing-2 grey-text">Visual Designer, Google | Feb 2014 - Jan 2016</p>
+								</div>
 							</div>
 						</div>
 					</div>
@@ -104,7 +118,7 @@ class Home extends React.Component {
 							</div>
 							<div className="col"></div>
 							<div className="col-md-7">
-								<img src={process.env.PUBLIC_URL + '/assets/img/landing3.png'} alt="landing3" />
+								<img src={process.env.PUBLIC_URL + '/assets/img/landing-browser.svg'} alt="landing3" />
 							</div>
 						</div>
 					</div>

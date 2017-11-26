@@ -164,6 +164,42 @@
 		}
 	}
 
+	.landing-1-marker {
+		position: relative;
+		display: inline-block;
+		.landing-cursor1 {
+			position: absolute;
+			left: 63%;
+			top: 23%;
+		}
+		.landing-player1 {
+			position: absolute;
+			left: 63%;
+			top: 23%;
+			margin-left: 70px;
+			margin-top: -35px;
+		}
+	}
+
+	.landing-3-marker {
+		font-size: 40px;
+		font-weight: bold;
+		letter-spacing: 0.4px;
+		color: #000000;
+		display: inline-block;
+		position: relative;
+		.landing-cursor2 {
+			position: absolute;
+	    right: -43px;
+	    top: 10px;
+		}
+		.landing-player2 {
+			position: absolute;
+			bottom: 100%;
+    	right: -130px;
+		}
+	}
+
 	.section#pricing {
 		position: relative;
 		margin: 8rem 0;

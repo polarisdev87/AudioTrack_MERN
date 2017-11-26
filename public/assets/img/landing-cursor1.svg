@@ -1,0 +1,32 @@
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="59" height="58" viewBox="0 0 59 58">
+    <defs>
+        <circle id="a" cx="45" cy="14" r="11"/>
+        <path id="c" d="M43.054 14.366L31.35 43.623a1 1 0 0 1-1.87-.034l-1.71-4.777a15 15 0 0 0-9.287-9.144l-4.52-1.54a1 1 0 0 1-.106-1.85L41.697 13.09a1 1 0 0 1 1.357 1.275z"/>
+        <filter id="b" width="150.3%" height="148%" x="-25.1%" y="-17.6%" filterUnits="objectBoundingBox">
+            <feMorphology in="SourceAlpha" operator="dilate" radius=".5" result="shadowSpreadOuter1"/>
+            <feOffset dy="2" in="shadowSpreadOuter1" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="2"/>
+            <feComposite in="shadowBlurOuter1" in2="SourceAlpha" operator="out" result="shadowBlurOuter1"/>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.364441803 0"/>
+        </filter>
+        <circle id="e" cx="13.333" cy="42.667" r="9.333"/>
+        <filter id="d" width="175%" height="175%" x="-37.5%" y="-26.8%" filterUnits="objectBoundingBox">
+            <feOffset dy="2" in="SourceAlpha" result="shadowOffsetOuter1"/>
+            <feGaussianBlur in="shadowOffsetOuter1" result="shadowBlurOuter1" stdDeviation="2"/>
+            <feColorMatrix in="shadowBlurOuter1" values="0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0.119451993 0"/>
+        </filter>
+    </defs>
+    <g fill="none" fill-rule="evenodd">
+        <use fill="#FFD23C" xlink:href="#a"/>
+        <circle cx="45" cy="14" r="12.5" stroke="#FFD23C" stroke-width="3"/>
+        <use stroke="#FFF" stroke-width="3" xlink:href="#a"/>
+        <g fill="#000" stroke-linecap="round" stroke-linejoin="round">
+            <use filter="url(#b)" xlink:href="#c"/>
+            <use stroke="#FFF" xlink:href="#c"/>
+        </g>
+        <use fill="#000" filter="url(#d)" xlink:href="#e"/>
+        <use fill="#05CCA0" xlink:href="#e"/>
+        <rect width="1.333" height="8" x="12.8" y="38.667" fill="#FFF" rx=".667"/>
+        <rect width="1.333" height="8" x="12.8" y="38.667" fill="#FFF" rx=".667" transform="rotate(-90 13.467 42.667)"/>
+    </g>
+</svg>

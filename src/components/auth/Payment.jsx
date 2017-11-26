@@ -181,7 +181,15 @@ class Payment extends React.Component {
 					<div className="col-separator"></div>
 					<div className="col-md-6 p-5">
 						<div className="p-5"></div>
-						<img src={process.env.PUBLIC_URL + '/assets/img/resume-unique.png'} alt="resume unique" />
+						<div className="login-marker-wrapper">
+							<p>Resumes</p>
+							<p>will never be</p>
+							<div className="login-marker">
+								<span>the same.</span>
+								<img src={process.env.PUBLIC_URL + '/assets/img/landing-cursor2.svg'} alt="login cursor" className="login-cursor" />
+								<img src={process.env.PUBLIC_URL + '/assets/img/player-playing.svg'} alt="login player" className="login-player" />
+							</div>
+						</div>
 					</div>
 				</div>
 			</div>

@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="262" height="85" viewBox="0 0 262 85">
+    <g fill="none" fill-rule="evenodd" transform="translate(-.02 -.515)">
+        <path fill="#293A49" d="M26.014 33.515h200.011c14.357 0 25.995 11.638 25.995 25.995 0 14.356-11.638 25.994-25.995 25.994H26.014C11.658 85.504.02 73.866.02 59.51c0-14.357 11.638-25.995 25.994-25.995z"/>
+        <path stroke="#FFF" stroke-linecap="round" stroke-width="3" d="M54.91 57.47h162.18"/>
+        <path stroke="#05CCA0" stroke-linecap="round" stroke-width="3" d="M54.91 57.47h49.902"/>
+        <text fill="#FFF" font-family="Lato-Regular, Lato" font-size="10" letter-spacing=".417">
+            <tspan x="197.129" y="73.693">:23</tspan>
+        </text>
+        <circle cx="28.089" cy="59.089" r="18.089" fill="#FFF"/>
+        <rect width="2.495" height="16.218" x="23.723" y="50.98" fill="#293A49" rx="1.248"/>
+        <rect width="2.495" height="16.218" x="29.96" y="50.98" fill="#293A49" rx="1.248"/>
+        <rect width="52.875" height="18" x="142.02" y=".515" fill="#05CCA0" rx="9"/>
+        <text fill="#FFF" font-family="Lato-Regular, Lato" font-size="10" letter-spacing=".417">
+            <tspan x="157.02" y="12.515">Save</tspan>
+        </text>
+        <rect width="52.875" height="18" x="209.02" y=".515" fill="#FF3636" rx="9"/>
+        <text fill="#FFF" font-family="Lato-Regular, Lato" font-size="10" letter-spacing=".417">
+            <tspan x="220.02" y="12.515">Delete</tspan>
+        </text>
+    </g>
+</svg>
