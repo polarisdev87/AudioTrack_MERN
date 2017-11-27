@@ -6,6 +6,7 @@ import { StripeProvider } from 'react-stripe-elements';
 import { Router, Route, IndexRoute, browserHistory, Redirect } from 'react-router';
 import { syncHistoryWithStore, routerReducer, routerMiddleware } from 'react-router-redux';
 import { requireAuth } from './utils/secure';
+import { stripePkKey } from '../config';
 import * as reducers from './reducers'
 
 import 'bootstrap/dist/css/bootstrap.css';
@@ -50,7 +51,7 @@ const secure = requireAuth(store);
 
 ReactDOM.render(
 	<Provider store={store}>
-    <StripeProvider apiKey="pk_test_GFZkKo51tFb2tpOiSxsIcAxQ">
+    <StripeProvider apiKey={stripePkKey}>
 			<Router history={history}>
 				<Route path='r/:resume_link' component={Published}/>
 				<Route path='404' component={NotFound}/>

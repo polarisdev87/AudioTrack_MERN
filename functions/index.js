@@ -1,9 +1,7 @@
 const functions = require('firebase-functions');
 const cors = require('cors')({origin: true});
 const https = require("https");
-const stripe = require("stripe")(
-  "sk_test_2wl6eN9DurfaKXN8yuAtoAtl"
-);
+const stripe = require('stripe')(require('./config').stripeSkKey);
 const nodemailer = require('nodemailer');
 const transporter = nodemailer.createTransport({
   pool: true,
@@ -15,62 +13,7 @@ const transporter = nodemailer.createTransport({
 		pass: 'huskies5'
 	}
 });
-const EmojiIcons = [ {
-		name: 'Penguin',
-		icon: '🐧',
-		color: '#FFA793'
-	},
-	{
-		name: 'Frog',
-		icon: '🐸',
-		color: '#F74C61'
-	},
-	{
-		name: 'Chick',
-		icon: '🐥',
-		color: '#4A90E2'
-	},
-	{
-		name: 'Tiger',
-		icon: '🐯',
-		color: '#FF9CF7'
-	},
-	{
-		name: 'Bear',
-		icon: '🐻',
-		color: '#3B9C86'
-	},
-	{
-		name: 'Monkey',
-		icon: '🐵',
-		color: '#B89CFF'
-	},
-	{
-		name: 'Dog',
-		icon: '🐶',
-		color: '#FFD548'
-	},
-	{
-		name: 'Cat',
-		icon: '🐱',
-		color: '#73C6FF'
-	},
-	{
-		name: 'Koala',
-		icon: '🐨',
-		color: '#FF8695'
-	},
-	{
-		name: 'Wolf',
-		icon: '🐺',
-		color: '#05CCA0'
-	},
-	{
-		name: 'Whale',
-		icon: '🐋',
-		color: '#FFE797'
-	}
-];
+const EmojiIcons = require('./config').EmojiIcons;
 
 // // Create and Deploy Your First Cloud Functions
 // // https://firebase.google.com/docs/functions/write-firebase-functions

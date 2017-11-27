@@ -16,9 +16,7 @@ const transporter = nodemailer.createTransport({
 		pass: 'huskies5'
 	}
 });
-const stripe = require('stripe')(
-  'sk_test_2wl6eN9DurfaKXN8yuAtoAtl'
-);
+const stripe = require('stripe')(require('./config').stripeSkKey);
 const EmojiIcons = require('./config').EmojiIcons;
 
 app.use(bodyParser.json());
