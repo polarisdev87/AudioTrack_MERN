@@ -131,8 +131,8 @@ exports.sendmail = functions.https.onRequest((req, res) => {
 							<p style="margin-top: 40px; margin-bottom: 20px;">The Cezan Team</p>
 						</div>
 						<div style="text-align: center; margin: 80px 0 20px;">
-							<img src="https://image.flaticon.com/icons/png/24/463/463051.png" style="margin: 0 43px;" />
-							<img src="https://image.flaticon.com/icons/png/24/462/462972.png" style="margin: 0 43px;" />
+							<a href="https://twitter.com/hicezan" style="margin: 0 43px;"><img src="https://image.flaticon.com/icons/png/24/463/463051.png" /></a>
+							<a href="https://www.facebook.com/heycezan/" style="margin: 0 43px;"><img src="https://image.flaticon.com/icons/png/24/462/462972.png" /></a>
 						</div>
 						<div style="text-align: center; margin: 0 0 20px">
 							<p>Sent with <img src="https://image.flaticon.com/icons/png/16/462/462982.png" style="vertical-align: bottom;" /> from San Francisco, CA</p>
