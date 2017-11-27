@@ -12,8 +12,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true, // use SSL
 	auth: {
-		user: 'hicezan@gmail.com',
-		pass: 'huskies5'
+		user: require('./config').stripeSkKey.smtp_user,
+		pass: require('./config').stripeSkKey.smtp_pass
 	}
 });
 const stripe = require('stripe')(require('./config').stripeSkKey);

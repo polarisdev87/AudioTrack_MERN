@@ -9,8 +9,8 @@ const transporter = nodemailer.createTransport({
   port: 465,
   secure: true, // use SSL
 	auth: {
-		user: 'hicezan@gmail.com',
-		pass: 'huskies5'
+		user: require('./config').smtp_user,
+		pass: require('./config').smtp_pass
 	}
 });
 const EmojiIcons = require('./config').EmojiIcons;
