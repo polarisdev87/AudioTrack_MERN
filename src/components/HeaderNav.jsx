@@ -23,10 +23,8 @@ class HeaderNav extends React.Component {
   }
 
   componentDidMount() {
-    console.log('abc', $('.header-collapse'));
     $(document).on('click', (e) => {
       if($(e.target).hasClass('nav-link') || $(e.target).hasClass('btn-login') || $(e.target).hasClass('btn-signup')) {
-        console.log('abc');
         $('.header-collapse.show').removeClass('show');
       }
     })

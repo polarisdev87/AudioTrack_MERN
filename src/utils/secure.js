@@ -6,7 +6,8 @@ firebase.initializeApp(FIREBASE_CONFIG);
 
 export function requireAuth(store) {
 	return function (nextState, replace) {
-		if (firebase.auth().currentUser === null) {
+		let user = store.getState().auth.user;
+		if (user === null) {
 			store.dispatch(setNext(nextState.location.pathname));
 			replace({
 				pathname: '/login',
@@ -18,15 +19,15 @@ export function requireAuth(store) {
 					pathname: '/confirm',
 				})
 			} else {
-				firebase.database().ref('/users/' + firebase.auth().currentUser.uid).once('value').then((snapshot) => {
-				  let paymentVerified = (snapshot.val() && snapshot.val().paymentVerified) || false;
+				// firebase.database().ref('/users/' + firebase.auth().currentUser.uid).once('value').then((snapshot) => {
+				  let paymentVerified = user.paymentVerified || false;
 				  if(!paymentVerified) {
 						store.dispatch(setNext(nextState.location.pathname));
 						replace({
 							pathname: '/payment',
 						})
 				  }
-				});
+				// });
 			}
 		}
 	}
