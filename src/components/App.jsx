@@ -91,6 +91,25 @@ class App extends React.Component {
 			s.async=1;
 			d.getElementsByTagName("head")[0].appendChild(s);
 		})();
+
+
+		/*
+		// Global site tag (gtag.js) - Google Analytics
+
+		(function(){
+			let d=document;
+			let s=d.createElement("script");
+			s.src="https://www.googletagmanager.com/gtag/js?id=UA-109685174-1";
+			s.async=1;
+			d.getElementsByTagName("head")[0].appendChild(s);
+		})();
+
+	  window.dataLayer = window.dataLayer || [];
+	  function gtag(){window.dataLayer.push(arguments);}
+	  gtag('js', new Date());
+		gtag('config', 'UA-109685174-1');
+		*/
+
 	}
 	componentWillUnmount() {
 		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).off();

@@ -30,7 +30,7 @@ class AudioPreviewTrackElement extends React.Component {
   }
 
   componentWillReceiveProps(newProps) {
-  	if(!newProps.isPlayingTrack && this.props.isPlayingTrack!=newProps.isPlayingTrack) {
+  	if(!newProps.isPlayingTrack && this.props.isPlayingTrack!==newProps.isPlayingTrack) {
   		this.onPlayerControlClicked();
   	}
   }

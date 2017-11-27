@@ -22,8 +22,7 @@ class ResumePreviewLink extends React.Component {
 		if(!resume) return null;
 		return (
 			<div className="resume-preview-link-container">
-        <Icon.ChevronLeft />
-        <Link to={resume.published ? ('/r/'+resume.link) : ('/preview/'+resume.resume_id)} target="_blank"><span className="resume-url-muted">www.cezan.co/r/</span><span className="resume-url-active">{resume.link}</span></Link>
+        <Link to={resume.published ? ('/r/'+resume.link) : ('/preview/'+resume.resume_id)} target="_blank"><span className="resume-url-muted">www.cezan.co/r/</span><span className="resume-url-active">{resume.link}</span><Icon.ArrowUpRight /></Link>
 			</div>
 		);
 	}

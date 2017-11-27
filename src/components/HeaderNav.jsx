@@ -9,6 +9,7 @@ import ProfileBox from './header/ProfileBox';
 import ResumePreviewLink from './header/ResumePreviewLink';
 import ResumeEditTitle from './header/ResumeEditTitle';
 import ResumeEditLink from './header/ResumeEditLink';
+import classnames from 'classnames';
 import $ from 'jquery';
 
 class HeaderNav extends React.Component {
@@ -61,7 +62,7 @@ class HeaderNav extends React.Component {
             null
           : (
             <Collapse isOpen={this.state.isOpen} navbar className="header-collapse">
-              <ul className="navbar-nav mr-auto ml-5 nav-links">
+              <ul className={classnames('navbar-nav', 'ml-5', 'nav-links', {'mr-auto': !isResume}, {'m-auto': isResume})}>
                 { isHome ? [
                   <li className="nav-item" key='features'>
                     <Scrollchor to="#features" className="nav-link">Features</Scrollchor>
