@@ -126,8 +126,8 @@ exports.sendmail = functions.https.onRequest((req, res) => {
 						<h2 style="text-align: center; padding: 4rem 0;">CEZAN</h2>
 						<div style="background: #fff; padding: 27px 47px;">
 							<div style="text-align: center;"><div style="background-color: ${emoji.color}; border-radius: 50%; width: 67px; height: 67px; text-align: center; line-height: 67px; display: inline-block; font-size: 32px;">${emoji.icon}</div></div>
-							<p style="margin-top: 30px;">Hi ${req.body.content.author.displayName}</p>
-							<p style="margin-top: 40px;">Anonymus ${emoji.name} just ${req.body.content.type}ed your resume from ${req.body.content.location.city}, ${req.body.content.location.state}</p>
+							<p style="margin-top: 30px;">Hi ${req.body.content.author.displayName},</p>
+							<p style="margin-top: 40px;">Anonymus ${emoji.name} just ${req.body.content.type}ed your resume from ${req.body.content.location.city}, ${req.body.content.location.state}!</p>
 							<p style="margin-top: 40px; margin-bottom: 20px;">The Cezan Team</p>
 						</div>
 						<div style="text-align: center; margin: 80px 0 20px;">
