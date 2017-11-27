@@ -155,44 +155,46 @@ class Payment extends React.Component {
 		const firstname = ((user && user.displayName) || '').split(' ')[0];
 		return (
 			<div className="container" style={{minHeight: 'calc(100vh - 72px)'}}>
-				<div className="row pb-5">
-					<div className="col-md-6 p-5 d-flex justify-content-center">
-						<div className="auth-form">
-							<div className={classnames('form-wizard-step', 'form-wizard-step-payment')}>
-								<div className="text-center form-title col-md-9 m-auto mb-5">How many resumes would you like to start off with {firstname}?
-									<div style={{color: '#9b9b9b', fontSize: '12px'}} className="text-center letter-spacing-3 mt-2 mb-5">You can always add more later!</div>
-								</div>
-								<div className="price-box mb-5 mt-5">
-									<div className="price-label"><span className="price-unit">$3</span><span className="price-separator">/</span><span className="price-unit-label">per resume</span></div>
-									<div className="price-control">
-										<span className="fa fa-chevron-down control control-down p-1" onClick={this.quantityDown.bind(this)}></span>
-										<span className="quantity">{quantity}</span>
-										<span className="fa fa-chevron-up control control-up" onClick={this.quantityUp.bind(this)}></span>
+				{ user && (
+					<div className="row pb-5">
+						<div className="col-md-6 p-5 d-flex justify-content-center">
+							<div className="auth-form">
+								<div className={classnames('form-wizard-step', 'form-wizard-step-payment')}>
+									<div className="text-center form-title col-md-9 m-auto mb-5">How many resumes would you like to start off with {firstname}?
+										<div style={{color: '#9b9b9b', fontSize: '12px'}} className="text-center letter-spacing-3 mt-2 mb-5">You can always add more later!</div>
 									</div>
+									<div className="price-box mb-5 mt-5">
+										<div className="price-label"><span className="price-unit">$3</span><span className="price-separator">/</span><span className="price-unit-label">per resume</span></div>
+										<div className="price-control">
+											<span className="fa fa-chevron-down control control-down p-1" onClick={this.quantityDown.bind(this)}></span>
+											<span className="quantity">{quantity}</span>
+											<span className="fa fa-chevron-up control control-up" onClick={this.quantityUp.bind(this)}></span>
+										</div>
+									</div>
+									<div className="stripe-form-container">
+						        <Elements stripe={this.props.stripeInstance}>
+						          <CardForm stepBack={this.stepBack} quantity={quantity} customer={user.email} completeSignUp={this.completeSignUp} />
+						        </Elements>
+						      </div>
 								</div>
-								<div className="stripe-form-container">
-					        <Elements stripe={this.props.stripeInstance}>
-					          <CardForm stepBack={this.stepBack} quantity={quantity} customer={user.email} completeSignUp={this.completeSignUp} />
-					        </Elements>
-					      </div>
+								<p className="text-center mt-5 font-normal grey-text letter-spacing-4 privacy-terms-links">By signing up you agree with Cezan’s<br/><b><Link to="/privacy-policy" target="_blank">Privacy Policy</Link> and <Link to="/terms" target="_blank">Terms</Link></b></p>
 							</div>
-							<p className="text-center mt-5 font-normal grey-text letter-spacing-4 privacy-terms-links">By signing up you agree with Cezan’s<br/><b><Link to="/privacy-policy" target="_blank">Privacy Policy</Link> and <Link to="/terms" target="_blank">Terms</Link></b></p>
 						</div>
-					</div>
-					<div className="col-separator"></div>
-					<div className="col-md-6 p-5">
-						<div className="p-5"></div>
-						<div className="login-marker-wrapper">
-							<p>Resumes</p>
-							<p>will never be</p>
-							<div className="login-marker">
-								<span>the same.</span>
-								<img src={process.env.PUBLIC_URL + '/assets/img/landing-cursor2.svg'} alt="login cursor" className="login-cursor" />
-								<img src={process.env.PUBLIC_URL + '/assets/img/player-playing.svg'} alt="login player" className="login-player" />
+						<div className="col-separator"></div>
+						<div className="col-md-6 p-5">
+							<div className="p-5"></div>
+							<div className="login-marker-wrapper">
+								<p>Resumes</p>
+								<p>will never be</p>
+								<div className="login-marker">
+									<span>the same.</span>
+									<img src={process.env.PUBLIC_URL + '/assets/img/landing-cursor2.svg'} alt="login cursor" className="login-cursor" />
+									<img src={process.env.PUBLIC_URL + '/assets/img/player-playing.svg'} alt="login player" className="login-player" />
+								</div>
 							</div>
 						</div>
 					</div>
-				</div>
+				) }
 			</div>
 		);
 	}
