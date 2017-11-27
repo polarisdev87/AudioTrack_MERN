@@ -35,7 +35,7 @@ class Home extends React.Component {
 						<div className="row align-items-center">
 							<div className="col-lg-4">
 								<div className="section-sub-title text-center text-lg-left">Select and record</div>
-								<div className="section-sub-description">Drag and drop your resume and begin to highlight key areas on your resume. You’ll be able to provide up to 1 minute of audio recording summarizing achievements, work experience, tools used, gaps and much more!</div>
+								<div className="section-sub-description">Drag and drop your resume and begin to select key areas on your resume. You’ll be able to provide up to 1 minute of audio recording summarizing achievements, work experience, tools used, gaps and much more!</div>
 							</div>
 							<div className="col">
 								<div className="icon-sets">
