@@ -45,7 +45,8 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
           params: {
             amount: 300 * quantity,
             currency: 'usd',
-            description: 'Test payment.',
+            description: quantity + 'credits are succssfully delivered to you.',
+            receipt_email: user.email,
             source: payload.token.id,
           }
         }).then((res) => {

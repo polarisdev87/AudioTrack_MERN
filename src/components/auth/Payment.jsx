@@ -30,7 +30,8 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
     			params: {
 					  amount: 300 * this.props.quantity,
 					  currency: 'usd',
-					  description: 'Test payment.',
+					  description: this.props.quantity + 'credits are succssfully delivered to you.',
+  					receipt_email: this.props.customer,
 					  source: payload.token.id,
 					}
 				}).then((res) => {
@@ -171,7 +172,7 @@ class Payment extends React.Component {
 								</div>
 								<div className="stripe-form-container">
 					        <Elements stripe={this.props.stripeInstance}>
-					          <CardForm stepBack={this.stepBack} quantity={quantity} completeSignUp={this.completeSignUp} />
+					          <CardForm stepBack={this.stepBack} quantity={quantity} customer={user.email} completeSignUp={this.completeSignUp} />
 					        </Elements>
 					      </div>
 							</div>
