@@ -113,6 +113,11 @@
 						background: rgba(255,0,0,0);
 						cursor: pointer;
 					}
+					.resume-thumbnail {
+						width: 100%;
+						height: calc(100% - 105px);
+						background: url(/assets/img/resume-placeholder.svg) no-repeat center 25px;
+					}
 					.resume-info {
 						position: absolute;
 						width: 100%;

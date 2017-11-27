@@ -101,6 +101,7 @@ class ResumeThumbnail extends React.Component {
               <button className="btn btn-confirm-delete mt-5" onClick={this.confirmDelete}>Delete Forever</button>
             </div>
           </Modal>
+          <div className="resume-thumbnail"></div>
 					<div className="resume-info">
 						<div className="resume-title-wrapper">
 							<ContentEditable className="resume-title" html={resume_title} onKeyPress={(e) => {this.handleKeyPress(e)}} onChange={(e) => {this.handleChange(e)}} onBlur={this.updateTitle} />
