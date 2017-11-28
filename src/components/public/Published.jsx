@@ -35,11 +35,13 @@ class Published extends React.Component {
     let resumePromise = new Promise((resolve, reject) => {
       firebase.database().ref().child('resumes').once('value', (snapshot) => {
         let resume_data = snapshot.val();
-        let found = Object.keys(resume_data).every((resume_id) => {
+        let found = false;
+        Object.keys(resume_data).every((resume_id) => {
           let resume = resume_data[resume_id];
           if(!resume.published) return true;
           if(resume.link !== resume_link) return true;
           this.setState({ resume: {...resume, resume_id} });
+          found = true;
           return false;
         });
         if(found) {

@@ -1,5 +1,4 @@
 import React  from 'react';
-import * as Icon from 'react-feather';
 import * as firebase from 'firebase';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
