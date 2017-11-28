@@ -38,7 +38,8 @@ class AudioPreviewTrackElement extends React.Component {
   	let playTimerID = setInterval(() => {
 	  	this.setState({curTime: this.state.curTime+1})
   		if(this.state.curTime > this.state.length) {
-  			this.onPlayerStopClicked();
+  			// this.onPlayerStopClicked();
+        this.changePlayingStatus();
   		}
   	}, 1000);
   	this.setState({ playTimerID });
