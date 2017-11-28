@@ -6,16 +6,12 @@ const https = require('https');
 const app = express();
 const request = require('request');
 const nodemailer = require('nodemailer');
-const transporter = nodemailer.createTransport({
-  pool: true,
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true, // use SSL
-	auth: {
-		user: require('./config').stripeSkKey.smtp_user,
-		pass: require('./config').stripeSkKey.smtp_pass
-	}
-});
+const mandrillTransport = require('nodemailer-mandrill-transport');
+const transporter = nodemailer.createTransport(mandrillTransport({
+  auth: {
+    apiKey: require('./config').mandrillKey
+  }
+}));
 const stripe = require('stripe')(require('./config').stripeSkKey);
 const EmojiIcons = require('./config').EmojiIcons;
 

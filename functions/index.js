@@ -3,16 +3,12 @@ const cors = require('cors')({origin: true});
 const https = require("https");
 const stripe = require('stripe')(require('./config').stripeSkKey);
 const nodemailer = require('nodemailer');
-const transporter = nodemailer.createTransport({
-  pool: true,
-  host: 'smtp.gmail.com',
-  port: 465,
-  secure: true, // use SSL
-	auth: {
-		user: require('./config').smtp_user,
-		pass: require('./config').smtp_pass
-	}
-});
+const mandrillTransport = require('nodemailer-mandrill-transport');
+const transporter = nodemailer.createTransport(mandrillTransport({
+  auth: {
+    apiKey: require('./config').mandrillKey
+  }
+}));
 const EmojiIcons = require('./config').EmojiIcons;
 
 // // Create and Deploy Your First Cloud Functions
