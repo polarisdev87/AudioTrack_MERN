@@ -45,7 +45,7 @@ class HeaderNav extends React.Component {
     const isResumeEdit = pathname.indexOf('/edit/') === 0;
     const isResumePreview = pathname.indexOf('/preview/') === 0;
     const isResumePublished = pathname.indexOf('/r/') === 0;
-    const isAuthenticated = user !== null;
+    const isAuthenticated = user !== null && !isPayment;
 
     if(isResumePreview) {
       return null;
