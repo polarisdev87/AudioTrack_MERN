@@ -50,7 +50,7 @@ class Published extends React.Component {
       firebase.database().ref('/users/' + this.state.resume.uid).once('value', (snapshot) => {
         this.setState({ author: {...snapshot.val()} });
       });
-      if(!this.state.user || this.state.user.uid !== this.state.resume.uid) {
+      if(!this.state.user || (this.state.user && this.state.user.uid !== this.state.resume.uid)) {
         // axios.get('https://geoip-db.com/json/').then((res) => {
         axios.get('https://freegeoip.net/json/').then((res) => {
           const location_data = res.data;
