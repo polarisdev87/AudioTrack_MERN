@@ -194,7 +194,7 @@ class Home extends React.Component {
 							</div>
 							<div className="col d-flex align-items-center justify-content-end">
 								<a href="https://twitter.com/hicezan" target="_blank"><i className="icon-img"><Icon.Twitter /></i></a>
-								<a href="mailto:hicezan@gmail.com"><i className="icon-img"><Icon.Mail /></i></a>
+								<a href="mailto:contact@cezan.co"><i className="icon-img"><Icon.Mail /></i></a>
 							</div>
 						</div>
 					</div>
