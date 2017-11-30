@@ -36,7 +36,7 @@ class AudioTracks extends React.Component {
 
 	handleAddNewPoint(e) {
 
-		if(Object.keys(this.props.resume.tracks).length >= 10) {
+		if(this.props.resume && this.props.resume.tracks && Object.keys(this.props.resume.tracks).length >= 10) {
 	  	NotificationManager.error('You cannot add another audio. Maximum limit reached.', 'Error');
 	  	return false;
 		}
