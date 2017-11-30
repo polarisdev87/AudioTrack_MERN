@@ -1,10 +1,10 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="28" height="28" viewBox="0 0 28 28">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
     <defs>
-        <circle id="a" cx="14" cy="14" r="11"/>
+        <circle id="a" cx="12" cy="12" r="9.429"/>
     </defs>
     <g fill="none" fill-rule="evenodd">
         <use fill="#FFD23C" xlink:href="#a"/>
-        <circle cx="14" cy="14" r="12.5" stroke="#FFD23C" stroke-width="3"/>
+        <circle cx="12" cy="12" r="10.929" stroke="#FFD23C" stroke-width="3"/>
         <use stroke="#FFF" stroke-width="3" xlink:href="#a"/>
     </g>
 </svg>

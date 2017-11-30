@@ -134,6 +134,7 @@
 	}
 
 	.audio-track-element {
+		transform: translate(-50%, -50%);
 		position: absolute;
 		&.pin-left {
 			margin-right: 2rem;
@@ -144,8 +145,6 @@
 		.audio-track-element-trigger {
 			border-radius: 50%;
 	    cursor: pointer;
-	    width: 36px;
-	    height: 36px;
 		}
 	}
 }

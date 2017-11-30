@@ -1,16 +1,16 @@
-<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="28" height="28" viewBox="0 0 28 28">
+<svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" width="24" height="24" viewBox="0 0 24 24">
     <defs>
-        <circle id="a" cx="14" cy="14" r="11"/>
+        <circle id="a" cx="12" cy="12" r="9.429"/>
     </defs>
     <g fill="none" fill-rule="evenodd">
         <g>
             <use fill="#05CCA0" xlink:href="#a"/>
-            <circle cx="14" cy="14" r="12.5" stroke="#05CCA0" stroke-width="3"/>
+            <circle cx="12" cy="12" r="10.929" stroke="#05CCA0" stroke-width="3"/>
             <use stroke="#FFF" stroke-width="3" xlink:href="#a"/>
         </g>
-        <g fill="#FFF" transform="translate(8.5 9)">
-            <rect width="1.5" height="10" x="4.909" rx=".75"/>
-            <rect width="1.5" height="10" x="4.909" rx=".75" transform="rotate(-90 5.66 5)"/>
+        <g fill="#FFF" transform="translate(7.286 7.714)">
+            <rect width="1.286" height="8.571" x="4.208" rx=".643"/>
+            <rect width="1.286" height="8.571" x="4.208" rx=".643" transform="rotate(-90 4.85 4.286)"/>
         </g>
     </g>
 </svg>

@@ -73,9 +73,11 @@ class AudioPreviewTrackElement extends React.Component {
 
 	render() {
 		const { track, isPlaying } = this.state;
-		const pos = { left: track.pos.x<0.5?'auto':'100%', right: track.pos.x>=0.5?'auto':'100%', top: track.pos.y*100+'%' };
+		// const pos = { left: track.pos.x<0.5?'auto':'100%', right: track.pos.x>=0.5?'auto':'100%', top: track.pos.y*100+'%' };
+    // const classname = classnames('audio-track-element', {'pin-right': track.pos.x>=0.5, 'pin-left': track.pos.x<0.5});
+    const pos = { left: track.pos.x*100+'%', top: track.pos.y*100+'%' };
 		return (
-			<div className={classnames('audio-track-element', {'pin-right': track.pos.x>=0.5, 'pin-left': track.pos.x<0.5})} style={pos} ref={node => { this.node = node; }}>
+			<div className={classnames('audio-track-element')} style={pos} ref={node => { this.node = node; }}>
 				<div className={classnames('audio-track-element-trigger', {'audio-track-element-trigger-activated': this.state.popoverOpen})}>
       		<div className="audio-track-element-player-action-control" onClick={this.changePlayingStatus}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-button-' + (!isPlaying?'play':'stop') + '.svg'} alt="icon-control" /></div>
 				</div>
