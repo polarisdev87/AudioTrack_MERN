@@ -8,7 +8,7 @@ import { resetNext } from '../../actions/auth';
 import { push } from 'react-router-redux';
 import { NotificationManager } from 'react-notifications';
 import ResumeThumbnail from './ResumeThumbnail';
-import $ from 'jquery';
+// import $ from 'jquery';
 import Stagger from 'react-css-stagger';
 
 let dropzoneRef, uploadTask;

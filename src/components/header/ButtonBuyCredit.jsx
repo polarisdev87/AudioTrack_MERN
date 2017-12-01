@@ -121,6 +121,7 @@ class ButtonBuyCredit extends React.Component {
 
   render() {
     const { user } = this.props;
+    if(!user) return null;
     return (
       <div className={classnames('buy-credit-container', {'display-none': !this.props.showBox })}>
         <Button className="btn-buy-credit" onClick={this.toggle}>{user.credits} Credits Left</Button>
