@@ -20,7 +20,7 @@ export function requireAuth(store) {
 				})
 			} else {
 				// firebase.database().ref('/users/' + firebase.auth().currentUser.uid).once('value').then((snapshot) => {
-				  let paymentVerified = user.paymentVerified || false;
+				  let paymentVerified = user.paymentVerified || true;//false;
 				  if(!paymentVerified) {
 						store.dispatch(setNext(nextState.location.pathname));
 						replace({

@@ -122,7 +122,7 @@ class ButtonBuyCredit extends React.Component {
   render() {
     const { user } = this.props;
     return (
-      <div className="buy-credit-container">
+      <div className={classnames('buy-credit-container', {'display-none': !this.props.showBox })}>
         <Button className="btn-buy-credit" onClick={this.toggle}>{user.credits} Credits Left</Button>
         <Modal isOpen={this.state.modal} toggle={this.toggle} className={classnames(this.props.className, 'modal-buy-credit')}>
           <div className="modal-buy-credit-content">

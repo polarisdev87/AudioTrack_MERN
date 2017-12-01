@@ -109,8 +109,8 @@ class HeaderNav extends React.Component {
                     <Link to="/signup" className="btn btn-signup">Sign Up</Link>
                   </div>
                 ) : null }
+                <ButtonBuyCredit { ...this.props } showBox={isDashboard || isProfile} key="button-buy-credit" />
                 { isDashboard || isProfile ? [
-                  <ButtonBuyCredit { ...this.props } key="button-buy-credit" />,
                   <ActivityBox type="all" key="activity-box-all" { ...this.props } />
                 ] : null }
                 { isResume ? [

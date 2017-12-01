@@ -11,6 +11,7 @@ import { Link } from 'react-router';
 import { Modal } from 'reactstrap';
 import Stagger from 'react-css-stagger';
 import AudioTracks from '../public/AudioTracks';
+import $ from 'jquery';
 
 class EditResume extends React.Component {
   state = {
@@ -87,20 +88,32 @@ class EditResume extends React.Component {
   onPublishResume = () => {
     this.validateResume().then(() => {
       const { resume } = this.state;
-      let updates = {};
+      let updates = {}, cancelled = false;
       const resumeData = {
         ...resume,
         published: true,
         modified: new Date()
       };
-      updates['/resumes/' + resume.resume_id] = resumeData;
-      updates['/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id] = resumeData;
-      updates['/users/' + this.state.user.uid + '/credits'] = this.state.user.credits - 1;
-      firebase.database().ref().update(updates).then(() => {
-        NotificationManager.success('Resume published successfully', '');
-        this.props.dispatch(push(this.props.next || '/dashboard'));
-        this.props.dispatch(resetNext());
-      });
+
+
+      if(this.state.user.credits <= 0) {
+       cancelled = true;
+       NotificationManager.error('You have no credits left to upload resume.', '');
+       $('.btn-buy-credit').click();
+      }
+
+      if(!cancelled) {
+
+        updates['/resumes/' + resume.resume_id] = resumeData;
+        updates['/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id] = resumeData;
+        updates['/users/' + this.state.user.uid + '/credits'] = this.state.user.credits - 1;
+        firebase.database().ref().update(updates).then(() => {
+          NotificationManager.success('Resume published successfully', '');
+          this.props.dispatch(push(this.props.next || '/dashboard'));
+          this.props.dispatch(resetNext());
+        });
+        
+      }
     }).catch((e) => {
       NotificationManager.error('Duplicate Link exists...', 'Cannot publish this resume.');
     });

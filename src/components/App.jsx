@@ -62,7 +62,7 @@ class App extends React.Component {
 						}
 				  } else {
 						this.props.onLogin(currentUser);
-				  	this.props.onRedirect(this.props.next || '/payment');
+				  	this.props.onRedirect(this.props.next || '/dashboard');//'/payment');
 						this.props.onResetNext();
 				  }
 					if (!this.state.loaded) {

@@ -60,21 +60,31 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
     return (
       <form onSubmit={this.handleSubmit}>
         <CardElement className="stripe-form" />
-				<div className="d-flex justify-content-between align-items-center mt-5">
-					<a className="btn btn-login white-text" onClick={this.stepBack}>Back</a>
-        	<button className="btn btn-login white-text" disabled={step>0}>
-        		{
-        			(() => {
-        				switch(step) {
-        					case 0: return `Pay $` + 3*this.props.quantity
-        					case 1: return `Checking...`
-        					case 2: return `Paying...`
-        					case 3: return `Redirecting...`
-        					default: return null;
-        				}
-        			})()
-        		}
-        	</button>
+				<div className="d-flex justify-content-between align-items-start mt-5">
+					<div>
+						<a className="btn btn-login white-text" onClick={this.stepBack}>Back</a>
+					</div>
+
+        	<div>
+        		<div>
+	        		<button className="btn btn-login white-text" disabled={step>0}>
+		        		{
+		        			(() => {
+		        				switch(step) {
+		        					case 0: return `Pay $` + 3*this.props.quantity
+		        					case 1: return `Checking...`
+		        					case 2: return `Paying...`
+		        					case 3: return `Redirecting...`
+		        					default: return null;
+		        				}
+		        			})()
+		        		}
+		        	</button>
+	        	</div>
+	        	<div className="skip-link-wrapper">
+	        		<Link to="/dashboard">Skip for now</Link>
+	        	</div>
+	        </div>
 				</div>
       </form>
     );
