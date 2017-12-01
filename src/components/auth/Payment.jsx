@@ -55,6 +55,14 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
   	this.props.stepBack();
   }
 
+  skipPayment = () => {
+		this.setState({ step: 3 });
+		NotificationManager.success('Redirecting...', '');
+		setTimeout(() => {
+			this.props.completeSignUp(true);
+		}, 100)
+  }
+
   render() {
   	const { step } = this.state;
     return (
@@ -82,7 +90,7 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
 		        	</button>
 	        	</div>
 	        	<div className="skip-link-wrapper">
-	        		<Link to="/dashboard">Skip for now</Link>
+	        		<a href="javascript: void(0)" onClick={this.skipPayment}>Skip for now</a>
 	        	</div>
 	        </div>
 				</div>
@@ -150,9 +158,9 @@ class Payment extends React.Component {
 		this.setState({ quantity: Math.max(this.state.quantity-1, 1) })
 	}
 
-	completeSignUp = () => {
-		this.setState({ user: { ...this.state.user, paymentVerified: true, credits: this.state.quantity }});
-		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update({ paymentVerified: true, credits: this.state.quantity }).then(() => {
+	completeSignUp = (skip = false) => {
+		this.setState({ user: { ...this.state.user, paymentVerified: true, credits: skip ? 0 : this.state.quantity }});
+		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update({ paymentVerified: true, credits: skip ? 0 : this.state.quantity }).then(() => {
 			this.props.dispatch(login(this.state.user));
 			this.props.dispatch(push(this.props.next || '/dashboard'));
 			this.props.dispatch(resetNext());
