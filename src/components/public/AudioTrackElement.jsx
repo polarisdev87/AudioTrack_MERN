@@ -26,7 +26,8 @@ class AudioTrackElement extends React.Component {
     playTimerID: null,
     final_output: null,
     initiated: false,
-    readyToAcceptBlog: false
+    readyToAcceptBlog: false,
+    countdown: null,
 	};
 
 	componentWillMount() {
@@ -158,16 +159,31 @@ class AudioTrackElement extends React.Component {
   }
 
   onRecorderStartClicked = () => {
-  	this.setState({ isRecording: true, track: {...this.state.track, step: 1}});
-  	this.props.onRecorderStart();
+  	this.setState({ track: {...this.state.track, step: 1} });
+  	let triggerRecordPromise = new Promise((resolve, reject) => {
+  		let countdown = 3;
+  		this.setState({ countdown });
+	  	let countdownTimer = setInterval(() => {
+	  		countdown --;
+	  		this.setState({ countdown });
+	  		if(countdown < 0) {
+	  			clearInterval(countdownTimer);
+	  			resolve();
+	  		}
+	  	}, 1000);
+  	});
+  	triggerRecordPromise.then(() => {
+  		this.setState({ isRecording: true });
+	  	this.props.onRecorderStart();
 
-  	let autoTimerID = setInterval(() => {
-  		this.setState({length: this.state.length+1})
-  		if(this.state.length>=60) {
-  			this.onRecorderStopClicked();
-  		}
-  	}, 1000);
-	  this.setState({ autoTimerID });
+	  	let autoTimerID = setInterval(() => {
+	  		this.setState({length: this.state.length+1})
+	  		if(this.state.length>=60) {
+	  			this.onRecorderStopClicked();
+	  		}
+	  	}, 1000);
+		  this.setState({ autoTimerID, countdown: null });
+  	})
   }
   onRecorderStopClicked = () => {
 	  clearInterval(this.state.autoTimerID);
@@ -243,7 +259,7 @@ class AudioTrackElement extends React.Component {
   }
 
 	render() {
-		const { track, isPlaying, curTime, length } = this.state;
+		const { track, isPlaying, curTime, length, countdown } = this.state;
 		const pos = { left: track.pos.x*100+'%', top: track.pos.y*100+'%' };
 		return (
 			<div className="audio-track-element" style={pos} ref={node => { this.node = node; }}>
@@ -259,7 +275,10 @@ class AudioTrackElement extends React.Component {
 	          		track.step === 0 && <div className="audio-track-element-player-action-record" onClick={this.onRecorderStartClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-record.svg'} alt="icon-record" /></div>
 	          	}
 	          	{
-	          		track.step === 1 && <div className="audio-track-element-player-action-stop" onClick={this.onRecorderStopClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-pause.svg'} alt="icon-record" /></div>
+	          		track.step === 1 && countdown !== null && <div className="audio-track-element-player-action-countdown">{countdown}</div>
+	          	}
+	          	{
+	          		track.step === 1 && countdown === null && <div className="audio-track-element-player-action-stop" onClick={this.onRecorderStopClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-pause.svg'} alt="icon-record" /></div>
 	          	}
 	          	{ 
 	          		track.step > 1 && !isPlaying && <div className="audio-track-element-player-action-play" onClick={this.onPlayerStartClicked}><img src={process.env.PUBLIC_URL + '/assets/img/icons/icon-play.svg'} alt="icon-record" /></div>

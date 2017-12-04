@@ -115,6 +115,16 @@
 				cursor: pointer;
 				width: 29px;
 				height: 29px;
+				.audio-track-element-player-action-countdown {
+			    display: block;
+			    height: 100%;
+			    border-radius: 50%;
+			    background: #fff;
+			    font-size: 18px;
+			    line-height: 29px;
+			    text-align: center;
+			    color: #e33;
+				}
 			}
 		}
 	}
