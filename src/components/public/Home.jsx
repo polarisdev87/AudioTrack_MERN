@@ -196,6 +196,7 @@ class Home extends React.Component {
 								<a href="https://twitter.com/hicezan" target="_blank"><i className="icon-img"><Icon.Twitter /></i></a>
 								<a href="mailto:contact@cezan.co"><i className="icon-img"><Icon.Mail /></i></a>
 							</div>
+							<div className="col col-12 text-center mb-4">Copyright 2017, Cezan. All Rights Reserved.</div>
 						</div>
 					</div>
 				</div>
