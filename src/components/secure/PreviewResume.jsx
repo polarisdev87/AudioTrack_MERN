@@ -43,7 +43,7 @@ class PreviewResume extends React.Component {
                       key={`page_${index + 1}`}
                       pageNumber={index + 1}
                       onRenderSuccess={this.onPageRenderSuccess}
-                      /*width={Math.min(600, document.body.clientWidth - 52)}*/ width={600}
+                      width={Math.min(600, document.body.clientWidth - 30)} /*width={600}*/
                       className="resume-page"
                     >
                       <AudioPreviewTracks resume={resume} pageNumber={index + 1} type="preview" />

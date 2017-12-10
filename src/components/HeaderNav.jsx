@@ -60,7 +60,7 @@ class HeaderNav extends React.Component {
             null
           : (
             <Collapse isOpen={this.state.isOpen} navbar className="header-collapse">
-              <ul className={classnames('navbar-nav', 'ml-5', 'nav-links', {'mr-auto': !isResume}, {'m-auto': isResume})}>
+              <ul className={classnames('navbar-nav', 'ml-0', 'ml-sm-5', 'nav-links', {'mr-auto': !isResume}, {'m-auto': isResume})}>
                 { isHome ? [
                   <li className="nav-item" key='features'>
                     <Scrollchor to="#features" className="nav-link">Features</Scrollchor>

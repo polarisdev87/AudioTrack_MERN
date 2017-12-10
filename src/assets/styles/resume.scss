@@ -211,3 +211,52 @@
 		}
 	}
 }
+
+@media only screen and (max-width: 600px) {
+	.resume-wrapper {
+		width: 100%;
+		.resume-page {
+			width: 100%;
+		}
+	}
+	.resume-published-view {
+		.guide-tour {
+			left: 50%;
+			transform: translateX(-50%);
+			margin-top: 6rem;
+		}
+		.btn-download-resume {
+			right: 50%;
+			transform: translateX(50%);
+			white-space: nowrap;
+		}
+		.logo-powered {
+			right: 50%;
+			bottom: 2rem;
+			transform: translateX(50%);
+			text-align: center;
+		}
+	}
+	.resume-preview-link-container {
+		justify-content: center;
+		margin-bottom: 1rem;
+	}
+	.resume-edit-title-container {
+		justify-content: center;
+	}
+	.header-center-container {
+		position: relative;
+		margin: 1rem 0;
+		.resume-edit-link-container {
+			justify-content: center;
+		}
+	}
+	.header-nav {
+		.header-collapse.show .navbar-right {
+			margin-left: 0;
+		}
+		.navbar-right {
+			justify-content: center;
+		}
+	}
+}
