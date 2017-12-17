@@ -7,6 +7,7 @@ import { recorderStart } from 'react-recorder-redux/actions';
 import { recorderStop } from 'react-recorder-redux/actions';
 import classnames from 'classnames';
 import { NotificationManager } from 'react-notifications';
+import $ from 'jquery';
 
 let aplayer;
 
@@ -28,6 +29,8 @@ class AudioTrackElement extends React.Component {
     initiated: false,
     readyToAcceptBlog: false,
     countdown: null,
+    dragging: false,
+    pos: this.props.track.pos
 	};
 
 	componentWillMount() {
@@ -258,11 +261,60 @@ class AudioTrackElement extends React.Component {
   	return parseInt(t/60, 10) + ':' + ("0" + t%60).slice(-2);
   }
 
+  onDragStart = (e) => {
+  	this.setState({ dragging: true });
+  }
+  onDrag = (e) => {
+  	if(this.state.dragging) {
+  		// console.log({...e});
+  		let layout = this.props.parentLayout;
+  		let scrollTop = $(window).scrollTop();
+  		// console.log({x: e.clientX - layout.left, y: e.clientY - layout.top}, {x: e.pageX, y:e.pageY}, {x: e.screenX, y: e.screenY});
+  		if(e.clientX !== 0 || e.clientY !== 0) {
+  			let pos = {x: e.clientX - layout.left, y: e.clientY - layout.top + scrollTop};
+  			if(pos.x < 0) {
+  				pos.x = 0;
+  			}
+  			if(pos.x > layout.width) {
+  				pos.x = layout.width;
+  			}
+  			if(pos.y < 0) {
+  				pos.y = 0;
+  			}
+  			if(pos.y > layout.height) {
+  				pos.y = layout.height;
+  			}
+	  		this.setState({ pos });
+	  	}
+  	}
+  }
+  onDragEnd = (e) => {
+  	this.setState({ dragging: false });
+		const { pos, resume, track } = this.state;
+		let updates = {};
+		let modifiedTime = new Date();
+		// console.log({x: pos.x/this.props.parentLayout.width, y: pos.y/this.props.parentLayout.height});
+		updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/pos'] = {x: pos.x/this.props.parentLayout.width, y: pos.y/this.props.parentLayout.height};
+		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/pos'] = {x: pos.x/this.props.parentLayout.width, y: pos.y/this.props.parentLayout.height};
+		updates['/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
+		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
+
+  	NotificationManager.success('New position has been saved.', 'Resume Updated');	  
+
+ 		firebase.database().ref().update(updates).then(() => {
+ 		});
+  }
+
 	render() {
-		const { track, isPlaying, curTime, length, countdown } = this.state;
-		const pos = { left: track.pos.x*100+'%', top: track.pos.y*100+'%' };
+		const { track, isPlaying, curTime, length, countdown, pos, dragging } = this.state;
+		let styles;
+		if(pos.x<=1 && pos.x>=0 && pos.y<=1 && pos.y>=0) {
+			styles = { left: pos.x*100+'%', top: pos.y*100+'%', opacity: dragging?0:1 };
+		} else {
+			styles = { left: pos.x+'px', top: pos.y+'px', opacity: dragging?0:1 };
+		}
 		return (
-			<div className="audio-track-element" style={pos} ref={node => { this.node = node; }}>
+			<div className="audio-track-element" style={styles} ref={node => { this.node = node; }} onDrag={this.onDrag} onDragStart={this.onDragStart} onDragEnd={this.onDragEnd}>
 				<div className={classnames('audio-track-element-trigger', {'audio-track-element-trigger-activated': this.state.popoverOpen})} onClick={this.toggle} id={'popover-'+track.track_id}>
 					<img src={process.env.PUBLIC_URL + '/assets/img/icons/' + (!this.state.popoverOpen?'icon-circle-normal.svg':'icon-circle-active.svg')} alt="icon-record" />
 				</div>

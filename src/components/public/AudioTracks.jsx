@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 import * as firebase from 'firebase';
 import AudioTrackElement from './AudioTrackElement';
 import { NotificationManager } from 'react-notifications';
+import $ from 'jquery';
 
 // let last_created = null;
 
@@ -13,7 +14,8 @@ class AudioTracks extends React.Component {
 		type: this.props.type,
 		pageNumber: this.props.pageNumber,
 		tracks: [],
-		last_created: null
+		last_created: null,
+		thisLayout: null
 	};
 
 	componentWillMount() {
@@ -28,6 +30,13 @@ class AudioTracks extends React.Component {
 		  });
 			this.setState({ loaded: true, tracks });
 		});
+	}
+
+	componentDidMount() {
+		this.setState({ thisLayout: {...$(this.domNode).offset(), width: $(this.domNode).width(), height: $(this.domNode).height()}});
+		$(window).on('resize', () => {
+			this.setState({ thisLayout: {...$(this.domNode).offset(), width: $(this.domNode).width(), height: $(this.domNode).height()}});
+		})
 	}
 
 	componentWillUnmount() {
@@ -70,11 +79,11 @@ class AudioTracks extends React.Component {
 	}
 
 	render() {
-		const { loaded, tracks, last_created } = this.state;
+		const { loaded, tracks, last_created, thisLayout } = this.state;
 		return (
-			<div className="audio-track-container">
+			<div className="audio-track-container" ref={(node) => {this.domNode = node; }}>
 				<div className="audio-track-overlay" onClick={(e) => {this.handleAddNewPoint(e)}}></div>
-				{ loaded && tracks.map((track, idx) => <AudioTrackElement track={track} key={track.track_id} defaultOpen={track.track_id === last_created} {...this.props} />) }
+				{ loaded && tracks.map((track, idx) => <AudioTrackElement track={track} key={track.track_id} defaultOpen={track.track_id === last_created} {...this.props} parentLayout={thisLayout} />) }
 			</div>
 		);
 	}

@@ -21,6 +21,9 @@
 	    cursor: pointer;
 	    &.audio-track-element-trigger-activated {
 	    }
+	    img {
+	    	max-width: 100px;
+	    }
 		}
 	}
 }
