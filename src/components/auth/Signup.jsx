@@ -81,8 +81,8 @@ class Signup extends React.Component {
 						signInMethod: 'google',
 						paymentVerified: false,
 						credits: 0,
-						activities: [],
-						resumes: [],
+						// activities: [],
+						// resumes: [],
 						lifetime: 1,
 						created: new Date()
 					}, {merge: true})

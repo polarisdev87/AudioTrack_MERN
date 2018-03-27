@@ -80,7 +80,7 @@ class Published extends React.Component {
 
           let batch = firebase.firestore().batch();
 
-          batch.set(firebase.firestore().doc('/activities/' + this.state.resume.uid + '/' + newActivityKey), activityData, {merge: true});
+          batch.set(firebase.firestore().doc('/activities/' + this.state.resume.uid + '/activities/' + newActivityKey), activityData, {merge: true});
           batch.set(firebase.firestore().doc('/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey), activityData, {merge: true});
           batch.set(firebase.firestore().doc('/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey), activityData, {merge: true});
           batch.set(firebase.firestore().doc('/resumes/' + this.state.resume.resume_id), {
@@ -151,7 +151,7 @@ class Published extends React.Component {
 
           let batch = firebase.firestore().batch();
 
-          batch.set(firebase.firestore().doc('/activities/' + this.state.resume.uid + '/' + newActivityKey), activityData, {merge: true});
+          batch.set(firebase.firestore().doc('/activities/' + this.state.resume.uid + '/activities/' + newActivityKey), activityData, {merge: true});
           batch.set(firebase.firestore().doc('/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey), activityData, {merge: true});
           batch.set(firebase.firestore().doc('/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey), activityData, {merge: true});
           batch.set(firebase.firestore().doc('/resumes/' + this.state.resume.resume_id), {

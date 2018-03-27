@@ -54,14 +54,19 @@ class ActivityBox extends React.Component {
 	    })
 		switch(type) {
 			case 'all':
-				this.listener_all = firebase.firestore().collection('activities').doc(this.state.user.uid).onSnapshot((snapshot) => {
-					if (!snapshot.exists) return false;
-					let activities = snapshot.data() || {};
+				this.listener_all = firebase.firestore().collection('activities').doc(this.state.user.uid).collection('activities').onSnapshot((querySnapshot) => {
+					if (!querySnapshot.exists) return false;
 					let list = [];
-					Object.keys(activities).every((activity_id) => {
-						list.push({...activities[activity_id], activity_id});
-						return true;
-					});
+					querySnapshot.forEach((snapshot) => {
+						let activity = snapshot.data() || {};
+						activity.activity_id = activity.id;
+						list.push(activity)
+					})
+					// let activities = snapshot.data() || {};
+					// Object.keys(activities).every((activity_id) => {
+					// 	list.push({...activities[activity_id], activity_id});
+					// 	return true;
+					// });
 					list.sort((a, b) => {
 						return new Date(b.at) - new Date(a.at);
 					});
@@ -69,16 +74,23 @@ class ActivityBox extends React.Component {
 				});
 				break;
 			case 'view':
-				this.listener_view = firebase.firestore().collection('resumes').doc(resume_id).collection('activities').onSnapshot((snapshot) => {
-					if (!snapshot.exists) return false;
-					let activities = snapshot.data() || {};
+				this.listener_view = firebase.firestore().collection('resumes').doc(resume_id).collection('activities').onSnapshot((querySnapshot) => {
+					if (!querySnapshot.exists) return false;
 					let list = [];
-					Object.keys(activities).every((activity_id) => {
-						if(activities[activity_id].type === 'view') {
-							list.push({...activities[activity_id], activity_id});
-						}
-						return true;
-					});
+					querySnapshot.forEach((snapshot) => {
+						let activity = snapshot.data() || {};
+						activity.activity_id = activity.id;
+						list.push(activity)
+					})
+
+					// let activities = snapshot.data() || {};
+					// let list = [];
+					// Object.keys(activities).every((activity_id) => {
+					// 	if(activities[activity_id].type === 'view') {
+					// 		list.push({...activities[activity_id], activity_id});
+					// 	}
+						// return true;
+					// });
 					list.sort((a, b) => {
 						return new Date(b.at) - new Date(a.at);
 					});
@@ -86,16 +98,22 @@ class ActivityBox extends React.Component {
 				});
 				break;
 			case 'download':
-				this.listener_download = firebase.firestore().collection('resumes').doc(resume_id).collection('activities').onSnapshot((snapshot) => {
-					if (!snapshot.exists) return false;
-					let activities = snapshot.data() || {};
+				this.listener_download = firebase.firestore().collection('resumes').doc(resume_id).collection('activities').onSnapshot((querySnapshot) => {
+					if (!querySnapshot.exists) return false;
 					let list = [];
-					Object.keys(activities).every((activity_id) => {
-						if(activities[activity_id].type === 'download') {
-							list.push({...activities[activity_id], activity_id});
-						}
-						return true;
-					});
+					querySnapshot.forEach((snapshot) => {
+						let activity = snapshot.data() || {};
+						activity.activity_id = activity.id;
+						list.push(activity)
+					})
+					// let activities = snapshot.data() || {};
+					// let list = [];
+					// Object.keys(activities).every((activity_id) => {
+					// 	if(activities[activity_id].type === 'download') {
+					// 		list.push({...activities[activity_id], activity_id});
+					// 	}
+					// 	return true;
+					// });
 					list.sort((a, b) => {
 						return new Date(b.at) - new Date(a.at);
 					});
@@ -130,7 +148,11 @@ class ActivityBox extends React.Component {
   }
 
   onClearLogs = () => {
-  	firebase.firestore().doc('/activities/' + firebase.auth().currentUser.uid).delete();
+  	firebase.firestore().collection('/activities/' + firebase.auth().currentUser.uid + '/activities').get().then((querySnapshot) => {
+  		querySnapshot.forEach((snapshot) => {
+  			snapshot.doc.delete();
+  		})
+  	});
   }
 
 	render() {
