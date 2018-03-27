@@ -1,5 +1,6 @@
 import React from 'react';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Link } from 'react-router';
@@ -29,19 +30,19 @@ class Signup extends React.Component {
 				}).catch((error) => {
 				})
 
-				// add User Data to database
-				firebase.database().ref('/users/' + user.uid).update({
+				// add User Data to firestore
+				firebase.firestore().doc('/users/' + user.uid).set({
 					displayName: this.state.fullname,
 					email: user.email,
 					photoUrl: user.photoURL || 'https://firebasestorage.googleapis.com/v0/b/cezan-1903a.appspot.com/o/avatar-big-icon.svg?alt=media&token=70e5663c-b08f-49c5-8073-d6670e6205f2',
 					signInMethod: 'email',
 					paymentVerified: false,
 					credits: 0,
-					activities: [],
-					resumes: [],
+					// activities: [],
+					// resumes: [],
 					lifetime: 1,
 					created: new Date()
-				})
+				}, {merge: true})
 
 				// send Verification Email
 				user.sendEmailVerification().then(function() {
@@ -68,11 +69,12 @@ class Signup extends React.Component {
 		const provider = new firebase.auth.GoogleAuthProvider();
 		firebase.auth().signInWithPopup(provider).then((result) => {
 			const user = result.user;
-    	firebase.database().ref('/users/' + user.uid).once('value').then((snapshot) => {
-				let email = (snapshot.val() && snapshot.val().email) || '';
-				if(!email) {
-					// add User Data to database
-					firebase.database().ref('/users/' + user.uid).update({
+    	firebase.firestore().doc('/users/' + user.uid).get().then((snapshot) => {
+				
+				if(!snapshot.exists) {
+					// let email = (snapshot.data() && snapshot.data().email) || '';
+					// add User Data to firestore
+					firebase.firestore().doc('/users/' + user.uid).set({
 						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,
@@ -83,16 +85,16 @@ class Signup extends React.Component {
 						resumes: [],
 						lifetime: 1,
 						created: new Date()
-					})
+					}, {merge: true})
 				} else {
-					firebase.database().ref('/users/' + user.uid).update({
-						...snapshot.val(),
+					firebase.firestore().doc('/users/' + user.uid).set({
+						...snapshot.data(),
 						displayName: user.displayName,
 						email: user.email,
 						photoUrl: user.photoURL,
 						signInMethod: 'google',
 						updated: new Date()
-					})
+					}, {merge: true})
 				}
 			});
 		}).catch((error) => {

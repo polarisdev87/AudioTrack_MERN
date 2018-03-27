@@ -1,5 +1,6 @@
 import React from 'react';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { connect } from 'react-redux';
 import Dropzone from 'react-dropzone';
 import classnames from 'classnames';
@@ -14,38 +15,38 @@ import Stagger from 'react-css-stagger';
 let dropzoneRef, uploadTask;
 
 class Dashboard extends React.Component {
-	state = {
-		user: {...this.props.user, uid: firebase.auth().currentUser.uid},
-		accept: 'application/pdf', //, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+  state = {
+    user: {...this.props.user, uid: firebase.auth().currentUser.uid},
+    accept: 'application/pdf', //, application/msword, application/vnd.openxmlformats-officedocument.wordprocessingml.document',
     files: [],
     resumes: [],
     dropzoneActive: false,
     loaded: false,
     upload: {
-    	status: 0,
-    	progress: 0
+      status: 0,
+      progress: 0
     }
-	};
+  };
 
-	componentWillMount() {
-		firebase.database().ref('/users/'+this.state.user.uid+'/resumes').on('value', (snapshot) => {
-			let resumes = [];
-		  snapshot.forEach((childSnapshot) => {
-		    const childKey = childSnapshot.key;
-		    const childData = childSnapshot.val();
-		    resumes.push({...childData, resume_id: childKey});
-		  });
-			this.setState({ loaded: true, resumes});
-		});
-	}
+  componentWillMount() {
+    this.listener = firebase.firestore().collection('/users/'+this.state.user.uid+'/resumes').onSnapshot((snapshot) => {
+      let resumes = [];
+      snapshot.forEach((childSnapshot) => {
+        const childKey = childSnapshot.id;
+        const childData = childSnapshot.data();
+        resumes.push({...childData, resume_id: childKey});
+      });
+      this.setState({ loaded: true, resumes});
+    });
+  }
 
-	componentWillUnmount() {
-		firebase.database().ref('/users/'+this.state.user.uid+'/resumes').off();
-	}
+  componentWillUnmount() {
+    this.listener && (this.listener)();
+  }
 
-	componentWillReceiveProps(nextProps) {
-		this.setState({ user: { ...this.state.user, ...nextProps.user}});
-	}
+  componentWillReceiveProps(nextProps) {
+    this.setState({ user: { ...this.state.user, ...nextProps.user}});
+  }
 
 
   onDragEnter = () => {
@@ -62,115 +63,116 @@ class Dashboard extends React.Component {
 
   onDrop = (files, rejected) => {
 
-  	let cancelled = false;
+    let cancelled = false;
 
-  	if(rejected.length > 0) {
-	  	NotificationManager.error('Files are rejected', '');
-  	}
+    if(rejected.length > 0) {
+      NotificationManager.error('Files are rejected', '');
+    }
 
-  	if(files.length === 0) {
-  		cancelled = true;
-  	}
+    if(files.length === 0) {
+      cancelled = true;
+    }
 
-  	// if(this.state.user.credits <= 0) {
-  	// 	cancelled = true;
-	  // 	NotificationManager.error('You have no credits left to upload resume.', '');
-	  // 	$('.btn-buy-credit').click();
-  	// }
+    // if(this.state.user.credits <= 0) {
+    //  cancelled = true;
+    //  NotificationManager.error('You have no credits left to upload resume.', '');
+    //  $('.btn-buy-credit').click();
+    // }
 
-  	if(cancelled) {
-	    this.setState({
-	      files,
-	      dropzoneActive: false,
-	      upload: {...this.state.upload, progress: 0, status: 0}
-	    });
-	    return false;
-  	}
+    if(cancelled) {
+      this.setState({
+        files,
+        dropzoneActive: false,
+        upload: {...this.state.upload, progress: 0, status: 0}
+      });
+      return false;
+    }
 
-  	const { uid } = this.state.user;
-		const newResumeKey = firebase.database().ref().child('resumes').push().key;
+    const { uid } = this.state.user;
+    const newResumeKey = firebase.firestore().collection('resumes').doc().id;
 
     files.forEach(file => {
-			const storageRef = firebase.storage().ref();
-			uploadTask = storageRef.child('resumes/' + uid + '/' + newResumeKey + '/source.pdf').put(file);
+      const storageRef = firebase.storage().ref();
+      uploadTask = storageRef.child('resumes/' + uid + '/' + newResumeKey + '/source.pdf').put(file);
 
 
-			this.setState({ upload: {...this.state.upload, status: 1}});
+      this.setState({ upload: {...this.state.upload, status: 1}});
 
-	  	NotificationManager.success('Upload started...', '');
-			uploadTask.on('state_changed', (snapshot) => {
-			  // Observe state change events such as progress, pause, and resume
-			  // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
-			  let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-			  this.setState({ upload: {...this.state.upload, progress}});
-			  // console.log('Upload is ' + progress + '% done');
-			  // switch (snapshot.state) {
-			  //   case firebase.storage.TaskState.PAUSED: // or 'paused'
-			  //     console.log('Upload is paused');
-			  //     break;
-			  //   case firebase.storage.TaskState.RUNNING: // or 'running'
-			  //     console.log('Upload is running');
-			  //     break;
-			  // }
-			}, (error) => {
-			  // Handle unsuccessful uploads
-			  this.setState({
-		      files: [],
-		      dropzoneActive: false,
-		      upload: { status: 0, progress: 0}
-		    });
-			}, () => {
-			  // Handle successful uploads on complete
-			  this.setState({ upload: {...this.state.upload, progress: 100, status: 2}});
-			});
+      NotificationManager.success('Upload started...', '');
+      uploadTask.on('state_changed', (snapshot) => {
+        // Observe state change events such as progress, pause, and resume
+        // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+        let progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+        this.setState({ upload: {...this.state.upload, progress}});
+        // console.log('Upload is ' + progress + '% done');
+        // switch (snapshot.state) {
+        //   case firebase.storage.TaskState.PAUSED: // or 'paused'
+        //     console.log('Upload is paused');
+        //     break;
+        //   case firebase.storage.TaskState.RUNNING: // or 'running'
+        //     console.log('Upload is running');
+        //     break;
+        // }
+      }, (error) => {
+        // Handle unsuccessful uploads
+        this.setState({
+          files: [],
+          dropzoneActive: false,
+          upload: { status: 0, progress: 0}
+        });
+      }, () => {
+        // Handle successful uploads on complete
+        this.setState({ upload: {...this.state.upload, progress: 100, status: 2}});
+      });
 
-			uploadTask.then((snapshot) => {
-			  // Upload completed successfully, now we can get the download URL
-			  const downloadURL = uploadTask.snapshot.downloadURL;
+      uploadTask.then((snapshot) => {
+        // Upload completed successfully, now we can get the download URL
+        const downloadURL = uploadTask.snapshot.downloadURL;
 
         // firebase.database().ref('/users/' + uid).update({ credits: this.state.user.credits - 1 }).then(() => {
         // });
 
-				let updates = {};
-				const resumeData = {
-					uid: uid,
-					file: downloadURL,
-					views: 0,
-					downloads: 0,
-					uploaded: new Date(),
-					modified: new Date(),
-					title: 'Resume ' + this.state.user.lifetime,
-					published: false,
-					link: 'Title Your Resume',
-					link_modified: false
-				};
-				updates['/resumes/' + newResumeKey] = resumeData;
-				updates['/users/' + uid + '/resumes/' + newResumeKey] = resumeData;
+        const resumeData = {
+          uid: uid,
+          file: downloadURL,
+          views: 0,
+          downloads: 0,
+          uploaded: new Date(),
+          modified: new Date(),
+          title: 'Resume ' + this.state.user.lifetime,
+          published: false,
+          link: 'Title Your Resume',
+          link_modified: false
+        };
 
+        let batch = firebase.firestore().batch();
+        batch.set(firebase.firestore().doc('/resumes/' + newResumeKey), resumeData, {merge: true});
+        batch.set(firebase.firestore().doc('/users/' + uid + '/resumes/' + newResumeKey), resumeData, {merge: true});
+        batch.set(firebase.firestore().doc('/users/' + uid), {
+          lifetime: this.state.user.lifetime+1
+        }, {merge: true});
+        batch.commit().then(() => {
 
-				firebase.database().ref('/users/' + uid).update({ lifetime: this.state.user.lifetime+1 }).then(() => {
-				});
+          this.setState({
+            files,
+            dropzoneActive: false,
+            upload: {...this.state.upload, progress: 0, status: 0}
+          });
 
-	  		NotificationManager.success('Resume registered successfully', '');
-				firebase.database().ref().update(updates).then(() => {
+          this.props.dispatch(push(this.props.next || '/edit/'+newResumeKey));
+          this.props.dispatch(resetNext());
 
-			    this.setState({
-			      files,
-			      dropzoneActive: false,
-			      upload: {...this.state.upload, progress: 0, status: 0}
-			    });
+        })
 
-					this.props.dispatch(push(this.props.next || '/edit/'+newResumeKey));
-					this.props.dispatch(resetNext());
-				});
+        NotificationManager.success('Resume registered successfully', '');
 
-			});
+      });
 
     });
   }
 
   onOpenFileDialog = () => {
-  	dropzoneRef.open();
+    dropzoneRef.open();
     this.setState({
       dropzoneActive: true
     });
@@ -183,17 +185,17 @@ class Dashboard extends React.Component {
   }
 
   resumeCancelUpload = () => {
-  	uploadTask.cancel();
-	  NotificationManager.error('Upload cancelled by user...', '');
+    uploadTask.cancel();
+    NotificationManager.error('Upload cancelled by user...', '');
   }
 
-	render() {
-		const { loaded, resumes, accept, dropzoneActive, upload } = this.state;
+  render() {
+    const { loaded, resumes, accept, dropzoneActive, upload } = this.state;
 
-		return (
+    return (
       <Dropzone
-      	ref={(node) => { dropzoneRef = node; }}
-      	className={classnames('dashboard-zone-area', {'empty': resumes.length === 0})}
+        ref={(node) => { dropzoneRef = node; }}
+        className={classnames('dashboard-zone-area', {'empty': resumes.length === 0})}
         disableClick
         multiple={false}
         style={{position: "relative"}}
@@ -203,48 +205,48 @@ class Dashboard extends React.Component {
         onDragLeave={this.onDragLeave}
         onFileDialogCancel={this.onFileDialogCancel}
       >
-				<div className="container dashboard-container">
-					<div className="dashboard-toolbar">
-						<a className="btn-upload-resume" onClick={this.onOpenFileDialog}><span>Upload Resume</span></a>
-					</div>
-					{ loaded &&
-						<div className={classnames('resumes-container', {'empty': resumes.length === 0})}>
+        <div className="container dashboard-container">
+          <div className="dashboard-toolbar">
+            <a className="btn-upload-resume" onClick={this.onOpenFileDialog}><span>Upload Resume</span></a>
+          </div>
+          { loaded &&
+            <div className={classnames('resumes-container', {'empty': resumes.length === 0})}>
 
-							{ resumes.length === 0 && <div className="resumes-empty">
-								<div className="resume-empty-state-icon"><img src={process.env.PUBLIC_URL + '/assets/img/icons/resume-empty-state-icon.svg'} alt="empty" /></div>
-								<div className="empty-resumes-title">My Resumes</div>
-								<div className="empty-resumes-label">All of your resumes will be located here. Drag and drop your resume to get started!</div>
-							</div> }
-							{ resumes && (
-								<Stagger transition="floatfromtop" delay={150} className="resumes-list">
-									{
-										resumes.map((resume, idx) => <div className="resume-wrapper-container" key={idx}><ResumeThumbnail resume={resume} {...this.props} /></div>)
-									}
-								</Stagger>
-							) }
-						</div>
-					}
-				</div>
+              { resumes.length === 0 && <div className="resumes-empty">
+                <div className="resume-empty-state-icon"><img src={process.env.PUBLIC_URL + '/assets/img/icons/resume-empty-state-icon.svg'} alt="empty" /></div>
+                <div className="empty-resumes-title">My Resumes</div>
+                <div className="empty-resumes-label">All of your resumes will be located here. Drag and drop your resume to get started!</div>
+              </div> }
+              { resumes && (
+                <Stagger transition="floatfromtop" delay={150} className="resumes-list">
+                  {
+                    resumes.map((resume, idx) => <div className="resume-wrapper-container" key={idx}><ResumeThumbnail resume={resume} {...this.props} /></div>)
+                  }
+                </Stagger>
+              ) }
+            </div>
+          }
+        </div>
         { dropzoneActive && (
-        	<div className="resume-uploading-overlay d-flex align-items-center justify-content-center">
-        		<div className="container">
-      			{ upload.status>0 && (
-      				<div className="resume-uploading-container">
-      					<Progress animated color="success" value={upload.progress} />
-      					<div className="resume-uploading-actions">
-      						<button className="btn-cancel-upload" onClick={this.resumeCancelUpload}>Cancel</button>
-      					</div>
-      				</div>
-      			) }
-      			</div>
-					</div>
-				) }
+          <div className="resume-uploading-overlay d-flex align-items-center justify-content-center">
+            <div className="container">
+            { upload.status>0 && (
+              <div className="resume-uploading-container">
+                <Progress animated color="success" value={upload.progress} />
+                <div className="resume-uploading-actions">
+                  <button className="btn-cancel-upload" onClick={this.resumeCancelUpload}>Cancel</button>
+                </div>
+              </div>
+            ) }
+            </div>
+          </div>
+        ) }
       </Dropzone>
-		)
-	}
+    )
+  }
 }
 
 export default connect(state=>({
-	next: state.auth.next,
-	user: state.auth.user
+  next: state.auth.next,
+  user: state.auth.user
 }))(Dashboard);

@@ -1,6 +1,7 @@
 import React  from 'react';
 import { connect } from 'react-redux';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { Popover } from 'reactstrap';
 import { Recorder } from 'react-recorder-redux';
 import { recorderStart } from 'react-recorder-redux/actions';
@@ -36,12 +37,15 @@ class AudioTrackElement extends React.Component {
 	componentWillMount() {
 		const { track, resume } = this.state;
 		if(track.file === '') {
-			let updates = {};
-
-			updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/step'] = 0;
-			updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/step'] = 0;
-	 		firebase.database().ref().update(updates).then(() => {
-	 		});
+			let batch = firebase.firestore().batch();
+			batch.set(firebase.firestore().doc('/resumes/' + resume.resume_id + '/tracks/' + track.track_id), {
+				step: 0
+			}, {merge: true});
+			batch.set(firebase.firestore().doc('/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id), {
+				step: 0
+			}, {merge: true});
+			batch.commit().then(() => {
+			});
 		} 
 		if(track.step > 2) {
 			this.setState({ length: this.state.track.length });
@@ -143,22 +147,28 @@ class AudioTrackElement extends React.Component {
 			this.onRecorderStopClicked();
 		}
 
-		let updates = {};
+		let batch = firebase.firestore().batch();
+
 		let modifiedTime = new Date();
-		updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id] = null;
-		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id] = null;
-		updates['/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
-		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
+
+		batch.delete(firebase.firestore().doc('/resumes/' + resume.resume_id + '/tracks/' + track.track_id));
+		batch.delete(firebase.firestore().doc('/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id));
+		batch.set(firebase.firestore().doc('/resumes/' + resume.resume_id), {
+			modified: modifiedTime
+		}, {merge: true});
+		batch.set(firebase.firestore().doc('/users/' + resume.uid + '/resumes/' + resume.resume_id), {
+			modified: modifiedTime
+		}, {merge: true});
 
 		if(track.file !== '') {
-      firebase.storage().ref().child('resumes/' + resume.uid + '/' + resume.resume_id + '/' + track.track_id + '.wav').delete().then(() => {
-      })
+	      firebase.storage().ref().child('resumes/' + resume.uid + '/' + resume.resume_id + '/' + track.track_id + '.wav').delete().then(() => {
+	      })
 		}
 
-	  NotificationManager.success('Audio track has been deleted.', 'Resume Updated');
+	  	NotificationManager.success('Audio track has been deleted.', 'Resume Updated');
 
- 		firebase.database().ref().update(updates).then(() => {
- 		});
+	  	batch.commit().then(() => {
+	  	});
   }
 
   onRecorderStartClicked = () => {
@@ -202,21 +212,28 @@ class AudioTrackElement extends React.Component {
   	const { track, resume } = this.state;
   	let uploadTask = firebase.storage().ref().child('resumes/' + track.uid + '/' + track.resume_id + '/' + track.track_id + '.wav').put(this.state.final_output);
 		uploadTask.then((snapshot) => {
-			let updates = {};
+			let batch = firebase.firestore().batch();
 			let modifiedTime = new Date();
-			updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/length'] = this.state.length;
-			updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/length'] = this.state.length;
-			updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/file'] = uploadTask.snapshot.downloadURL;
-			updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/file'] = uploadTask.snapshot.downloadURL;
-			updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/step'] = 3;
-			updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/step'] = 3;
-			updates['/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
-			updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
+			batch.set(firebase.firestore().doc('/resumes/' + resume.resume_id + '/tracks/' + track.track_id), {
+				length: this.state.length,
+				file: uploadTask.snapshot.downloadURL,
+				step: 3,
+			}, {merge: true});
+			batch.set(firebase.firestore().doc('/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + track.track_id), {
+				length: this.state.length,
+				file: uploadTask.snapshot.downloadURL,
+				step: 3,
+			}, {merge: true});
+			batch.set(firebase.firestore().doc('/resumes/' + resume.resume_id), {
+				modified: modifiedTime,
+			}, {merge: true});
+			batch.set(firebase.firestore().doc('/users/' + resume.uid + '/resumes/' + resume.resume_id), {
+				modified: modifiedTime,
+			}, {merge: true});
 
-	  	NotificationManager.success('Audio track has been saved.', 'Resume Updated');	  
+	  		NotificationManager.success('Audio track has been saved.', 'Resume Updated');	  
 
-	 		firebase.database().ref().update(updates).then(() => {
-	 		});
+	  		batch.commit().then(() => {});
 		});
 	  this.setState({ track: {...this.state.track, step: 3}});
 	}
@@ -291,18 +308,24 @@ class AudioTrackElement extends React.Component {
   onDragEnd = (e) => {
   	this.setState({ dragging: false });
 		const { pos, resume, track } = this.state;
-		let updates = {};
+
 		let modifiedTime = new Date();
+		let batch = firebase.firestore().batch();
+		batch.set(firebase.firestore().doc('/resumes/' + resume.resume_id + '/tracks/' + track.track_id), {
+			pos: {x: pos.x/this.props.parentLayout.width, y: pos.y/this.props.parentLayout.height}
+		}, {merge: true});
+		batch.set(firebase.firestore().doc('/users/' + resume.uid + '/resumes/' + resume.resume_id), {
+			pos: {x: pos.x/this.props.parentLayout.width, y: pos.y/this.props.parentLayout.height},
+			modified: modifiedTime,
+		}, {merge: true});
+		batch.set(firebase.firestore().doc('/resumes/' + resume.resume_id), {
+			modified: modifiedTime,
+		}, {merge: true});
 		// console.log({x: pos.x/this.props.parentLayout.width, y: pos.y/this.props.parentLayout.height});
-		updates['/resumes/' + resume.resume_id + '/tracks/' + track.track_id + '/pos'] = {x: pos.x/this.props.parentLayout.width, y: pos.y/this.props.parentLayout.height};
-		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/pos'] = {x: pos.x/this.props.parentLayout.width, y: pos.y/this.props.parentLayout.height};
-		updates['/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
-		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/modified'] = modifiedTime;
 
   	NotificationManager.success('New position has been saved.', 'Resume Updated');	  
 
- 		firebase.database().ref().update(updates).then(() => {
- 		});
+  		batch.commit().then(() => {});
   }
 
 	render() {

@@ -1,5 +1,6 @@
 import React from 'react';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { CardElement, Elements, injectStripe } from 'react-stripe-elements';
@@ -90,7 +91,7 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
 		        	</button>
 	        	</div>
 	        	<div className="skip-link-wrapper">
-	        		<a href="javascript: void(0)" onClick={this.skipPayment}>Skip for now</a>
+	        		<a href={'javascript: void(0)'} onClick={this.skipPayment}>Skip for now</a>
 	        	</div>
 	        </div>
 				</div>
@@ -160,7 +161,7 @@ class Payment extends React.Component {
 
 	completeSignUp = (skip = false) => {
 		this.setState({ user: { ...this.state.user, paymentVerified: true, credits: skip ? 0 : this.state.quantity }});
-		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update({ paymentVerified: true, credits: skip ? 0 : this.state.quantity }).then(() => {
+		firebase.firestore().doc('/users/' + firebase.auth().currentUser.uid).set({ paymentVerified: true, credits: skip ? 0 : this.state.quantity }, {merge: true}).then(() => {
 			this.props.dispatch(login(this.state.user));
 			this.props.dispatch(push(this.props.next || '/dashboard'));
 			this.props.dispatch(resetNext());

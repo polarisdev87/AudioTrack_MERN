@@ -1,5 +1,6 @@
 import React from 'react';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { Link } from 'react-router';
 import { connect } from 'react-redux';
 import { NotificationManager } from 'react-notifications';
@@ -19,10 +20,10 @@ class Login extends React.Component {
 		firebase.auth().signInWithEmailAndPassword(this.state.email, this.state.password)
 			.then(() => {
 				this.setState({ step: 2 });
-  			NotificationManager.success('Loading...', '');
+  				NotificationManager.success('Loading...', '');
 			})
 			.catch((error) => {
-  			NotificationManager.error(error.message, '');
+  				NotificationManager.error(error.message, '');
 				this.setState({ error: error, step: 0 });
 			});
 	}
@@ -36,33 +37,33 @@ class Login extends React.Component {
 	loginWithGoogle() {
     const provider = new firebase.auth.GoogleAuthProvider();
     firebase.auth().signInWithPopup(provider).then((result) => {
-			const user = result.user;
-    	firebase.database().ref('/users/' + user.uid).once('value').then((snapshot) => {
-				let email = (snapshot.val() && snapshot.val().email) || '';
-				if(!email) {
-					// add User Data to database
-					firebase.database().ref('/users/' + user.uid).update({
-						displayName: user.displayName,
-						email: user.email,
-						photoUrl: user.photoURL,
-						signInMethod: 'google',
-						paymentVerified: false,
-						credits: 0,
-						activities: [],
-						resumes: [],
-						lifetime: 1,
-						created: new Date()
-					})
-				} else {
-					firebase.database().ref('/users/' + user.uid).update({
-						...snapshot.val(),
-						displayName: user.displayName,
-						email: user.email,
-						photoUrl: user.photoURL,
-						signInMethod: 'google',
-						updated: new Date()
-					})
-				}
+		const user = result.user;
+    	firebase.firestore().doc('/users/' + user.uid).get().then((snapshot) => {
+			if(!snapshot.exists) {
+				// let email = (snapshot.data() && snapshot.data().email) || '';
+				// add User Data to firestore
+				firebase.firestore().doc('/users/' + user.uid).set({
+					displayName: user.displayName,
+					email: user.email,
+					photoUrl: user.photoURL,
+					signInMethod: 'google',
+					paymentVerified: false,
+					credits: 0,
+					// activities: [],
+					// resumes: [],
+					lifetime: 1,
+					created: new Date()
+				}, {merge: true})
+			} else {
+				firebase.firestore().doc('/users/' + user.uid).set({
+					...snapshot.data(),
+					displayName: user.displayName,
+					email: user.email,
+					photoUrl: user.photoURL,
+					signInMethod: 'google',
+					updated: new Date()
+				}, {merge: true})
+			}
     	})
      }).catch((error) => {
 	     this.setState({ error: error});

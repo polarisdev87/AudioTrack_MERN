@@ -1,6 +1,7 @@
 import React from 'react';
 import { connect } from 'react-redux';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { login, logout, resetNext } from '../actions/auth';
 import { push } from 'react-router-redux';
 import 'react-notifications/lib/notifications.css';
@@ -38,36 +39,78 @@ class App extends React.Component {
 		}
 		firebase.auth().onAuthStateChanged(user => {
 			if (user) {
-				firebase.database().ref('/users/' + user.uid).on('value', (snapshot) => {
-					const currentUser = snapshot.val();
-					const was_profile = this.props.location.pathname === '/profile';
-    			const was_resumeEdit = this.props.location.pathname.indexOf('/edit/') === 0;
-					this.setState({ user: { ...currentUser }});
-				  let paymentVerified = (currentUser && currentUser.paymentVerified) || false;
-				  if(paymentVerified) {
-						if(!user.emailVerified) {
-							this.props.onLogin(currentUser);
-							this.props.onRedirect(this.props.next || '/confirm');
-							this.props.onResetNext();
-						} else {
-							this.props.onLogin(currentUser);
-							if(was_profile) {
-								this.props.onRedirect(this.props.next || '/profile');
-							} else if(was_resumeEdit) {
-								this.props.onRedirect(this.props.next || this.props.location.pathname);
+				this.userListener && (this.userListener)();
+				this.resumesListener && (this.resumesListener)();
+				this.activitiesListener && (this.activitiesListener)();
+
+				this.userListener = firebase.firestore().collection('users').doc(user.uid).onSnapshot((snapshot) => {
+					const currentUser = snapshot.data();
+					currentUser.resumes = {};
+					currentUser.activities = {};
+					Promise.all([
+						firebase.firestore().collection('users').doc(user.uid).collection('resumes').get(),
+						firebase.firestore().collection('users').doc(user.uid).collection('activities').get()
+					]).then((data) => {
+						data[0].forEach((resumeDoc) => {
+							currentUser.resumes[resumeDoc.id] = resumeDoc.data();
+							currentUser.resumes[resumeDoc.id].id = resumeDoc.id;
+						});
+						data[1].forEach((activityDoc) => {
+							currentUser.activities[activityDoc.id] = activityDoc.data();
+							currentUser.activities[activityDoc.id].id = activityDoc.id;
+						});
+						return Promise.resolve();
+					}).then(() => {
+						const was_profile = this.props.location.pathname === '/profile';
+	    			const was_resumeEdit = this.props.location.pathname.indexOf('/edit/') === 0;
+						this.setState({ user: { ...this.state.user, ...currentUser }});
+				    let paymentVerified = (currentUser && currentUser.paymentVerified) || false;
+				    if(paymentVerified) {
+							if(!user.emailVerified) {
+								this.props.onLogin({ ...this.state.user, ...currentUser });
+								this.props.onRedirect(this.props.next || '/confirm');
+								this.props.onResetNext();
 							} else {
-								this.props.onRedirect(this.props.next || '/dashboard');
+								this.props.onLogin({ ...this.state.user, ...currentUser });
+								if(was_profile) {
+									this.props.onRedirect(this.props.next || '/profile');
+								} else if(was_resumeEdit) {
+									this.props.onRedirect(this.props.next || this.props.location.pathname);
+								} else {
+									this.props.onRedirect(this.props.next || '/dashboard');
+								}
+								this.props.onResetNext();
 							}
+				    } else {
+							this.props.onLogin({ ...this.state.user, ...currentUser });
+				  		this.props.onRedirect(this.props.next || '/payment');
 							this.props.onResetNext();
+				    }
+						if (!this.state.loaded) {
+							this.setState({ loaded: true });
 						}
-				  } else {
-						this.props.onLogin(currentUser);
-				  	this.props.onRedirect(this.props.next || '/payment');
-						this.props.onResetNext();
-				  }
-					if (!this.state.loaded) {
-						this.setState({ loaded: true });
-					}
+					});
+				});
+
+				this.resumesListener = firebase.firestore().collection('users').doc(user.uid).collection('resumes').onSnapshot((snapshot) => {
+					const resumes = {};
+					snapshot.forEach((resumeDoc) => {
+						resumes[resumeDoc.id] = resumeDoc.data();
+						resumes[resumeDoc.id].id = resumeDoc.id;
+					});
+					const user = {...this.state.user, resumes};
+					this.props.onLogin(user);
+					this.setState({user});
+				});
+				this.activitiesListener = firebase.firestore().collection('users').doc(user.uid).collection('activities').onSnapshot((snapshot) => {
+					const activities = {};
+					snapshot.forEach((activityDoc) => {
+						activities[activityDoc.id] = activityDoc.data();
+						activities[activityDoc.id].id = activityDoc.id;
+					});
+					const user = {...this.state.user, activities};
+					this.props.onLogin(user);
+					this.setState({user});
 				});
 			} else {
 				if (this.props.user) {
@@ -112,7 +155,9 @@ class App extends React.Component {
 
 	}
 	componentWillUnmount() {
-		firebase.database().ref('/users/' + firebase.auth().currentUser.uid).off();
+		this.userListener && (this.userListener)();
+		this.resumesListener && (this.resumesListener)();
+		this.activitiesListener && (this.activitiesListener)();
 	}
 
 	render() {

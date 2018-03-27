@@ -1,6 +1,7 @@
 import React  from 'react';
 import { connect } from 'react-redux';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import AudioPreviewTrackElement from './AudioPreviewTrackElement';
 
 class AudioPreviewTracks extends React.Component {
@@ -14,11 +15,11 @@ class AudioPreviewTracks extends React.Component {
 	};
 
 	componentWillMount() {
-		firebase.database().ref('/resumes/'+this.state.resume.resume_id+'/tracks').on('value', (snapshot) => {
+		this.listener = firebase.firestore().collection('resumes').doc(this.state.resume.resume_id).collection('tracks').onSnapshot((snapshot) => {
 			let tracks = [];
 		  snapshot.forEach((childSnapshot) => {
-		    const childKey = childSnapshot.key;
-		    const childData = childSnapshot.val();
+		    const childKey = childSnapshot.id;
+		    const childData = childSnapshot.data();
 		    if(childData.pageNumber === this.state.pageNumber && childData.step === 3) {
 		    	tracks.push({...childData, track_id: childKey});
 		    }
@@ -28,7 +29,7 @@ class AudioPreviewTracks extends React.Component {
 	}
 
 	componentWillUnmount() {
-		firebase.database().ref('/resumes/'+this.state.resume.resume_id+'/tracks').off();
+		this.listener && (this.listener)();
 	}
 
 	iamPlaying = (isPlayingTrack) => {

@@ -1,5 +1,6 @@
 import React  from 'react';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { connect } from 'react-redux';
 import { NotificationManager } from 'react-notifications';
 const ContentEditable = require("react-contenteditable");
@@ -14,12 +15,12 @@ class ResumeEditTitle extends React.Component {
 	};
 
 	componentWillMount() {
-    const { resume_id } = this.props.params;
-    this.setState({ resume_id });
-    firebase.database().ref('/resumes/'+resume_id).once('value', (snapshot) => {
-    	const resume = snapshot.val();
-    	this.setState({ resume: {...resume, resume_id}, resume_title: resume.title });
-    })
+	    const { resume_id } = this.props.params;
+	    this.setState({ resume_id });
+	    firebase.firestore().doc('/resumes/'+resume_id).get().then((snapshot) => {
+	    	const resume = snapshot.data();
+	    	this.setState({ resume: {...resume, resume_id}, resume_title: resume.title });
+	    })
 	}
 
   handleChange = (e) => {
@@ -38,13 +39,17 @@ class ResumeEditTitle extends React.Component {
 			this.setState({ resume_title: this.state.resume.title});
 		} else {
 			if(this.state.resume_title !== this.state.resume.title) {
-				let updates = {};
-				updates['/resumes/' + this.state.resume.resume_id + '/title'] = this.state.resume_title || this.state.resume.title;
-				updates['/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id + '/title'] = this.state.resume_title || this.state.resume.title;
-				firebase.database().ref().update(updates).then(() => {
+				let batch = firebase.firestore().batch();
+				batch.set(firebase.firestore().doc('/resumes/' + this.state.resume.resume_id), {
+					title: this.state.resume_title || this.state.resume.title
+				}, {merge: true});
+				batch.set(firebase.firestore().doc('/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id), {
+					title: this.state.resume_title || this.state.resume.title
+				}, {merge: true});
+				batch.commit().then(() => {
 					this.setState({ resume: {...this.state.resume, title: this.state.resume_title}});
-			  	NotificationManager.success('Resume Title successfully updated', '');
-				});
+			  		NotificationManager.success('Resume Title successfully updated', '');
+				})
 			}
 		}
 	}

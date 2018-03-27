@@ -12,6 +12,9 @@ class ProfileBox extends React.Component {
 
 	render() {
 		const { user } = this.props;
+		if (!user.email) {
+			return <div/>;
+		}
 		return (
 			<div className="profilebox-container">
 		    <UncontrolledDropdown>
@@ -30,5 +33,5 @@ class ProfileBox extends React.Component {
 }
 
 export default connect(state=>({
-	user: state.auth.user
+	user: state.auth.user || {}
 }))(ProfileBox);

@@ -1,5 +1,6 @@
 import React from 'react';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { connect } from 'react-redux';
 import * as Icon from 'react-feather';
 import { Popover, PopoverBody } from 'reactstrap';
@@ -46,15 +47,16 @@ class ActivityBox extends React.Component {
 
 	componentWillMount() {
 		const { type } = this.state;
-    const { resume_id } = this.props.params;
-    firebase.database().ref('/resumes/'+resume_id).once('value', (snapshot) => {
-    	const resume = snapshot.val();
-    	this.setState({ resume: {...resume, resume_id} });
-    })
+	    const { resume_id } = this.props.params;
+	    firebase.firestore().doc('/resumes/'+resume_id).get().then((snapshot) => {
+	    	const resume = snapshot.data();
+	    	this.setState({ resume: {...resume, resume_id} });
+	    })
 		switch(type) {
 			case 'all':
-				firebase.database().ref('/activities/' + this.state.user.uid).on('value', (snapshot) => {
-					let activities = snapshot.val() || {};
+				this.listener_all = firebase.firestore().collection('activities').doc(this.state.user.uid).onSnapshot((snapshot) => {
+					if (!snapshot.exists) return false;
+					let activities = snapshot.data() || {};
 					let list = [];
 					Object.keys(activities).every((activity_id) => {
 						list.push({...activities[activity_id], activity_id});
@@ -67,8 +69,9 @@ class ActivityBox extends React.Component {
 				});
 				break;
 			case 'view':
-				firebase.database().ref('/resumes/' + resume_id + '/activities').on('value', (snapshot) => {
-					let activities = snapshot.val() || {};
+				this.listener_view = firebase.firestore().collection('resumes').doc(resume_id).collection('activities').onSnapshot((snapshot) => {
+					if (!snapshot.exists) return false;
+					let activities = snapshot.data() || {};
 					let list = [];
 					Object.keys(activities).every((activity_id) => {
 						if(activities[activity_id].type === 'view') {
@@ -83,8 +86,9 @@ class ActivityBox extends React.Component {
 				});
 				break;
 			case 'download':
-				firebase.database().ref('/resumes/' + resume_id + '/activities').on('value', (snapshot) => {
-					let activities = snapshot.val() || {};
+				this.listener_download = firebase.firestore().collection('resumes').doc(resume_id).collection('activities').onSnapshot((snapshot) => {
+					if (!snapshot.exists) return false;
+					let activities = snapshot.data() || {};
 					let list = [];
 					Object.keys(activities).every((activity_id) => {
 						if(activities[activity_id].type === 'download') {
@@ -106,13 +110,13 @@ class ActivityBox extends React.Component {
 		const { type } = this.state;
 		switch(type) {
 			case 'all':
-				firebase.database().ref('/activities/' + firebase.auth().currentUser.uid).off();
+				this.listener_all && (this.listener_all)();
 				break;
 			case 'view':
-				firebase.database().ref('/resumes/' + this.state.resume.resume_id + '/activities').off();
+				this.listener_view && (this.listener_view)();
 				break;
 			case 'download':
-				firebase.database().ref('/resumes/' + this.state.resume.resume_id + '/activities').off();
+				this.listener_download && (this.listener_download)();
 				break;
 			default:
 				break;
@@ -126,9 +130,7 @@ class ActivityBox extends React.Component {
   }
 
   onClearLogs = () => {
-  	let updates = {};
-    updates['/activities/' + firebase.auth().currentUser.uid] = null;
-  	firebase.database().ref().update(updates);
+  	firebase.firestore().doc('/activities/' + firebase.auth().currentUser.uid).delete();
   }
 
 	render() {

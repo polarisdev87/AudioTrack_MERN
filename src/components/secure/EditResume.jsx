@@ -1,5 +1,6 @@
 import React  from 'react';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Document, Page } from 'react-pdf';
@@ -47,16 +48,29 @@ class EditResume extends React.Component {
 
   onDeleteResume = () => {
     const { resume } = this.state;
-    let updates = {};
-    updates['/resumes/' + resume.resume_id] = null;
-    updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
-    NotificationManager.success('Resume successfully deleted', '');
-    firebase.database().ref().update(updates).then(() => {
-      firebase.storage().ref().child('resumes/' + this.state.user.uid + '/' + resume.resume_id + '/source.pdf').delete().then(() => {
-        this.props.dispatch(push(this.props.next || '/dashboard'));
-        this.props.dispatch(resetNext());
+    let batch = firebase.firestore().batch();
+    batch.delete(firebase.firestore().doc('/resumes/' + resume.resume_id));
+    batch.delete(firebase.firestore().doc('/users/' + this.state.user.uid + '/resumes/' + resume.resume_id));
+    // Promise.all([
+    //   firebase.firestore().collection('resumes').doc(resume.resume_id).collection('tracks').get(),
+    //   firebase.firestore().collection('users').doc(this.state.user.uid).collection('resumes').doc(resume.resume_id).collection('tracks').get(),
+    // ]).then((data) => {
+    //   data[0].forEach((snapshot) => {
+    //     batch.delete(firebase.firestore().doc('/resumes/' + resume.resume_id + '/tracks' + snapshot.id));
+    //   });
+    //   data[1].forEach((snapshot) => {
+    //     batch.delete(firebase.firestore().doc('/users/' + this.state.user.uid + '/resumes/' + resume.resume_id + '/tracks' + snapshot.id));
+    //   })
+    //   return Promise.resolve();
+    // }).then(() => {
+      batch.commit().then(() => {
+        firebase.storage().ref().child('resumes/' + this.state.user.uid + '/' + resume.resume_id + '/source.pdf').delete().then(() => {
+          this.props.dispatch(push(this.props.next || '/dashboard'));
+          this.props.dispatch(resetNext());
+        })
       })
-    });
+      NotificationManager.success('Resume successfully deleted', '');
+    // })
   }
 
   validateResume = () => {
@@ -65,10 +79,10 @@ class EditResume extends React.Component {
       if(resume.link_modified === true) {
         return resolve();
       } else {
-        firebase.database().ref().child('resumes').once('value', (snapshot) => {
+        firebase.firestore().collection('resumes').get().then((snapshot) => {
           let resumes = [];
           snapshot.forEach((childSnapshot) => {
-            resumes.push({...childSnapshot.val(), resume_id: childSnapshot.key});
+            resumes.push({...childSnapshot.data(), resume_id: childSnapshot.id});
           });
           resumes.every((r) => {
             if(r.resume_id !== resume.resume_id && r.published===true) {
@@ -88,7 +102,7 @@ class EditResume extends React.Component {
   onPublishResume = () => {
     this.validateResume().then(() => {
       const { resume } = this.state;
-      let updates = {}, cancelled = false;
+      let cancelled = false;
       const resumeData = {
         ...resume,
         published: true,
@@ -104,17 +118,22 @@ class EditResume extends React.Component {
 
       if(!cancelled) {
 
-        updates['/resumes/' + resume.resume_id] = resumeData;
-        updates['/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id] = resumeData;
-        updates['/users/' + this.state.user.uid + '/credits'] = this.state.user.credits - 1;
-        firebase.database().ref().update(updates).then(() => {
+        let batch = firebase.firestore().batch();
+        batch.set(firebase.firestore().doc('/resumes/' + resume.resume_id), resumeData, {merge: true});
+        batch.set(firebase.firestore().doc('/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id), resumeData, {merge: true});
+        batch.set(firebase.firestore().doc('/users/' + this.state.user.uid), {
+          credits: this.state.user.credits - 1,
+        }, {merge: true});
+
+        batch.commit().then(() => {
           NotificationManager.success('Resume published successfully', '');
           this.props.dispatch(push(this.props.next || '/dashboard'));
           this.props.dispatch(resetNext());
-        });
-        
+        })
+                
       }
     }).catch((e) => {
+      console.log('efefe222222');
       NotificationManager.error('Duplicate Link exists...', 'Cannot publish this resume.');
     });
   }

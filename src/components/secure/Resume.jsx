@@ -1,5 +1,6 @@
 import React  from 'react';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Document, Page } from 'react-pdf';
@@ -44,11 +45,14 @@ class Resume extends React.Component {
 
   onDeleteResume = () => {
     const { resume } = this.state;
-    let updates = {};
-    updates['/resumes/' + resume.resume_id] = null;
-    updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
+    // let updates = {};
+    // updates['/resumes/' + resume.resume_id] = null;
+    // updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
+    let batch = firebase.firestore().batch();
+    batch.delete(firebase.firestore().doc('/resumes/' + resume.resume_id));
+    batch.delete(firebase.firestore().doc('/users/' + this.state.user.uid + '/resumes/' + resume.resume_id));
     NotificationManager.success('Resume successfully deleted', '');
-    firebase.database().ref().update(updates).then(() => {
+    batch.commit().then(() => {
       firebase.storage().ref().child('resumes/' + this.state.user.uid + '/' + resume.resume_id + '/source.pdf').delete().then(() => {
         this.props.dispatch(push(this.props.next || '/dashboard'));
         this.props.dispatch(resetNext());

@@ -1,5 +1,6 @@
 import React from 'react';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { connect } from 'react-redux';
 import { FormGroup, Label, Input, Modal } from 'reactstrap';
 import { NotificationManager } from 'react-notifications';
@@ -70,7 +71,7 @@ class Profile extends React.Component {
 
 	  		let promise_list = [];
 	  		promise_list.push(firebase.auth().currentUser.updateProfile({ photoURL: downloadURL }));
-				promise_list.push(firebase.database().ref('/users/' + uid).update({ photoUrl: downloadURL }))
+				promise_list.push(firebase.firestore().doc('/users/' + uid).set({ photoUrl: downloadURL }, {merge: true}))
 
 				Promise.all([...promise_list]).then(() => {
 	  			NotificationManager.success('Profile updated successfully', '');
@@ -112,16 +113,23 @@ class Profile extends React.Component {
 				});
 			} else if(mode === 'email') {
 		  	let promise_list = [];
-		  	let updates = {};
+		  	let batch = firebase.firestore().batch();
+		  	// let updates = {};
 				if(old_user.displayName !== displayName) {
-					updates['/users/' + uid + '/displayName'] = displayName;
+					// updates['/users/' + uid + '/displayName'] = displayName;
+					batch.set(firebase.firestore().doc('/users/' + uid), {
+						displayName: displayName
+					}, {merge: true});
 					promise_list.push(user.updateProfile({ displayName }));
 				}
 				if(old_user.email !== email) {
-					updates['/users/' + uid + '/email'] = email;
+					// updates['/users/' + uid + '/email'] = email;
+					batch.set(firebase.firestore().doc('/users/' + uid), {
+						email: email,
+					}, {merge: true});
 					promise_list.push(user.updateEmail(email));
 				}
-				promise_list.push(firebase.database().ref().update(updates));
+				promise_list.push(batch.commit());
 				Promise.all([...promise_list]).then(() => {
 			  	NotificationManager.success('Profile updated successfully', '');
 			  	this.toggleVerifyCredentials();
@@ -152,9 +160,11 @@ class Profile extends React.Component {
 			let resumeRef = storageRef.child('resumes/' + uid + '/' + resume_id + '/source.pdf');
 			promise_list.push(resumeRef.delete());
 
-      let updates = {};
-      updates['/resumes/' + resume_id] = null;
-      promise_list.push(firebase.database().ref().update(updates));
+      // let updates = {};
+      // updates['/resumes/' + resume_id] = null;
+      let batch = firebase.firestore().batch();
+      batch.delete(firebase.firestore().doc('/resumes/' + resume_id));
+      promise_list.push(batch.commit());
 		}
 
 		let profileRef = storageRef.child('profile/' + uid + '.png');
@@ -162,9 +172,11 @@ class Profile extends React.Component {
 
 		promise_list.push(firebase.auth().currentUser.delete());
 
-    let updates = {};
-    updates['/users/' + uid] = null;
-    promise_list.push(firebase.database().ref().update(updates));
+    // let updates = {};
+    // updates['/users/' + uid] = null;
+    let batch = firebase.firestore().batch();
+    batch.delete(firebase.firestore().doc('/users/' + uid));
+    promise_list.push(batch.commit());
 
     Promise.all([...promise_list]).then(() => {
   		NotificationManager.success('Account deleted...', '');

@@ -1,5 +1,6 @@
 import React from 'react';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { connect } from 'react-redux';
 import { Button, Modal } from 'reactstrap';
 import classnames from 'classnames';
@@ -56,7 +57,7 @@ class _CardForm extends React.Component<{stripe: StripeProps}> {
           } else {
             this.setState({ step: 3 });
             NotificationManager.success('Adding Credits...', '');
-            firebase.database().ref('/users/' + firebase.auth().currentUser.uid).update({ credits: user.credits + quantity }).then(() => {
+            firebase.firestore().doc('/users/' + firebase.auth().currentUser.uid).set({ credits: user.credits + quantity }, {merge: true}).then(() => {
               NotificationManager.success(quantity + ' Credits added successfully.', '');
               this.props.onComplete();
             });

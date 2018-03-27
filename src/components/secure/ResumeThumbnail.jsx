@@ -2,6 +2,7 @@ import React  from 'react';
 import { connect } from 'react-redux';
 import { Link } from 'react-router';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, Modal } from 'reactstrap';
 import * as Icon from 'react-feather';
 import { push } from 'react-router-redux';
@@ -21,18 +22,19 @@ class ResumeThumbnail extends React.Component {
 
   onDeleteResume = () => {
 		const { resume } = this.props;
-		let updates = {};
-		updates['/resumes/' + resume.resume_id] = null;
-		updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
-    firebase.database().ref().update(updates).then(() => {
+		// let updates = {};
+		// updates['/resumes/' + resume.resume_id] = null;
+		// updates['/users/' + this.state.user.uid + '/resumes/' + resume.resume_id] = null;
+		let batch = firebase.firestore().batch();
+		batch.delete(firebase.firestore().doc('/resumes/' + resume.resume_id));
+		batch.delete(firebase.firestore().doc('/users/' + this.state.user.uid + '/resumes/' + resume.resume_id));
+		batch.commit().then(() => {
+  		NotificationManager.success('Resume successfully deleted', '');
       firebase.storage().ref().child('resumes/' + this.state.user.uid + '/' + resume.resume_id + '/source.pdf').delete().then(() => {
         this.props.dispatch(push(this.props.next || '/dashboard'));
         this.props.dispatch(resetNext());
       })
-    });
-		firebase.database().ref().update(updates).then(() => {
-  		NotificationManager.success('Resume successfully deleted', '');
-		});
+		})
   }
 
   toggleConfirmDelete = () => {
@@ -65,16 +67,27 @@ class ResumeThumbnail extends React.Component {
 			this.setState({ resume_title: this.props.resume.title});
 		} else {
 			if(this.state.resume_title !== this.props.resume.title) {
-				let updates = {};
 				let modifiedTime = new Date();
-				updates['/resumes/' + this.props.resume.resume_id + '/title'] = this.state.resume_title || this.props.resume.title;
-				updates['/users/' + this.state.user.uid + '/resumes/' + this.props.resume.resume_id + '/title'] = this.state.resume_title || this.props.resume.title;
-				updates['/resumes/' + this.props.resume.resume_id + '/modified'] = modifiedTime;
-				updates['/users/' + this.props.resume.uid + '/resumes/' + this.props.resume.resume_id + '/modified'] = modifiedTime;
-				firebase.database().ref().update(updates).then(() => {
+				// let updates = {};
+				// updates['/resumes/' + this.props.resume.resume_id + '/title'] = this.state.resume_title || this.props.resume.title;
+				// updates['/users/' + this.state.user.uid + '/resumes/' + this.props.resume.resume_id + '/title'] = this.state.resume_title || this.props.resume.title;
+				// updates['/resumes/' + this.props.resume.resume_id + '/modified'] = modifiedTime;
+				// updates['/users/' + this.props.resume.uid + '/resumes/' + this.props.resume.resume_id + '/modified'] = modifiedTime;
+				let batch = firebase.firestore().batch();
+				batch.set(firebase.firestore().doc('/resumes/' + this.props.resume.resume_id), {
+					title: this.state.resume_title || this.props.resume.title,
+					modified: modifiedTime,
+				}, {merge: true});
+				batch.set(firebase.firestore().doc('/users/' + this.state.user.uid + '/resumes/' + this.props.resume.resume_id), {
+					title: this.state.resume_title || this.props.resume.title,
+				}, {merge: true});
+				batch.set(firebase.firestore().doc('/users/' + this.props.resume.uid + '/resumes/' + this.props.resume.resume_id), {
+					modified: modifiedTime,
+				}, {merge: true});
+				batch.commit().then(() => {
 					this.setState({ resume: {...this.state.resume, title: this.state.resume_title}});
 			  	NotificationManager.success('Resume Title successfully updated', '');
-				});
+				})
 			}
 		}
 	}

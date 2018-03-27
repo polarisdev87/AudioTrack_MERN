@@ -1,5 +1,6 @@
 import React  from 'react';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { connect } from 'react-redux';
 import classnames from 'classnames';
 import { Document, Page } from 'react-pdf';
@@ -33,8 +34,12 @@ class Published extends React.Component {
     });
 
     let resumePromise = new Promise((resolve, reject) => {
-      firebase.database().ref().child('resumes').once('value', (snapshot) => {
-        let resume_data = snapshot.val();
+      firebase.firestore().collection('resumes').get().then((querySnapshot) => {
+        const resume_data = {};
+        querySnapshot.forEach((snapshot) => {
+          resume_data[snapshot.id] = snapshot.data();
+        })
+        // let resume_data = snapshot.data();
         let found = false;
         Object.keys(resume_data).every((resume_id) => {
           let resume = resume_data[resume_id];
@@ -53,17 +58,15 @@ class Published extends React.Component {
     });
 
     Promise.all([authPromise, resumePromise]).then(() => {
-      firebase.database().ref('/users/' + this.state.resume.uid).once('value', (snapshot) => {
-        this.setState({ author: {...snapshot.val()} });
+      firebase.firestore().doc('/users/' + this.state.resume.uid).get().then((snapshot) => {
+        this.setState({ author: {...snapshot.data()} });
       });
       if(!this.state.user || (this.state.user && this.state.user.uid !== this.state.resume.uid)) {
         // axios.get('https://geoip-db.com/json/').then((res) => {
         axios.get('https://freegeoip.net/json/').then((res) => {
           const location_data = res.data;
 
-          let updates = {};
-
-          const newActivityKey = firebase.database().ref().child('resumes').push().key;
+          const newActivityKey = firebase.firestore().collection('resumes').doc().id;
           const activityData = {
             type: 'view',
             location: {
@@ -75,12 +78,19 @@ class Published extends React.Component {
             title: this.state.resume.title
           };
 
-          updates['/activities/' + this.state.resume.uid + '/' + newActivityKey] = activityData;
-          updates['/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey] = activityData;
-          updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey] = activityData;
-          updates['/resumes/' + this.state.resume.resume_id + '/views'] = this.state.resume.views + 1;
-          updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/views'] = this.state.resume.views + 1;
-          firebase.database().ref().update(updates).then(() => {
+          let batch = firebase.firestore().batch();
+
+          batch.set(firebase.firestore().doc('/activities/' + this.state.resume.uid + '/' + newActivityKey), activityData, {merge: true});
+          batch.set(firebase.firestore().doc('/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey), activityData, {merge: true});
+          batch.set(firebase.firestore().doc('/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey), activityData, {merge: true});
+          batch.set(firebase.firestore().doc('/resumes/' + this.state.resume.resume_id), {
+            views: this.state.resume.views + 1,
+          }, {merge: true});
+          batch.set(firebase.firestore().doc('/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id), {
+            views: this.state.resume.views + 1,
+          }, {merge: true});
+
+          batch.commit().then(() => {
             axios.post(serverUrl + '/sendmail', {
               content: {
                 to: this.state.author.email,
@@ -89,6 +99,7 @@ class Published extends React.Component {
               }
             });
           });
+
         })
       }
     }).catch(() => {
@@ -126,9 +137,7 @@ class Published extends React.Component {
         axios.get('https://freegeoip.net/json/').then((res) => {
           const location_data = res.data;
 
-          let updates = {};
-
-          const newActivityKey = firebase.database().ref().child('resumes').push().key;
+          const newActivityKey = firebase.firestore().collection('resumes').doc().id;
           const activityData = {
             type: 'download',
             location: {
@@ -140,12 +149,19 @@ class Published extends React.Component {
             title: this.state.resume.title
           };
 
-          updates['/activities/' + this.state.resume.uid + '/' + newActivityKey] = activityData;
-          updates['/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey] = activityData;
-          updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey] = activityData;
-          updates['/resumes/' + this.state.resume.resume_id + '/downloads'] = this.state.resume.downloads + 1;
-          updates['/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/downloads'] = this.state.resume.downloads + 1;
-          firebase.database().ref().update(updates).then(() => {
+          let batch = firebase.firestore().batch();
+
+          batch.set(firebase.firestore().doc('/activities/' + this.state.resume.uid + '/' + newActivityKey), activityData, {merge: true});
+          batch.set(firebase.firestore().doc('/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey), activityData, {merge: true});
+          batch.set(firebase.firestore().doc('/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id + '/activities/' + newActivityKey), activityData, {merge: true});
+          batch.set(firebase.firestore().doc('/resumes/' + this.state.resume.resume_id), {
+            downloads: this.state.resume.downloads + 1,
+          }, {merge: true});
+          batch.set(firebase.firestore().doc('/users/' + this.state.resume.uid + '/resumes/' + this.state.resume.resume_id), {
+            downloads: this.state.resume.downloads + 1,
+          }, {merge: true});
+
+          batch.commit().then(() => {
             this.setState({resume: {...resume, downloads: this.state.resume.downloads+1}});
 
             axios.post(serverUrl + '/sendmail', {
@@ -155,7 +171,8 @@ class Published extends React.Component {
                 ...activityData
               }
             });
-          });
+          })
+
         })
       }
 

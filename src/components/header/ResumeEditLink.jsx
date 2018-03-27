@@ -1,5 +1,6 @@
 import React  from 'react';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { connect } from 'react-redux';
 import { NotificationManager } from 'react-notifications';
 const ContentEditable = require("react-contenteditable");
@@ -15,8 +16,8 @@ class ResumeEditLink extends React.Component {
 
 	componentWillMount() {
     const { resume_id } = this.props.params;
-    firebase.database().ref('/resumes/'+resume_id).once('value', (snapshot) => {
-    	const resume = snapshot.val();
+    firebase.firestore().doc('/resumes/'+resume_id).get().then((snapshot) => {
+    	const resume = snapshot.data();
     	this.setState({ resume: {...resume, resume_id}, resume_link: resume.link });
     })
 	}
@@ -35,10 +36,10 @@ class ResumeEditLink extends React.Component {
   validateResume = () => {
     const { resume, resume_link } = this.state;
     return new Promise((resolve, reject) => {
-      firebase.database().ref().child('resumes').once('value', (snapshot) => {
+      firebase.firestore().collection('resumes').get().then((snapshot) => {
         let resumes = [];
         snapshot.forEach((childSnapshot) => {
-          resumes.push({...childSnapshot.val(), resume_id: childSnapshot.key});
+          resumes.push({...childSnapshot.data(), resume_id: childSnapshot.id});
         });
         resumes.every((r) => {
           if(r.resume_id !== resume.resume_id && r.published===true) {
@@ -60,17 +61,21 @@ class ResumeEditLink extends React.Component {
 		} else {
 			if(this.state.resume_link !== this.state.resume.link) {
 				this.validateResume().then(() => {
-					let updates = {};
-					updates['/resumes/' + this.state.resume.resume_id + '/link'] = this.state.resume_link || this.state.resume.link;
-					updates['/resumes/' + this.state.resume.resume_id + '/link_modified'] = true
-					updates['/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id + '/link'] = this.state.resume_link || this.state.resume.link;
-					updates['/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id + '/link_modified'] = true;
-					firebase.database().ref().update(updates).then(() => {
+					let batch = firebase.firestore().batch();
+					batch.set(firebase.firestore().doc('/resumes/' + this.state.resume.resume_id), {
+						link: this.state.resume_link || this.state.resume.link,
+						link_modified: true
+					}, {merge: true});
+					batch.set(firebase.firestore().doc('/users/' + this.state.user.uid + '/resumes/' + this.state.resume.resume_id), {
+						link: this.state.resume_link || this.state.resume.link,
+						link_modified: true
+					}, {merge: true});
+					batch.commit().then(() => {
 						this.setState({ resume: {...this.state.resume, link: this.state.resume_link}});
-				  	NotificationManager.success('Resume Link successfully updated', '');
+			  		NotificationManager.success('Resume Link successfully updated', '');
 					});
 				}).catch((e) => {
-      		NotificationManager.error('Duplicate Link exists...', 'Cannot publish this resume.');
+  				NotificationManager.error('Duplicate Link exists...', 'Cannot publish this resume.');
 					this.setState({ resume_link: this.state.resume.link});
 				});
 			}

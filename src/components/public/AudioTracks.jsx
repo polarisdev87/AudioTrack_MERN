@@ -1,6 +1,7 @@
 import React  from 'react';
 import { connect } from 'react-redux';
 import * as firebase from 'firebase';
+import 'firebase/firestore';
 import AudioTrackElement from './AudioTrackElement';
 import { NotificationManager } from 'react-notifications';
 import $ from 'jquery';
@@ -19,11 +20,11 @@ class AudioTracks extends React.Component {
 	};
 
 	componentWillMount() {
-		firebase.database().ref('/resumes/'+this.state.resume.resume_id+'/tracks').on('value', (snapshot) => {
+		this.listener = firebase.firestore().collection('resumes').doc(this.state.resume.resume_id).collection('tracks').onSnapshot((snapshot) => {
 			let tracks = [];
 		  snapshot.forEach((childSnapshot) => {
-		    const childKey = childSnapshot.key;
-		    const childData = childSnapshot.val();
+		    const childKey = childSnapshot.id;
+		    const childData = childSnapshot.data();
 		    if(childData.pageNumber === this.state.pageNumber) {
 		    	tracks.push({...childData, track_id: childKey});
 		    }
@@ -40,21 +41,20 @@ class AudioTracks extends React.Component {
 	}
 
 	componentWillUnmount() {
-		firebase.database().ref('/resumes/'+this.state.resume.resume_id+'/tracks').off();
+		this.listener && (this.listener)();
 	}
 
 	handleAddNewPoint(e) {
 
 		if(this.props.resume && this.props.resume.tracks && Object.keys(this.props.resume.tracks).length >= 10) {
-	  	NotificationManager.error('You cannot add another audio. Maximum limit reached.', 'Error');
-	  	return false;
+		  	NotificationManager.error('You cannot add another audio. Maximum limit reached.', 'Error');
+		  	return false;
 		}
 		const { resume, pageNumber } = this.state;
 		const pos = { x: e.nativeEvent.offsetX/e.currentTarget.clientWidth, y: e.nativeEvent.offsetY/e.currentTarget.clientHeight };
 
-		const newTrackKey = firebase.database().ref().child('resumes/'+resume.resume_id+'/tracks').push().key;
+		const newTrackKey = firebase.firestore().collection('resumes').doc(resume.resume_id).collection('tracks').doc().id;
 
-		let updates = {};
 		const trackData = {
 			uid: resume.uid,
 			resume_id: resume.resume_id,
@@ -66,16 +66,18 @@ class AudioTracks extends React.Component {
 			created: new Date(),
 			updated: new Date()
 		};
-		updates['/resumes/' + resume.resume_id + '/tracks/' + newTrackKey] = trackData;
-		updates['/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + newTrackKey] = trackData;
+
+		let batch = firebase.firestore().batch();
+		batch.set(firebase.firestore().doc('/resumes/' + resume.resume_id + '/tracks/' + newTrackKey), trackData, {merge: true});
+		batch.set(firebase.firestore().doc('/users/' + resume.uid + '/resumes/' + resume.resume_id + '/tracks/' + newTrackKey), trackData, {merge: true});
 
 	 	this.setState({ last_created: null });
 
-	  NotificationManager.success('New audio track has been added.', 'Resume Updated');
+  	NotificationManager.success('New audio track has been added.', 'Resume Updated');
 
- 		firebase.database().ref().update(updates).then(() => {
-	 		this.setState({ last_created: newTrackKey });
- 		});
+  	batch.commit().then(() => {
+ 			this.setState({ last_created: newTrackKey });
+  	})
 	}
 
 	render() {
