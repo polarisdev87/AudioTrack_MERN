@@ -47,15 +47,15 @@ class ActivityBox extends React.Component {
 
 	componentWillMount() {
 		const { type } = this.state;
-	    const { resume_id } = this.props.params;
-	    firebase.firestore().doc('/resumes/'+resume_id).get().then((snapshot) => {
-	    	const resume = snapshot.data();
-	    	this.setState({ resume: {...resume, resume_id} });
-	    })
+    const { resume_id } = this.props.params;
+    firebase.firestore().doc('/resumes/'+resume_id).get().then((snapshot) => {
+    	const resume = snapshot.data();
+    	this.setState({ resume: {...resume, resume_id} });
+    })
 		switch(type) {
 			case 'all':
 				this.listener_all = firebase.firestore().collection('activities').doc(this.state.user.uid).collection('activities').onSnapshot((querySnapshot) => {
-					if (!querySnapshot.exists) return false;
+					// if (!querySnapshot.exists) return false;
 					let list = [];
 					querySnapshot.forEach((snapshot) => {
 						let activity = snapshot.data() || {};
@@ -75,7 +75,7 @@ class ActivityBox extends React.Component {
 				break;
 			case 'view':
 				this.listener_view = firebase.firestore().collection('resumes').doc(resume_id).collection('activities').onSnapshot((querySnapshot) => {
-					if (!querySnapshot.exists) return false;
+					// if (!querySnapshot.exists) return false;
 					let list = [];
 					querySnapshot.forEach((snapshot) => {
 						let activity = snapshot.data() || {};
@@ -99,7 +99,7 @@ class ActivityBox extends React.Component {
 				break;
 			case 'download':
 				this.listener_download = firebase.firestore().collection('resumes').doc(resume_id).collection('activities').onSnapshot((querySnapshot) => {
-					if (!querySnapshot.exists) return false;
+					// if (!querySnapshot.exists) return false;
 					let list = [];
 					querySnapshot.forEach((snapshot) => {
 						let activity = snapshot.data() || {};
@@ -150,7 +150,7 @@ class ActivityBox extends React.Component {
   onClearLogs = () => {
   	firebase.firestore().collection('/activities/' + firebase.auth().currentUser.uid + '/activities').get().then((querySnapshot) => {
   		querySnapshot.forEach((snapshot) => {
-  			snapshot.doc.delete();
+  			snapshot.ref.delete();
   		})
   	});
   }
