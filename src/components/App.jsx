@@ -45,8 +45,8 @@ class App extends React.Component {
 
 				this.userListener = firebase.firestore().collection('users').doc(user.uid).onSnapshot((snapshot) => {
 					const currentUser = snapshot.data();
-					currentUser.resumes = {};
-					currentUser.activities = {};
+					currentUser['resumes'] = {};
+					currentUser['activities'] = {};
 					Promise.all([
 						firebase.firestore().collection('users').doc(user.uid).collection('resumes').get(),
 						firebase.firestore().collection('users').doc(user.uid).collection('activities').get()
